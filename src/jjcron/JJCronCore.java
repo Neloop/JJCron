@@ -1,5 +1,7 @@
 package jjcron;
 
+import java.util.List;
+import java.util.logging.Logger;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.CommandLineParser;
@@ -14,14 +16,22 @@ import org.apache.commons.cli.ParseException;
  */
 public class JJCronCore {
 
+    private static final Logger logger = Logger.getLogger(JJCronCore.class.getName());
+
     private final String[] args;
+    private String crontabFilename = "crontab.txt";
+    private final TaskManager taskManager;
 
     public JJCronCore(String[] args) {
+        taskManager = new TaskManager();
         this.args = args;
         parseArguments();
     }
 
-    public void run() {
+    public void run() throws Exception {
+        List<TaskMetadata> tasks = CrontabParser.parseFile(crontabFilename);
+        taskManager.reload(tasks);
+        taskManager.justWait();
     }
 
     private void parseArguments() {
@@ -62,6 +72,10 @@ public class JJCronCore {
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("JJCron", options);
             System.exit(0);
+        }
+
+        if (cmd.hasOption("config")) {
+            crontabFilename = cmd.getOptionValue("config");
         }
     }
 
