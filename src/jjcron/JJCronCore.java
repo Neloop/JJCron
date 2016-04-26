@@ -6,7 +6,6 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.ParseException;
 
 /**
@@ -30,12 +29,16 @@ public class JJCronCore {
         Options options = new Options();
 
         // create options
-        Option help = new Option("help", "print this message");
-        Option config = OptionBuilder.withArgName("file")
+        Option help = Option.builder("h")
+                .longOpt("help")
+                .desc("print this message")
+                .build();
+        Option config = Option.builder("c")
+                .longOpt("config")
+                .argName("file")
                 .hasArg()
-                .withDescription("use given file for configuration")
-                .create("config");
-
+                .desc("crontab file configuration")
+                .build();
 
         // add options
         options.addOption(help);
@@ -43,22 +46,34 @@ public class JJCronCore {
 
         // create parser and parse arguments
         CommandLineParser parser = new DefaultParser();
-        CommandLine cmd;
+        CommandLine cmd = null;
         try {
             // parse the command line arguments
-            cmd = parser.parse( options, args );
+            cmd = parser.parse(options, args);
         } catch(ParseException e) {
             // oops, something went wrong
             System.err.println("Parsing failed. Reason: " + e.getMessage());
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("JJCron", options);
-            return;
+            System.exit(1);
         }
 
         if(cmd.hasOption("help")) {
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("JJCron", options);
-            return;
+            System.exit(0);
+        }
+    }
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        try {
+            JJCronCore core = new JJCronCore(args);
+            core.run();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
         }
     }
 }
