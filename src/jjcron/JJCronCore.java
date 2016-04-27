@@ -29,9 +29,7 @@ public class JJCronCore {
     }
 
     public void run() throws Exception {
-        String testData = "*/1    * * * * * <class>jjcron.PrintDotTask</class>";
-
-        List<TaskMetadata> tasks = CrontabParser.parse(testData);
+        List<TaskMetadata> tasks = CrontabParser.parseFile(crontabFilename);
         taskManager.startCroning(tasks);
         taskManager.justWait();
     }

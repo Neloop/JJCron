@@ -21,7 +21,7 @@ public class TaskFactory {
             Class<?> clazz = null;
             try {
                 clazz = Class.forName(className);
-            } catch (ClassNotFoundException ex) {
+            } catch (ClassNotFoundException e) {
                 throw new TaskException("Specified class: " + className + " not found");
             }
 

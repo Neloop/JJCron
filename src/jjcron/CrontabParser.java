@@ -28,7 +28,7 @@ public class CrontabParser {
     private static final int DAY_OF_WEEK_COLUMN = 5;
     private static final int CMD_COLUMN = 6;
 
-    private static TaskMetadata parseLine(String line) throws Exception {
+    private static TaskMetadata parseLine(int lineNumber, String line) throws Exception {
         TaskMetadata result = null;
         List<String> splitted = new ArrayList<>(Arrays.asList(line.split(" ")));
         splitted.removeAll(Arrays.asList("", null));
@@ -54,7 +54,7 @@ public class CrontabParser {
                 throw new ParserException(e.getMessage(), e);
             }
         } else {
-            throw new ParserException("Bad crontab line format: too little columns");
+            throw new ParserException("Bad crontab line " + lineNumber + " format: too little columns");
         }
 
         return result;
@@ -66,8 +66,10 @@ public class CrontabParser {
 
         try {
             String line;
+            int i = 1;
             while ((line = reader.readLine()) != null) {
-                result.add(parseLine(line));
+                result.add(parseLine(i, line));
+                ++i;
             }
 
         } catch (Exception e) {
