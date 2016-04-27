@@ -23,14 +23,16 @@ public class JJCronCore {
     private final TaskManager taskManager;
 
     public JJCronCore(String[] args) {
-        taskManager = new TaskManager();
+        taskManager = new TaskManager(new TaskFactory());
         this.args = args;
         parseArguments();
     }
 
     public void run() throws Exception {
-        List<TaskMetadata> tasks = CrontabParser.parseFile(crontabFilename);
-        taskManager.reload(tasks);
+        String testData = "*/1    * * * * * <class>jjcron.PrintDotTask</class>";
+
+        List<TaskMetadata> tasks = CrontabParser.parse(testData);
+        taskManager.startCroning(tasks);
         taskManager.justWait();
     }
 
@@ -88,6 +90,7 @@ public class JJCronCore {
             core.run();
         } catch (Exception e) {
             System.err.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 }

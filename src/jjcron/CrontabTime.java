@@ -35,15 +35,15 @@ public class CrontabTime {
 
     public long initialDelay() {
         // TODO
-        return 0;
+        return 1;
     }
 
     public long period() {
         // TODO
-        return 0;
+        return 1;
     }
 
     public TimeUnit timeUnit() {
-        return TimeUnit.MINUTES;
+        return TimeUnit.SECONDS;
     }
 }

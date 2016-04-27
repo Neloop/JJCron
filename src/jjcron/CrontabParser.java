@@ -6,6 +6,8 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -28,21 +30,22 @@ public class CrontabParser {
 
     private static TaskMetadata parseLine(String line) throws Exception {
         TaskMetadata result = null;
-        String[] splitted = line.split(" ");
+        List<String> splitted = new ArrayList<>(Arrays.asList(line.split(" ")));
+        splitted.removeAll(Arrays.asList("", null));
 
-        if (splitted.length >= CRONTAB_COLUMNS) {
+        if (splitted.size() >= CRONTAB_COLUMNS) {
             String sec, min, hour, dayOfMonth, month, dayOfWeek, command;
 
-            sec = splitted[SEC_COLUMN];
-            min = splitted[MIN_COLUMN];
-            hour = splitted[HOUR_COLUMN];
-            dayOfMonth = splitted[DAY_OF_MONTH_COLUMN];
-            month = splitted[MONTH_COLUMN];
-            dayOfWeek = splitted[DAY_OF_WEEK_COLUMN];
+            sec = splitted.get(SEC_COLUMN);
+            min = splitted.get(MIN_COLUMN);
+            hour = splitted.get(HOUR_COLUMN);
+            dayOfMonth = splitted.get(DAY_OF_MONTH_COLUMN);
+            month = splitted.get(MONTH_COLUMN);
+            dayOfWeek = splitted.get(DAY_OF_WEEK_COLUMN);
 
-            command = splitted[CMD_COLUMN];
-            for (int i = CMD_COLUMN + 1; i < splitted.length; ++i) {
-                command += " " + splitted[i];
+            command = splitted.get(CMD_COLUMN);
+            for (int i = CMD_COLUMN + 1; i < splitted.size(); ++i) {
+                command += " " + splitted.get(i);
             }
 
             try {
