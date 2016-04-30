@@ -44,18 +44,35 @@ public class TaskManager {
         exit.set(true);
     }
 
+    private class RunTask implements Runnable {
+        private final CrontabTime time;
+        private final TaskBase task;
+
+        public RunTask(TaskBase task) {
+            this.task = task;
+            this.time = task.getTime();
+        }
+
+        @Override
+        public void run() {
+            // run task itself
+            try {
+                task.run();
+            } catch (Exception e) {}
+
+            // ... and reschedule task to another time point
+            scheduler.schedule(new RunTask(task), time.delay(), time.timeUnit());
+        }
+    }
+
     private synchronized void loadTasks(List<TaskMetadata> tasksMeta) throws Exception {
         for (TaskMetadata taskMeta : tasksMeta) {
             TaskBase task = taskFactory.createTask(taskMeta);
             CrontabTime time = task.getTime();
             tasks.add(task);
 
-            // run task
-            scheduler.scheduleAtFixedRate(() -> {
-                try {
-                    task.run();
-                } catch (Exception e) {}
-            }, time.initialDelay(), time.period(), time.timeUnit());
+            // schedule first execution
+            scheduler.schedule(new RunTask(task), time.delay(), time.timeUnit());
         }
     }
 

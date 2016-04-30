@@ -13,21 +13,12 @@ public class CrontabTime {
 
     private static final Logger logger = Logger.getLogger(CrontabTime.class.getName());
 
-    private final CrontabTimeUnit second;
-    private final CrontabTimeUnit minute;
-    private final CrontabTimeUnit hour;
-    private final CrontabTimeUnit dayOfMonth;
-    private final CrontabTimeUnit month;
-    private final CrontabTimeUnit dayOfWeek;
-
-    private void checkValues() throws FormatException {
-        second.check();
-        minute.check();
-        hour.check();
-        dayOfMonth.check();
-        month.check();
-        dayOfWeek.check();
-    }
+    private final CrontabTimeUnitBase second;
+    private final CrontabTimeUnitBase minute;
+    private final CrontabTimeUnitBase hour;
+    private final CrontabTimeUnitBase dayOfMonth;
+    private final CrontabTimeUnitBase month;
+    private final CrontabTimeUnitBase dayOfWeek;
 
     public CrontabTime(String second, String minute, String hour,
             String dayOfMonth, String month, String dayOfWeek) throws FormatException {
@@ -37,30 +28,21 @@ public class CrontabTime {
         this.dayOfMonth = new CrontabTimeDayOfMonth(dayOfMonth);
         this.month = new CrontabTimeMonth(month);
         this.dayOfWeek = new CrontabTimeDayOfWeek(dayOfWeek);
-
-        checkValues();
     }
 
-    public long initialDelay() {
-        // TODO
+    public long delay() {
         LocalDateTime localNow = LocalDateTime.now();
         LocalDateTime next = localNow
-                .withSecond(second.initial(localNow))
-                .withMinute(minute.initial(localNow))
-                .withHour(hour.initial(localNow))
-                .withDayOfMonth(dayOfMonth.initial(localNow))
-                .withMonth(month.initial(localNow));
-        /*if(localNow.compareTo(next) > 0) {
-            next = next.plusDays(1);
-        }*/
+                .withSecond(second.delay(localNow))
+                .withMinute(minute.delay(localNow))
+                .withHour(hour.delay(localNow))
+                .withDayOfMonth(dayOfMonth.delay(localNow))
+                .withMonth(month.delay(localNow));
+
+        // TODO: day of week
 
         Duration duration = Duration.between(localNow, next);
         return duration.getSeconds();
-    }
-
-    public long period() {
-        // TODO
-        return 1;
     }
 
     public TimeUnit timeUnit() {

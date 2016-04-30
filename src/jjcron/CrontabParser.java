@@ -62,9 +62,9 @@ public class CrontabParser {
 
     private static List<TaskMetadata> internalParse(InputStream input) throws ParserException {
         List<TaskMetadata> result = new ArrayList<>();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
 
         try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
             String line;
             int i = 1;
             while ((line = reader.readLine()) != null) {

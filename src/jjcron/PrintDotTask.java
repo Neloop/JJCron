@@ -13,6 +13,7 @@ public class PrintDotTask extends TaskBase {
     @Override
     public void run() throws Exception {
         System.out.print(".");
+        System.out.flush();
     }
 
 }
