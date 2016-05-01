@@ -43,7 +43,7 @@ public class CrontabTimeDayOfMonth extends CrontabTimeUnitBase {
     }
 
     @Override
-    public int delay(LocalDateTime localNow) {
+    public int delay(int localNow) {
         // TODO
         return 0;
     }

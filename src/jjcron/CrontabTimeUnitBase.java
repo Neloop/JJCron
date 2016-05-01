@@ -1,6 +1,5 @@
 package jjcron;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -82,5 +81,5 @@ public abstract class CrontabTimeUnitBase {
         throw new FormatException("Unknown time format");
     }
 
-    public abstract int delay(LocalDateTime localNow);
+    public abstract int delay(int localNow);
 }

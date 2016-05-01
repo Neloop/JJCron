@@ -22,22 +22,22 @@ public class CrontabTime {
 
     public CrontabTime(String second, String minute, String hour,
             String dayOfMonth, String month, String dayOfWeek) throws FormatException {
-        this.second = new CrontabTimeGeneralUnit(second, 0, 60);
-        this.minute = new CrontabTimeGeneralUnit(minute, 0, 60);
-        this.hour = new CrontabTimeGeneralUnit(hour, 0, 24);
+        this.second = CrontabTimeGeneralUnit.createCrontabTimeSecond(second);
+        this.minute = CrontabTimeGeneralUnit.createCrontabTimeMinute(minute);
+        this.hour = CrontabTimeGeneralUnit.createCrontabTimeHour(hour);
         this.dayOfMonth = new CrontabTimeDayOfMonth(dayOfMonth);
-        this.month = new CrontabTimeGeneralUnit(month, 0, 12);
+        this.month = CrontabTimeGeneralUnit.createCrontabTimeMonth(month);
         this.dayOfWeek = new CrontabTimeDayOfWeek(dayOfWeek);
     }
 
     public long delay() {
         LocalDateTime localNow = LocalDateTime.now();
         LocalDateTime next = localNow
-                .withSecond(localNow.getSecond() + second.delay(localNow))
-                .withMinute(localNow.getMinute() + minute.delay(localNow))
-                .withHour(localNow.getHour() + hour.delay(localNow))
-                .withDayOfMonth(localNow.getDayOfMonth() + dayOfMonth.delay(localNow))
-                .withMonth(localNow.getMonthValue() + month.delay(localNow));
+                .withSecond(localNow.getSecond() + second.delay(localNow.getSecond()))
+                .withMinute(localNow.getMinute() + minute.delay(localNow.getMinute()))
+                .withHour(localNow.getHour() + hour.delay(localNow.getHour()))
+                .withDayOfMonth(localNow.getDayOfMonth() + dayOfMonth.delay(localNow.getDayOfMonth()))
+                .withMonth(localNow.getMonthValue() + month.delay(localNow.getMonthValue()));
 
         // TODO: day of week
 
