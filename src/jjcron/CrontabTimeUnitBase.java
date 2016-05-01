@@ -3,6 +3,7 @@ package jjcron;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -74,6 +75,7 @@ public abstract class CrontabTimeUnitBase {
                     numbers.add(Integer.parseUnsignedInt(number));
                 } catch (NumberFormatException e) {}
             }
+            Collections.sort(numbers);
             return new TimeValue(TimeValueType.LIST, numbers);
         }
 
