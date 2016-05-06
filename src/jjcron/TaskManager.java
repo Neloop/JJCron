@@ -30,7 +30,7 @@ public class TaskManager {
         this.taskFactory = taskFactory;
     }
 
-    public void justWait() {
+    public final void justWait() {
         try {
             while (!exit.get()) {
                 TimeUnit.SECONDS.sleep(SLEEP_INTERVAL);
@@ -40,7 +40,7 @@ public class TaskManager {
         }
     }
 
-    public void exit() {
+    public final void exit() {
         exit.set(true);
     }
 
@@ -76,11 +76,11 @@ public class TaskManager {
         }
     }
 
-    public synchronized void startCroning(List<TaskMetadata> tasksMeta) throws Exception {
+    public final synchronized void startCroning(List<TaskMetadata> tasksMeta) throws Exception {
         loadTasks(tasksMeta);
     }
 
-    public synchronized void reloadTasks(List<TaskMetadata> tasksMeta) throws Exception {
+    public final synchronized void reloadTasks(List<TaskMetadata> tasksMeta) throws Exception {
         scheduler.shutdownNow();
         scheduler = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
         tasks.clear();

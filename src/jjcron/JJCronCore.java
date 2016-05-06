@@ -23,12 +23,12 @@ public class JJCronCore {
     private final TaskManager taskManager;
 
     public JJCronCore(String[] args) {
-        taskManager = new TaskManager(new TaskFactory());
+        taskManager = new TaskManager(new TaskFactoryImpl());
         this.args = args;
         parseArguments();
     }
 
-    public void run() throws Exception {
+    public final void run() throws Exception {
         List<TaskMetadata> tasks = CrontabParser.parseFile(crontabFilename);
         taskManager.startCroning(tasks);
         taskManager.justWait();

@@ -1,5 +1,6 @@
 package jjcron;
 
+import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
@@ -13,39 +14,39 @@ public class CrontabTime {
 
     private static final Logger logger = Logger.getLogger(CrontabTime.class.getName());
 
-    private final CrontabTimeUnitBase second;
-    private final CrontabTimeUnitBase minute;
-    private final CrontabTimeUnitBase hour;
-    private final CrontabTimeUnitBase dayOfMonth;
-    private final CrontabTimeUnitBase month;
-    private final CrontabTimeUnitBase dayOfWeek;
+    private final CrontabTimeUnit second;
+    private final CrontabTimeUnit minute;
+    private final CrontabTimeUnit hour;
+    private final CrontabTimeUnit dayOfMonth;
+    private final CrontabTimeUnit month;
+    private final CrontabTimeUnit dayOfWeek;
 
     public CrontabTime(String second, String minute, String hour,
             String dayOfMonth, String month, String dayOfWeek) throws FormatException {
-        this.second = CrontabTimeGeneralUnit.createCrontabTimeSecond(second);
-        this.minute = CrontabTimeGeneralUnit.createCrontabTimeMinute(minute);
-        this.hour = CrontabTimeGeneralUnit.createCrontabTimeHour(hour);
-        this.dayOfMonth = new CrontabTimeDayOfMonth(dayOfMonth);
-        this.month = CrontabTimeGeneralUnit.createCrontabTimeMonth(month);
-        this.dayOfWeek = new CrontabTimeDayOfWeek(dayOfWeek);
+        this.second = CrontabTimeUnit.createCrontabTimeSecond(second);
+        this.minute = CrontabTimeUnit.createCrontabTimeMinute(minute);
+        this.hour = CrontabTimeUnit.createCrontabTimeHour(hour);
+        this.dayOfMonth = CrontabTimeUnit.createCrontabTimeHour(dayOfMonth); // TODO
+        this.month = CrontabTimeUnit.createCrontabTimeMonth(month); // TODO
+        this.dayOfWeek = CrontabTimeUnit.createCrontabTimeHour(dayOfWeek); // TODO
     }
 
-    public long delay() {
+    public final long delay() {
         LocalDateTime localNow = LocalDateTime.now();
-        LocalDateTime next = localNow
-                .withSecond(localNow.getSecond() + second.delay(localNow.getSecond()))
-                .withMinute(localNow.getMinute() + minute.delay(localNow.getMinute()))
-                .withHour(localNow.getHour() + hour.delay(localNow.getHour()))
-                .withDayOfMonth(localNow.getDayOfMonth() + dayOfMonth.delay(localNow.getDayOfMonth()))
-                .withMonth(localNow.getMonthValue() + month.delay(localNow.getMonthValue()));
+        Timestamp localTimestamp = Timestamp.valueOf(localNow);
 
-        // TODO: day of week
+        LocalDateTime next = localNow;
+        next = next.plusSeconds(second.delay(localNow.getSecond(), localTimestamp.getTime(), false));
+        next = next.plusMinutes(minute.delay(localNow.getMinute(), localTimestamp.getTime() / 60, second.lastChanged()));
+        next = next.plusHours(hour.delay(localNow.getHour(), localTimestamp.getTime() / (60 * 60), minute.lastChanged()));
+
+        // TODO: day of week, month, day of month
 
         Duration duration = Duration.between(localNow, next);
         return duration.getSeconds();
     }
 
-    public TimeUnit timeUnit() {
+    public final TimeUnit timeUnit() {
         return TimeUnit.SECONDS;
     }
 }

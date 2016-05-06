@@ -16,7 +16,7 @@ public abstract class TaskBase {
         this.taskMeta = taskMetadata;
     }
 
-    public CrontabTime getTime() {
+    public final CrontabTime getTime() {
         return taskMeta.time();
     }
 

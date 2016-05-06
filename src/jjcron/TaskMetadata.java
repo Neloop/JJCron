@@ -20,11 +20,11 @@ public class TaskMetadata {
         this.command = command;
     }
 
-    public CrontabTime time() {
+    public final CrontabTime time() {
         return time;
     }
 
-    public String command() {
+    public final String command() {
         return command;
     }
 }
