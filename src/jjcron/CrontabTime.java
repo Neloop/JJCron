@@ -40,9 +40,12 @@ public class CrontabTime {
         next = next.plusMinutes(minute.delay(localNow.getMinute(), localTimestamp.getTime() / 60, second.lastChanged()));
         next = next.plusHours(hour.delay(localNow.getHour(), localTimestamp.getTime() / (60 * 60), minute.lastChanged()));
 
+        // TODO: may be problems with scheduling on next minute by second unit and scheduling to that minute also by minute unit
+
         // TODO: day of week, month, day of month
 
         Duration duration = Duration.between(localNow, next);
+        System.out.println(">>> delay: " + duration.getSeconds());
         return duration.getSeconds();
     }
 

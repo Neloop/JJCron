@@ -82,36 +82,54 @@ public class CrontabTimeUnit {
     {
         int result;
 
-        valueChanged = false;
+        valueChanged = previousChanged;
 
         switch (unit.valueType) {
             case SINGLE:
-                int toMinute = maxValue - currentValue;
-                int delayS = (toMinute + unit.values.get(0)) % maxValue;
-                if (delayS == minValue && currentStamp == lastStamp) {
-                    result = maxValue;
+                if (previousChanged && currentValue == unit.values.get(0)) {
+                    result = 0;
                 } else {
-                    result = delayS;
+                    int toMinute = maxValue - currentValue;
+                    int delayS = (toMinute + unit.values.get(0)) % maxValue;
+                    if (delayS == minValue && currentStamp == lastStamp) {
+                        result = maxValue;
+                    } else {
+                        result = delayS;
+                    }
                 }
                 valueChanged = true;
                 break;
             case PERIOD:
                 int remainder = currentValue % unit.values.get(0);
-                result = unit.values.get(0) - remainder;
+                if (previousChanged && remainder == 0) {
+                    result = 0;
+                } else {
+                    result = unit.values.get(0) - remainder;
+                }
+                valueChanged = true;
                 break;
             case LIST:
-                int minimum = maxValue;
+                result = maxValue; // minimum from list of values
                 for (Integer val : unit.values) {
-                    int toMinuteL = maxValue - currentValue;
-                    int minTemp = (toMinuteL + val) % maxValue;
-                    if (minTemp > minValue && minTemp < minimum) {
-                        minimum = minTemp;
+                    if (previousChanged && currentValue == val) {
+                        result = 0;
+                    } else {
+                        int toMinuteL = maxValue - currentValue;
+                        int minTemp = (toMinuteL + val) % maxValue;
+                        if (minTemp > minValue && minTemp < result) {
+                            result = minTemp;
+                        }
                     }
                 }
-                result = minimum;
+                valueChanged = true;
                 break;
             default:
-                result = 0;
+                if (previousChanged) {
+                    result = 0;
+                } else {
+                    result = 1;
+                }
+                valueChanged = true;
                 break;
         }
 

@@ -1,1 +1,1 @@
-*/1    */1 * * * * <class>jjcron.PrintDotTask</class>
+﻿*    */2 * * * * <class>jjcron.PrintDotTask</class>
