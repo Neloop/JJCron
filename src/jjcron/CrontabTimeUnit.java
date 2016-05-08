@@ -12,7 +12,6 @@ public class CrontabTimeUnit {
     private final CrontabTimeValue unit;
     private final CrontabTimeValueParser parser;
 
-    private long lastStamp;
     private boolean valueChanged;
 
     public static CrontabTimeUnit createCrontabTimeSecond(String unit) throws FormatException {
@@ -27,8 +26,16 @@ public class CrontabTimeUnit {
         return new CrontabTimeUnit(unit, 0, 24, new CrontabTimeValueGeneralParser());
     }
 
+    public static CrontabTimeUnit createCrontabDayOfMonth(String unit) throws FormatException {
+        return new CrontabTimeUnit(unit, 1, 31, new CrontabTimeValueGeneralParser());
+    }
+
     public static CrontabTimeUnit createCrontabTimeMonth(String unit) throws FormatException {
         return new CrontabTimeUnit(unit, 1, 12, new CrontabTimeValueGeneralParser());
+    }
+
+    public static CrontabTimeUnit createCrontabDayOfWeek(String unit) throws FormatException {
+        return new CrontabTimeUnit(unit, 1, 7, new CrontabTimeValueGeneralParser());
     }
 
     public CrontabTimeUnit(String unit, int minValue, int maxValue,
@@ -53,9 +60,6 @@ public class CrontabTimeUnit {
 
     public final void checkValue() throws FormatException {
         switch (unit.valueType) {
-            case SINGLE:
-                isValueValid(unit.values.get(0));
-                break;
             case ASTERISK:
                 // nothing to do here
                 break;
@@ -73,32 +77,18 @@ public class CrontabTimeUnit {
         }
     }
 
-    public boolean lastChanged()
+    public boolean getLastChanged()
     {
         return valueChanged;
     }
 
-    public int delay(int currentValue, long currentStamp, boolean previousChanged)
+    public int delay(int currentValue, boolean previousChanged)
     {
         int result;
 
         valueChanged = previousChanged;
 
         switch (unit.valueType) {
-            case SINGLE:
-                if (previousChanged && currentValue == unit.values.get(0)) {
-                    result = 0;
-                } else {
-                    int toMinute = maxValue - currentValue;
-                    int delayS = (toMinute + unit.values.get(0)) % maxValue;
-                    if (delayS == minValue && currentStamp == lastStamp) {
-                        result = maxValue;
-                    } else {
-                        result = delayS;
-                    }
-                }
-                valueChanged = true;
-                break;
             case PERIOD:
                 int remainder = currentValue % unit.values.get(0);
                 if (previousChanged && remainder == 0) {
@@ -123,7 +113,7 @@ public class CrontabTimeUnit {
                 }
                 valueChanged = true;
                 break;
-            default:
+            default: // asterisk
                 if (previousChanged) {
                     result = 0;
                 } else {
@@ -133,7 +123,6 @@ public class CrontabTimeUnit {
                 break;
         }
 
-        lastStamp = currentStamp;
         return result;
     }
 }

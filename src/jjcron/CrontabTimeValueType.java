@@ -5,7 +5,9 @@ package jjcron;
  * @author Martin
  */
 public enum CrontabTimeValueType {
-    SINGLE,
+    /**
+     * May represent single value or list written in crontab.
+     */
     LIST,
     ASTERISK,
     PERIOD

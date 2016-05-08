@@ -15,7 +15,7 @@ public class CrontabTimeValueGeneralParser implements CrontabTimeValueParser {
         try {
             // just a number
             int number = Integer.parseUnsignedInt(line);
-            return new CrontabTimeValue(CrontabTimeValueType.SINGLE, new Integer[] { number });
+            return new CrontabTimeValue(CrontabTimeValueType.LIST, new Integer[] { number });
         } catch (NumberFormatException e) {}
 
         // asterisk
