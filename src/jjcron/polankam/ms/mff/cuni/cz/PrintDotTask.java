@@ -1,8 +1,8 @@
-package jjcron;
+package jjcron.polankam.ms.mff.cuni.cz;
 
 /**
  *
- * @author Martin
+ * @author Neloop
  */
 public class PrintDotTask extends TaskBase {
 

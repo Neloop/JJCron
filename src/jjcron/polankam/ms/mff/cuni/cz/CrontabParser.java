@@ -1,4 +1,4 @@
-package jjcron;
+package jjcron.polankam.ms.mff.cuni.cz;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Martin
+ * @author Neloop
  */
 public class CrontabParser {
 
@@ -27,7 +27,7 @@ public class CrontabParser {
     private static final int DAY_OF_WEEK_COLUMN = 5;
     private static final int CMD_COLUMN = 6;
 
-    private static TaskMetadata parseLine(int lineNumber, String line) throws Exception {
+    private static TaskMetadata parseLine(int lineNumber, String line) throws ParserException {
         TaskMetadata result = null;
         List<String> splitted = new ArrayList<>(Arrays.asList(line.split(" ")));
         splitted.removeAll(Arrays.asList("", null));

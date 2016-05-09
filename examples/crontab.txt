@@ -1,1 +1,1 @@
-﻿0    */1 * * * * <class>jjcron.PrintDotTask</class>
+﻿0    */1 * * * * <class>jjcron.polankam.ms.mff.cuni.cz.PrintDotTask</class>

@@ -1,10 +1,10 @@
-package jjcron;
+package jjcron.polankam.ms.mff.cuni.cz;
 
 import java.lang.reflect.Constructor;
 
 /**
  *
- * @author Martin
+ * @author Neloop
  */
 public class TaskFactoryImpl implements TaskFactory {
 

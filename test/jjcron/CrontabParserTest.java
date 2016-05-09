@@ -1,5 +1,7 @@
 package jjcron;
 
+import jjcron.polankam.ms.mff.cuni.cz.TaskMetadata;
+import jjcron.polankam.ms.mff.cuni.cz.CrontabParser;
 import java.io.InputStream;
 import java.util.List;
 import org.junit.After;
@@ -13,7 +15,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Martin
+ * @author Neloop
  */
 public class CrontabParserTest {
 

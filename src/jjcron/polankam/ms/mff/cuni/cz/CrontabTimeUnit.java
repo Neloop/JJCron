@@ -1,8 +1,10 @@
-package jjcron;
+package jjcron.polankam.ms.mff.cuni.cz;
+
+import java.time.LocalDateTime;
 
 /**
  *
- * @author Martin
+ * @author Neloop
  */
 public class CrontabTimeUnit {
 
@@ -84,7 +86,7 @@ public class CrontabTimeUnit {
         return valueChanged;
     }
 
-    public int delay(int currentValue, boolean previousChanged)
+    public int delay(LocalDateTime current, int currentValue, boolean previousChanged)
     {
         int result;
 

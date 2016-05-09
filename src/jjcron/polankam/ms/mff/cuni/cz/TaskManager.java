@@ -1,4 +1,4 @@
-package jjcron;
+package jjcron.polankam.ms.mff.cuni.cz;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,12 +6,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  *
- * @author Martin
+ * @author Neloop
  */
 public class TaskManager {
 
@@ -65,7 +64,7 @@ public class TaskManager {
         }
     }
 
-    private synchronized void loadTasks(List<TaskMetadata> tasksMeta) throws Exception {
+    private synchronized void loadTasks(List<TaskMetadata> tasksMeta) throws TaskException {
         for (TaskMetadata taskMeta : tasksMeta) {
             TaskBase task = taskFactory.createTask(taskMeta);
             CrontabTime time = task.getTime();
@@ -76,11 +75,11 @@ public class TaskManager {
         }
     }
 
-    public final synchronized void startCroning(List<TaskMetadata> tasksMeta) throws Exception {
+    public final synchronized void startCroning(List<TaskMetadata> tasksMeta) throws TaskException {
         loadTasks(tasksMeta);
     }
 
-    public final synchronized void reloadTasks(List<TaskMetadata> tasksMeta) throws Exception {
+    public final synchronized void reloadTasks(List<TaskMetadata> tasksMeta) throws TaskException {
         scheduler.shutdownNow();
         scheduler = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
         tasks.clear();

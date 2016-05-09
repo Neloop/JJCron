@@ -1,15 +1,13 @@
-package jjcron;
+package jjcron.polankam.ms.mff.cuni.cz;
 
-import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 /**
  *
- * @author Martin
+ * @author Neloop
  */
 public class CrontabTime {
 
@@ -27,7 +25,7 @@ public class CrontabTime {
         this.second = CrontabTimeUnit.createSecond(second);
         this.minute = CrontabTimeUnit.createMinute(minute);
         this.hour = CrontabTimeUnit.createHour(hour);
-        this.dayOfMonth = CrontabTimeUnit.createDayOfMonth(dayOfMonth);
+        this.dayOfMonth = CrontabTimeUnit.createDayOfMonth(dayOfMonth); // TODO: should be done better
         this.month = CrontabTimeUnit.createMonth(month);
         this.dayOfWeek = CrontabTimeUnit.createDayOfWeek(dayOfWeek);
     }
@@ -36,12 +34,12 @@ public class CrontabTime {
         LocalDateTime localNow = LocalDateTime.now();
 
         LocalDateTime next = localNow;
-        next = next.plusSeconds(second.delay(next.getSecond(), false));
-        next = next.plusMinutes(minute.delay(next.getMinute(), second.isChanged()));
-        next = next.plusHours(hour.delay(next.getHour(), minute.isChanged()));
-        next = next.plusDays(dayOfWeek.delay(next.getDayOfWeek().getValue(), hour.isChanged()));
-        next = next.plusDays(dayOfMonth.delay(next.getDayOfMonth(), dayOfWeek.isChanged()));
-        next = next.plusMonths(month.delay(next.getMonthValue(), dayOfMonth.isChanged()));
+        next = next.plusSeconds(second.delay(next, next.getSecond(), false));
+        next = next.plusMinutes(minute.delay(next, next.getMinute(), second.isChanged()));
+        next = next.plusHours(hour.delay(next, next.getHour(), minute.isChanged()));
+        next = next.plusDays(dayOfWeek.delay(next, next.getDayOfWeek().getValue(), hour.isChanged()));
+        next = next.plusDays(dayOfMonth.delay(next, next.getDayOfMonth(), dayOfWeek.isChanged()));
+        next = next.plusMonths(month.delay(next, next.getMonthValue(), dayOfMonth.isChanged()));
 
         Duration duration = Duration.between(localNow, next);
         System.out.println(">>> delay: " + duration.getSeconds() + "s; next timepoint: " + next);

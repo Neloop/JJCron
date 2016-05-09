@@ -1,4 +1,4 @@
-package jjcron;
+package jjcron.polankam.ms.mff.cuni.cz;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -11,29 +11,58 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.ParseException;
 
 /**
- *
- * @author Martin
+ * Main class of JJCron and also entry point with main method.
+ * It constructs and runs all things necessary to execute cron functionality.
+ * @author Neloop
  */
 public class JJCronCore {
 
+    /**
+     * Standard Java logger.
+     */
     private static final Logger logger = Logger.getLogger(JJCronCore.class.getName());
 
+    /**
+     * Stored command line arguments.
+     */
     private final String[] args;
+    /**
+     * Filename where crontab configuration should be searched for.
+     */
     private String crontabFilename = "crontab.txt";
+    /**
+     * Component which does loading of tasks, their scheduling and running.
+     */
     private final TaskManager taskManager;
 
+    /**
+     * Only possible constructor with given command line arguments.
+     * Arguments are parsed directly in this constructor.
+     * @param args command line arguments
+     */
     public JJCronCore(String[] args) {
         taskManager = new TaskManager(new TaskFactoryImpl());
         this.args = args;
         parseArguments();
     }
 
-    public final void run() throws Exception {
+    /**
+     * Runs all the fun and blocks until task scheduling is not interrupted.
+     * @throws jjcron.polankam.ms.mff.cuni.cz.TaskException
+     * if there are problems concerning task scheduling
+     * @throws jjcron.polankam.ms.mff.cuni.cz.ParserException
+     * if there were problem with parsing crontab
+     */
+    public final void run() throws TaskException, ParserException {
         List<TaskMetadata> tasks = CrontabParser.parseFile(crontabFilename);
         taskManager.startCroning(tasks);
         taskManager.justWait();
     }
 
+    /**
+     * Parse command line arguments into internal variables.
+     * Program can be exitted inside this method.
+     */
     private void parseArguments() {
         // create Options object
         Options options = new Options();

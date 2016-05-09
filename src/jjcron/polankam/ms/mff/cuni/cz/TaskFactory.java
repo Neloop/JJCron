@@ -1,8 +1,8 @@
-package jjcron;
+package jjcron.polankam.ms.mff.cuni.cz;
 
 /**
  *
- * @author Martin
+ * @author Neloop
  */
 public interface TaskFactory {
     public TaskBase createTask(TaskMetadata taskMeta) throws TaskException;

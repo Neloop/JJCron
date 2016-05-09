@@ -1,10 +1,10 @@
-package jjcron;
+package jjcron.polankam.ms.mff.cuni.cz;
 
 import java.util.logging.Logger;
 
 /**
  *
- * @author Martin
+ * @author Neloop
  */
 public abstract class TaskBase {
 

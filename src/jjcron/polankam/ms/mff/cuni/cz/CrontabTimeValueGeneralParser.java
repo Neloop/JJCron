@@ -1,4 +1,4 @@
-package jjcron;
+package jjcron.polankam.ms.mff.cuni.cz;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  *
- * @author Martin
+ * @author Neloop
  */
 public class CrontabTimeValueGeneralParser implements CrontabTimeValueParser {
 
