@@ -24,12 +24,12 @@ public class CrontabTime {
 
     public CrontabTime(String second, String minute, String hour,
             String dayOfMonth, String month, String dayOfWeek) throws FormatException {
-        this.second = CrontabTimeUnit.createCrontabTimeSecond(second);
-        this.minute = CrontabTimeUnit.createCrontabTimeMinute(minute);
-        this.hour = CrontabTimeUnit.createCrontabTimeHour(hour);
-        this.dayOfMonth = CrontabTimeUnit.createCrontabTimeHour(dayOfMonth); // TODO
-        this.month = CrontabTimeUnit.createCrontabTimeMonth(month); // TODO
-        this.dayOfWeek = CrontabTimeUnit.createCrontabTimeHour(dayOfWeek); // TODO
+        this.second = CrontabTimeUnit.createSecond(second);
+        this.minute = CrontabTimeUnit.createMinute(minute);
+        this.hour = CrontabTimeUnit.createHour(hour);
+        this.dayOfMonth = CrontabTimeUnit.createDayOfMonth(dayOfMonth);
+        this.month = CrontabTimeUnit.createMonth(month);
+        this.dayOfWeek = CrontabTimeUnit.createDayOfWeek(dayOfWeek);
     }
 
     public final long delay() {
@@ -37,13 +37,14 @@ public class CrontabTime {
 
         LocalDateTime next = localNow;
         next = next.plusSeconds(second.delay(next.getSecond(), false));
-        next = next.plusMinutes(minute.delay(next.getMinute(), second.getLastChanged()));
-        next = next.plusHours(hour.delay(next.getHour(), minute.getLastChanged()));
-
-        // TODO: day of week, month, day of month
+        next = next.plusMinutes(minute.delay(next.getMinute(), second.isChanged()));
+        next = next.plusHours(hour.delay(next.getHour(), minute.isChanged()));
+        next = next.plusDays(dayOfWeek.delay(next.getDayOfWeek().getValue(), hour.isChanged()));
+        next = next.plusDays(dayOfMonth.delay(next.getDayOfMonth(), dayOfWeek.isChanged()));
+        next = next.plusMonths(month.delay(next.getMonthValue(), dayOfMonth.isChanged()));
 
         Duration duration = Duration.between(localNow, next);
-        System.out.println(">>> delay: " + duration.getSeconds());
+        System.out.println(">>> delay: " + duration.getSeconds() + "s; next timepoint: " + next);
         return duration.getSeconds();
     }
 

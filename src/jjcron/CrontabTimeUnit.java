@@ -8,46 +8,48 @@ public class CrontabTimeUnit {
 
     private final int minValue;
     private final int maxValue;
+    private final int period;
+
     private final String unitStr;
     private final CrontabTimeValue unit;
     private final CrontabTimeValueParser parser;
 
     private boolean valueChanged;
 
-    public static CrontabTimeUnit createCrontabTimeSecond(String unit) throws FormatException {
-        return new CrontabTimeUnit(unit, 0, 60, new CrontabTimeValueGeneralParser());
+    public static CrontabTimeUnit createSecond(String unit) throws FormatException {
+        return new CrontabTimeUnit(unit, 0, 59, 60, new CrontabTimeValueGeneralParser());
     }
 
-    public static CrontabTimeUnit createCrontabTimeMinute(String unit) throws FormatException {
-        return new CrontabTimeUnit(unit, 0, 60, new CrontabTimeValueGeneralParser());
+    public static CrontabTimeUnit createMinute(String unit) throws FormatException {
+        return new CrontabTimeUnit(unit, 0, 59, 60, new CrontabTimeValueGeneralParser());
     }
 
-    public static CrontabTimeUnit createCrontabTimeHour(String unit) throws FormatException {
-        return new CrontabTimeUnit(unit, 0, 24, new CrontabTimeValueGeneralParser());
+    public static CrontabTimeUnit createHour(String unit) throws FormatException {
+        return new CrontabTimeUnit(unit, 0, 23, 24, new CrontabTimeValueGeneralParser());
     }
 
-    public static CrontabTimeUnit createCrontabDayOfMonth(String unit) throws FormatException {
-        return new CrontabTimeUnit(unit, 1, 31, new CrontabTimeValueGeneralParser());
+    public static CrontabTimeUnit createDayOfMonth(String unit) throws FormatException {
+        return new CrontabTimeUnit(unit, 1, 31, 31, new CrontabTimeValueGeneralParser());
     }
 
-    public static CrontabTimeUnit createCrontabTimeMonth(String unit) throws FormatException {
-        return new CrontabTimeUnit(unit, 1, 12, new CrontabTimeValueGeneralParser());
+    public static CrontabTimeUnit createMonth(String unit) throws FormatException {
+        return new CrontabTimeUnit(unit, 1, 12, 12, new CrontabTimeValueGeneralParser());
     }
 
-    public static CrontabTimeUnit createCrontabDayOfWeek(String unit) throws FormatException {
-        return new CrontabTimeUnit(unit, 1, 7, new CrontabTimeValueGeneralParser());
+    public static CrontabTimeUnit createDayOfWeek(String unit) throws FormatException {
+        return new CrontabTimeUnit(unit, 1, 7, 7, new CrontabTimeValueGeneralParser());
     }
 
-    public CrontabTimeUnit(String unit, int minValue, int maxValue,
+    public CrontabTimeUnit(String unit, int minValue, int maxValue, int period,
             CrontabTimeValueParser parser) throws FormatException {
         this.unitStr = unit;
         this.minValue = minValue;
         this.maxValue = maxValue;
+        this.period = period;
         this.parser = parser;
+        valueChanged = false;
 
         this.unit = this.parser.parse(unitStr);
-
-        valueChanged = false;
 
         checkValue();
     }
@@ -77,7 +79,7 @@ public class CrontabTimeUnit {
         }
     }
 
-    public boolean getLastChanged()
+    public boolean isChanged()
     {
         return valueChanged;
     }
@@ -99,14 +101,14 @@ public class CrontabTimeUnit {
                 valueChanged = true;
                 break;
             case LIST:
-                result = maxValue; // minimum from list of values
+                result = period; // minimum from list of values
                 for (Integer val : unit.values) {
                     if (previousChanged && currentValue == val) {
                         result = 0;
                     } else {
-                        int toMinuteL = maxValue - currentValue;
-                        int minTemp = (toMinuteL + val) % maxValue;
-                        if (minTemp > minValue && minTemp < result) {
+                        int toMinuteL = period - currentValue;
+                        int minTemp = (toMinuteL + val) % period;
+                        if (minTemp > 0 && minTemp < result) {
                             result = minTemp;
                         }
                     }
