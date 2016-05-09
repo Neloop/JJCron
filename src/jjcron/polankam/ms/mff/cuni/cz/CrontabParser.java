@@ -27,9 +27,22 @@ public class CrontabParser {
     private static final int DAY_OF_WEEK_COLUMN = 5;
     private static final int CMD_COLUMN = 6;
 
+    private static final String LINE_SPLITTER = " ";
+    private static final char COMMENT_DELIM = '#';
+
+    private static String removeComment(String line) {
+        String result = line;
+        int pos = line.indexOf(COMMENT_DELIM);
+        if (pos != -1) {
+            result = result.substring(0, pos);
+        }
+
+        return result;
+    }
+
     private static TaskMetadata parseLine(int lineNumber, String line) throws ParserException {
         TaskMetadata result = null;
-        List<String> splitted = new ArrayList<>(Arrays.asList(line.split(" ")));
+        List<String> splitted = new ArrayList<>(Arrays.asList(line.split(LINE_SPLITTER)));
         splitted.removeAll(Arrays.asList("", null));
 
         if (splitted.size() >= CRONTAB_COLUMNS) {
@@ -74,10 +87,12 @@ public class CrontabParser {
             String line;
             int i = 1;
             while ((line = reader.readLine()) != null) {
+                // remove comments from crontab line
+                line = removeComment(line);
+
                 result.add(parseLine(i, line));
                 ++i;
             }
-
         } catch (Exception e) {
             throw new ParserException(e.getMessage(), e);
         }

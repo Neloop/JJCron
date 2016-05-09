@@ -62,6 +62,7 @@ public class JJCronCore {
     /**
      * Parse command line arguments into internal variables.
      * Program can be exitted inside this method.
+     * Apache Commons CLI is used for parsing.
      */
     private void parseArguments() {
         // create Options object

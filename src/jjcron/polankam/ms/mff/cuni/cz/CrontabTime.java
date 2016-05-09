@@ -25,7 +25,7 @@ public class CrontabTime {
         this.second = CrontabTimeUnit.createSecond(second);
         this.minute = CrontabTimeUnit.createMinute(minute);
         this.hour = CrontabTimeUnit.createHour(hour);
-        this.dayOfMonth = CrontabTimeUnit.createDayOfMonth(dayOfMonth); // TODO: should be done better
+        this.dayOfMonth = CrontabTimeUnit.createDayOfMonth(month);
         this.month = CrontabTimeUnit.createMonth(month);
         this.dayOfWeek = CrontabTimeUnit.createDayOfWeek(dayOfWeek);
     }

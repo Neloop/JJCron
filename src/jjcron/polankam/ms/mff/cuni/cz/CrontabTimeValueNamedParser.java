@@ -8,7 +8,18 @@ import java.util.List;
  *
  * @author Neloop
  */
-public class CrontabTimeValueGeneralParser implements CrontabTimeValueParser {
+public class CrontabTimeValueNamedParser implements CrontabTimeValueParser {
+
+    private final List<String> namedValues; // TODO: use them!
+
+    /**
+     *
+     * @param namedValues names which can be used as values in list,
+     * array has to be sorted, index+1 will be actual return value
+     */
+    public CrontabTimeValueNamedParser(List<String> namedValues) {
+        this.namedValues = namedValues;
+    }
 
     @Override
     public CrontabTimeValue parse(String line) throws FormatException {
@@ -45,4 +56,5 @@ public class CrontabTimeValueGeneralParser implements CrontabTimeValueParser {
         Collections.sort(numbers); // do not actually needed
         return new CrontabTimeValue(CrontabTimeValueType.LIST, numbers);
     }
+
 }
