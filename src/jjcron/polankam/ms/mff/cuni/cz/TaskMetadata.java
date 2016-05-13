@@ -5,10 +5,19 @@ package jjcron.polankam.ms.mff.cuni.cz;
  * @author Neloop
  */
 public class TaskMetadata {
+    /**
+     *
+     */
     private final CrontabTime time;
+    /**
+     *
+     */
     private final String command;
 
-    public TaskMetadata(CrontabTime time, String command) throws FormatException {
+    // no logger!!!
+
+    public TaskMetadata(CrontabTime time, String command)
+            throws FormatException {
         if (time == null) {
             throw new FormatException("Time is not defined (null)");
         }

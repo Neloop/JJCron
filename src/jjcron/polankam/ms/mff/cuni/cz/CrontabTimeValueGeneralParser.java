@@ -1,8 +1,8 @@
 package jjcron.polankam.ms.mff.cuni.cz;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  *
@@ -10,31 +10,39 @@ import java.util.List;
  */
 public class CrontabTimeValueGeneralParser implements CrontabTimeValueParser {
 
+    /**
+     *
+     * @param value
+     * @return
+     * @throws FormatException
+     */
     @Override
-    public CrontabTimeValue parse(String line) throws FormatException {
+    public CrontabTimeValue parse(String value) throws FormatException {
         // asterisk
-        if (line.equals("*")) {
-            return new CrontabTimeValue(CrontabTimeValueType.ASTERISK, new Integer[] {});
+        if (value.equals("*")) {
+            return new CrontabTimeValue(CrontabTimeValueType.ASTERISK,
+                    new Integer[] {});
         }
 
         // period
-        if (line.startsWith("*/") || line.startsWith("/")) {
-            String numberStr = line.substring("/".length());
-            if (line.startsWith("*/")) {
-                numberStr = line.substring("*/".length());
+        if (value.startsWith("*/") || value.startsWith("/")) {
+            String numberStr = value.substring("/".length());
+            if (value.startsWith("*/")) {
+                numberStr = value.substring("*/".length());
             }
 
             try {
                 int number = Integer.parseUnsignedInt(numberStr);
-                return new CrontabTimeValue(CrontabTimeValueType.PERIOD, new Integer[] { number });
+                return new CrontabTimeValue(CrontabTimeValueType.PERIOD,
+                        new Integer[] { number });
             } catch (NumberFormatException e) {
                 throw new FormatException("Unknown period time format");
             }
         }
 
         // list of values, single value is also list of values
-        String[] splitted = line.split(",");
-        List<Integer> numbers = new ArrayList<>();
+        String[] splitted = value.split(",");
+        Set<Integer> numbers = new TreeSet<>();
         for (String number : splitted) {
             try {
                 numbers.add(Integer.parseUnsignedInt(number));
@@ -42,7 +50,7 @@ public class CrontabTimeValueGeneralParser implements CrontabTimeValueParser {
                 throw new FormatException("Unknown list time format");
             }
         }
-        Collections.sort(numbers); // do not actually needed
-        return new CrontabTimeValue(CrontabTimeValueType.LIST, numbers);
+        return new CrontabTimeValue(CrontabTimeValueType.LIST,
+                new ArrayList<>(numbers));
     }
 }
