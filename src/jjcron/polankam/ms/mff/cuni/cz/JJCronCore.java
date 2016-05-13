@@ -1,6 +1,7 @@
 package jjcron.polankam.ms.mff.cuni.cz;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.DefaultParser;
@@ -20,7 +21,8 @@ public class JJCronCore {
     /**
      * Standard Java logger.
      */
-    private static final Logger logger = Logger.getLogger(JJCronCore.class.getName());
+    private static final Logger logger =
+            Logger.getLogger(JJCronCore.class.getName());
 
     /**
      * Stored command line arguments.
@@ -41,6 +43,8 @@ public class JJCronCore {
      * @param args command line arguments
      */
     public JJCronCore(String[] args) {
+        logger.log(Level.INFO, "*** JJCron was created ***");
+
         taskManager = new TaskManager(new TaskFactoryImpl());
         this.args = args;
         parseArguments();
@@ -54,6 +58,8 @@ public class JJCronCore {
      * if there were problem with parsing crontab
      */
     public final void run() throws TaskException, ParserException {
+        logger.log(Level.INFO, "*** Croning started ***");
+        
         List<TaskMetadata> tasks = CrontabParser.parseFile(crontabFilename);
         taskManager.startCroning(tasks);
         taskManager.justWait();
@@ -107,6 +113,8 @@ public class JJCronCore {
         if (cmd.hasOption("config")) {
             crontabFilename = cmd.getOptionValue("config");
         }
+
+        logger.log(Level.FINE, "Crontab file which will be loaded: {0}", crontabFilename);
     }
 
     /**
@@ -116,9 +124,8 @@ public class JJCronCore {
         try {
             JJCronCore core = new JJCronCore(args);
             core.run();
-        } catch (Exception e) {
+        } catch (TaskException | ParserException e) {
             System.err.println(e.getMessage());
-            e.printStackTrace();
         }
     }
 }

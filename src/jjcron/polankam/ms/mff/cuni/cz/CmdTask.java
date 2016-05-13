@@ -6,7 +6,7 @@ import java.util.logging.Logger;
  *
  * @author Neloop
  */
-public class CmdTask extends TaskBase {
+public class CmdTask extends Task {
 
     private static final Logger logger = Logger.getLogger(CmdTask.class.getName());
 

@@ -6,82 +6,193 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Class which is responsible for creation of tasks and their scheduling.
+ * Pool of tasks is maintaned and work with here,
+ *   all tasks can be stopped through api or new set of tasks can be realoaded.
+ * Parsing of tasks from crontab has to be done elsewhere
+ *   only task meta info is processed here.
+ * <p>After construction thread-safe structure.</p>
  * @author Neloop
  */
 public class TaskManager {
 
+    /**
+     * Sleep interval which is used for checking on task pool termination.
+     */
     private static final int SLEEP_INTERVAL = 1;
-    private static final Logger logger = Logger.getLogger(TaskManager.class.getName());
+    /**
+     * Standard Java logger.
+     */
+    private static final Logger logger =
+            Logger.getLogger(TaskManager.class.getName());
 
+    /**
+     * If set to true, than @ref startCronning function was called
+     *   and tasks are running.
+     */
+    private final AtomicBoolean running;
+    /**
+     * If set to true, then termination of task pool was requested.
+     */
     private final AtomicBoolean exit;
+    /**
+     * Responsible for task scheduling.
+     * Its initialized with processor count equal to real CPU processors
+     *   (including HTT).
+     */
     private ScheduledExecutorService scheduler;
-    private final List<TaskBase> tasks;
+    /**
+     * Task pool which is managed by this class instance.
+     */
+    private final List<Task> tasks;
+    /**
+     * Helps with construction of proper Task children objects.
+     */
     private final TaskFactory taskFactory;
 
+    /**
+     * Construct task manager with specified task factory,
+     *   tasks are not executed yet. All internal structures are initialized.
+     * @param taskFactory factory which helps constructing tasks
+     */
     public TaskManager(TaskFactory taskFactory) {
+        logger.log(Level.INFO, "TaskManager was created");
+
         this.exit = new AtomicBoolean(false);
+        this.running = new AtomicBoolean(false);
         this.tasks = new ArrayList<>();
-        this.scheduler = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
+        this.scheduler = Executors.newScheduledThreadPool(
+                Runtime.getRuntime().availableProcessors());
         this.taskFactory = taskFactory;
     }
 
+    /**
+     * Wait until tasks execution is terminated.
+     * <p>Thread-safe function.</p>
+     */
     public final void justWait() {
         try {
             while (!exit.get()) {
                 TimeUnit.SECONDS.sleep(SLEEP_INTERVAL);
             }
         } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+            logger.log(Level.WARNING, "Waiting thread was interrupted.");
         }
     }
 
+    /**
+     * Atomically sets termination of tasks execution
+     *   and shutdown all current executing tasks.
+     * <p>Thread-safe function.</p>
+     */
     public final void exit() {
+        logger.log(Level.INFO, "Exit function was called." +
+                " All scheduled tasks should be terminated");
+
+        scheduler.shutdownNow();
         exit.set(true);
     }
 
+    /**
+     * Helper class which allows to run task and reschedule it after execution.
+     */
     private class RunTask implements Runnable {
+        /**
+         * @{link Task} associated with this object.
+         */
+        private final Task task;
+        /**
+         * Extracted time structure from {@link Task}.
+         */
         private final CrontabTime time;
-        private final TaskBase task;
 
-        public RunTask(TaskBase task) {
+        /**
+         * Given task is stored and time structure is extracted from it.
+         * @param task {@link Task} which will be executed in this object.
+         */
+        public RunTask(Task task) {
             this.task = task;
             this.time = task.getTime();
         }
 
+        /**
+         * Run method which is executed by scheduler.
+         * Task is executed inside and after execution is rescheduled
+         *   to next timepoint.
+         */
         @Override
         public void run() {
             // run task itself
             try {
                 task.run();
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                logger.log(Level.WARNING, "Task: {0} throws exception" +
+                        " while execution: {1}",
+                        new Object[] { task.getName(), e.getMessage() } );
+            }
 
             // ... and reschedule task to another time point
-            scheduler.schedule(new RunTask(task), time.delay(), time.timeUnit());
+            scheduler.schedule(new RunTask(task), time.delay(),
+                    time.timeUnit());
         }
     }
 
-    private synchronized void loadTasks(List<TaskMetadata> tasksMeta) throws TaskException {
+    /**
+     * From {@link TaskMetadata} list create appropriate task and schedule them.
+     * Tasks are scheduled for next execution timepoint,
+     *   after execution they are rescheduled.
+     * <p>Thread-safe function.</p>
+     * @param tasksMeta list of task meta information
+     * @throws TaskException if task creation failed
+     */
+    private synchronized void loadTasks(List<TaskMetadata> tasksMeta)
+            throws TaskException {
         for (TaskMetadata taskMeta : tasksMeta) {
-            TaskBase task = taskFactory.createTask(taskMeta);
+            Task task = taskFactory.createTask(taskMeta);
             CrontabTime time = task.getTime();
             tasks.add(task);
 
             // schedule first execution
-            scheduler.schedule(new RunTask(task), time.delay(), time.timeUnit());
+            scheduler.schedule(new RunTask(task), time.delay(),
+                    time.timeUnit());
         }
     }
 
-    public final synchronized void startCroning(List<TaskMetadata> tasksMeta) throws TaskException {
-        loadTasks(tasksMeta);
+    /**
+     * From given {@link TaskMetadata} list constructs all tasks
+     *   and schedule them to their first execution timepoint.
+     * Non-blocking function tasks are only created and scheduled.
+     * If called second time, nothing will happen.
+     * <p>Thread-safe function.</p>
+     * @param tasksMeta list of task meta information
+     * @throws TaskException if task creation failed
+     */
+    public final synchronized void startCroning(List<TaskMetadata> tasksMeta)
+            throws TaskException {
+        if (running.get() == false) {
+            loadTasks(tasksMeta);
+            running.set(true);
+        }
     }
 
-    public final synchronized void reloadTasks(List<TaskMetadata> tasksMeta) throws TaskException {
+    /**
+     * Function stop all currently running tasks and load new ones.
+     * Should be used only during execution, not to start execution of cron.
+     * <p>Thread-safe function.</p>
+     * @param tasksMeta list of task meta information
+     * @throws TaskException if task creation failed
+     */
+    public final synchronized void reloadTasks(List<TaskMetadata> tasksMeta)
+            throws TaskException {
+        logger.log(Level.INFO, "Task reaload requested");
+
         scheduler.shutdownNow();
-        scheduler = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
+        scheduler = Executors.newScheduledThreadPool(
+                Runtime.getRuntime().availableProcessors());
         tasks.clear();
 
         loadTasks(tasksMeta);

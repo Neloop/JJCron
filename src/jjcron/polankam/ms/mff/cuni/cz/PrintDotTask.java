@@ -4,7 +4,7 @@ package jjcron.polankam.ms.mff.cuni.cz;
  *
  * @author Neloop
  */
-public class PrintDotTask extends TaskBase {
+public class PrintDotTask extends Task {
 
     public PrintDotTask(TaskMetadata taskMetadata) {
         super(taskMetadata);

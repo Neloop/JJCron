@@ -1,7 +1,5 @@
-package jjcron;
+package jjcron.polankam.ms.mff.cuni.cz;
 
-import jjcron.polankam.ms.mff.cuni.cz.TaskMetadata;
-import jjcron.polankam.ms.mff.cuni.cz.CrontabParser;
 import java.io.InputStream;
 import java.util.List;
 import org.junit.After;
@@ -9,8 +7,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.Rule;
-import org.junit.rules.ExpectedException;
 import static org.junit.Assert.*;
 
 /**
@@ -18,9 +14,6 @@ import static org.junit.Assert.*;
  * @author Neloop
  */
 public class CrontabParserTest {
-
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
 
     public CrontabParserTest() {
     }
