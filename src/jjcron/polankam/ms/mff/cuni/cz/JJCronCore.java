@@ -59,7 +59,7 @@ public class JJCronCore {
      */
     public final void run() throws TaskException, ParserException {
         logger.log(Level.INFO, "*** Croning started ***");
-        
+
         List<TaskMetadata> tasks = CrontabParser.parseFile(crontabFilename);
         taskManager.startCroning(tasks);
         taskManager.justWait();
@@ -114,7 +114,8 @@ public class JJCronCore {
             crontabFilename = cmd.getOptionValue("config");
         }
 
-        logger.log(Level.FINE, "Crontab file which will be loaded: {0}", crontabFilename);
+        logger.log(Level.FINE, "Crontab file which will be loaded: {0}",
+                crontabFilename);
     }
 
     /**

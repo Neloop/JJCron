@@ -36,7 +36,8 @@ public class CrontabTimeValue {
      * @param valueType type of values given as parameter
      * @param values particular time values
      */
-    public CrontabTimeValue(CrontabTimeValueType valueType, List<Integer> values) {
+    public CrontabTimeValue(CrontabTimeValueType valueType,
+            List<Integer> values) {
         this.valueType = valueType;
         this.values = values;
     }

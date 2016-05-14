@@ -64,12 +64,18 @@ public class CrontabTime {
         LocalDateTime localNow = LocalDateTime.now();
 
         LocalDateTime next = localNow;
-        next = next.plusSeconds(second.delay(next, next.getSecond(), false));
-        next = next.plusMinutes(minute.delay(next, next.getMinute(), second.isChanged()));
-        next = next.plusHours(hour.delay(next, next.getHour(), minute.isChanged()));
-        next = next.plusDays(dayOfWeek.delay(next, next.getDayOfWeek().getValue(), hour.isChanged()));
-        next = next.plusDays(dayOfMonth.delay(next, next.getDayOfMonth(), dayOfWeek.isChanged()));
-        next = next.plusMonths(month.delay(next, next.getMonthValue(), dayOfMonth.isChanged()));
+        next = next.plusSeconds(second.delay(next, next.getSecond(),
+                false));
+        next = next.plusMinutes(minute.delay(next, next.getMinute(),
+                second.isChanged()));
+        next = next.plusHours(hour.delay(next, next.getHour(),
+                minute.isChanged()));
+        next = next.plusDays(dayOfWeek.delay(next,
+                next.getDayOfWeek().getValue(), hour.isChanged()));
+        next = next.plusDays(dayOfMonth.delay(next, next.getDayOfMonth(),
+                dayOfWeek.isChanged()));
+        next = next.plusMonths(month.delay(next, next.getMonthValue(),
+                dayOfMonth.isChanged()));
 
         Duration duration = Duration.between(localNow, next);
         return duration.getSeconds();

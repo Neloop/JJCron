@@ -2,7 +2,9 @@ package jjcron.polankam.ms.mff.cuni.cz;
 
 import java.time.LocalDateTime;
 
+// ***********************
 // TODO: implement this!!!
+// ***********************
 
 /**
  *
@@ -10,17 +12,45 @@ import java.time.LocalDateTime;
  */
 public class CrontabTimeDayOfMonthUnit implements CrontabTimeUnit {
 
+    /**
+     *
+     */
     private final int minValue;
+    /**
+     *
+     */
     private final int maxValue;
+    /**
+     *
+     */
     private final int period;
 
+    /**
+     *
+     */
     private final String unitStr;
+    /**
+     *
+     */
     private final CrontabTimeValue unit;
+    /**
+     *
+     */
     private final CrontabTimeValueParser parser;
 
+    /**
+     *
+     */
     private boolean valueChanged;
 
-    public CrontabTimeDayOfMonthUnit(String unit, CrontabTimeValueParser parser) throws FormatException {
+    /**
+     *
+     * @param unit
+     * @param parser
+     * @throws FormatException
+     */
+    public CrontabTimeDayOfMonthUnit(String unit, CrontabTimeValueParser parser)
+            throws FormatException {
         this.unitStr = unit;
         this.minValue = 1;
         this.maxValue = 31;
@@ -33,12 +63,22 @@ public class CrontabTimeDayOfMonthUnit implements CrontabTimeUnit {
         checkValue();
     }
 
+    /**
+     *
+     * @param value
+     * @throws FormatException
+     */
     private void isValueValid(int value) throws FormatException {
         if (value < minValue || value > maxValue) {
-            throw new FormatException("CrontabTimeUnit value is not valid number");
+            throw new FormatException(
+                    "CrontabTimeUnit value is not valid number");
         }
     }
 
+    /**
+     *
+     * @throws FormatException
+     */
     public final void checkValue() throws FormatException {
         switch (unit.valueType) {
             case ASTERISK:
@@ -47,7 +87,8 @@ public class CrontabTimeDayOfMonthUnit implements CrontabTimeUnit {
             case PERIOD:
                 isValueValid(unit.values.get(0));
                 if (maxValue % (unit.values.get(0)) != 0) {
-                    throw new FormatException("GeneralUnit period value is not divisible");
+                    throw new FormatException(
+                            "GeneralUnit period value is not divisible");
                 }
                 break;
             case LIST:
@@ -58,14 +99,26 @@ public class CrontabTimeDayOfMonthUnit implements CrontabTimeUnit {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isChanged()
     {
         return valueChanged;
     }
 
+    /**
+     *
+     * @param current
+     * @param currentValue
+     * @param previousChanged
+     * @return
+     */
     @Override
-    public int delay(LocalDateTime current, int currentValue, boolean previousChanged)
+    public int delay(LocalDateTime current, int currentValue,
+            boolean previousChanged)
     {
         int result;
 
