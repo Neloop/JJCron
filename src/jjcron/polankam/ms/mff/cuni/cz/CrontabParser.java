@@ -66,7 +66,7 @@ public class CrontabParser {
     }
 
     /**
-     *  Given line is parsed into {@link TaskMetadata} structure.
+     * Given line is parsed into {@link TaskMetadata} structure.
      * @param line soon to be parsed line
      * @param lineNumber number of given line
      * @return {@link TaskMetadata} structure created from given line

@@ -8,14 +8,18 @@ import java.time.LocalDateTime;
  */
 public interface CrontabTimeUnit {
 
+    // *** FACTORY METHODS ***
+
     /**
      *
      * @param unit
      * @return
      * @throws FormatException
      */
-    public static CrontabTimeUnit createSecond(String unit) throws FormatException {
-        return new CrontabTimeGeneralUnit(unit, 0, 59, 60, CrontabTimeValueParser.createGeneral());
+    public static CrontabTimeUnit createSecond(String unit)
+            throws FormatException {
+        return new CrontabTimeGeneralUnit(unit, 0, 59, 60,
+                CrontabTimeValueParser.createGeneral());
     }
 
     /**
@@ -24,8 +28,10 @@ public interface CrontabTimeUnit {
      * @return
      * @throws FormatException
      */
-    public static CrontabTimeUnit createMinute(String unit) throws FormatException {
-        return new CrontabTimeGeneralUnit(unit, 0, 59, 60, CrontabTimeValueParser.createGeneral());
+    public static CrontabTimeUnit createMinute(String unit)
+            throws FormatException {
+        return new CrontabTimeGeneralUnit(unit, 0, 59, 60,
+                CrontabTimeValueParser.createGeneral());
     }
 
     /**
@@ -34,8 +40,10 @@ public interface CrontabTimeUnit {
      * @return
      * @throws FormatException
      */
-    public static CrontabTimeUnit createHour(String unit) throws FormatException {
-        return new CrontabTimeGeneralUnit(unit, 0, 23, 24, CrontabTimeValueParser.createGeneral());
+    public static CrontabTimeUnit createHour(String unit)
+            throws FormatException {
+        return new CrontabTimeGeneralUnit(unit, 0, 23, 24,
+                CrontabTimeValueParser.createGeneral());
     }
 
     /**
@@ -44,8 +52,10 @@ public interface CrontabTimeUnit {
      * @return
      * @throws FormatException
      */
-    public static CrontabTimeUnit createDayOfMonth(String unit) throws FormatException {
-        return new CrontabTimeDayOfMonthUnit(unit, CrontabTimeValueParser.createGeneral());
+    public static CrontabTimeUnit createDayOfMonth(String unit)
+            throws FormatException {
+        return new CrontabTimeDayOfMonthUnit(unit,
+                CrontabTimeValueParser.createGeneral());
     }
 
     /**
@@ -54,8 +64,10 @@ public interface CrontabTimeUnit {
      * @return
      * @throws FormatException
      */
-    public static CrontabTimeUnit createMonth(String unit) throws FormatException {
-        return new CrontabTimeGeneralUnit(unit, 1, 12, 12, CrontabTimeValueParser.createMonth());
+    public static CrontabTimeUnit createMonth(String unit)
+            throws FormatException {
+        return new CrontabTimeGeneralUnit(unit, 1, 12, 12,
+                CrontabTimeValueParser.createMonth());
     }
 
     /**
@@ -64,12 +76,14 @@ public interface CrontabTimeUnit {
      * @return
      * @throws FormatException
      */
-    public static CrontabTimeUnit createDayOfWeek(String unit) throws FormatException {
-        return new CrontabTimeGeneralUnit(unit, 1, 7, 7, CrontabTimeValueParser.createDayOfWeek());
+    public static CrontabTimeUnit createDayOfWeek(String unit)
+            throws FormatException {
+        return new CrontabTimeGeneralUnit(unit, 1, 7, 7,
+                CrontabTimeValueParser.createDayOfWeek());
     }
 
 
-    // --- INTERFACE DEFINITION ---
+    // *** INTERFACE DEFINITION ***
 
     /**
      *
@@ -84,5 +98,6 @@ public interface CrontabTimeUnit {
      * @param previousChanged
      * @return
      */
-    public int delay(LocalDateTime current, int currentValue, boolean previousChanged);
+    public int delay(LocalDateTime current, int currentValue,
+            boolean previousChanged);
 }

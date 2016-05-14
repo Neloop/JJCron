@@ -1,5 +1,6 @@
 package jjcron.polankam.ms.mff.cuni.cz;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -102,7 +103,7 @@ public class TaskManager {
      */
     private class RunTask implements Runnable {
         /**
-         * @{link Task} associated with this object.
+         * {@link Task} associated with this object.
          */
         private final Task task;
         /**
@@ -136,8 +137,11 @@ public class TaskManager {
             }
 
             // ... and reschedule task to another time point
-            scheduler.schedule(new RunTask(task), time.delay(),
-                    time.timeUnit());
+            long delay = time.delay();
+            logger.log(Level.INFO, "Task {0} was scheduled to {1}",
+                    new Object[] { task.getName(),
+                        LocalDateTime.now().plusSeconds(delay) }); // TODO: try this using TemporalUnit
+            scheduler.schedule(new RunTask(task), delay, time.timeUnit());
         }
     }
 
@@ -157,8 +161,12 @@ public class TaskManager {
             tasks.add(task);
 
             // schedule first execution
-            scheduler.schedule(new RunTask(task), time.delay(),
-                    time.timeUnit());
+            long delay = time.delay();
+            logger.log(Level.INFO,
+                    "First execution of task {0} was scheduled to {1}",
+                    new Object[] { task.getName(),
+                        LocalDateTime.now().plusSeconds(delay) }); // TODO: try this using TemporalUnit
+            scheduler.schedule(new RunTask(task), delay, time.timeUnit());
         }
     }
 
@@ -188,7 +196,7 @@ public class TaskManager {
      */
     public final synchronized void reloadTasks(List<TaskMetadata> tasksMeta)
             throws TaskException {
-        logger.log(Level.INFO, "Task reaload requested");
+        logger.log(Level.INFO, "Task reload requested...");
 
         scheduler.shutdownNow();
         scheduler = Executors.newScheduledThreadPool(
@@ -196,5 +204,7 @@ public class TaskManager {
         tasks.clear();
 
         loadTasks(tasksMeta);
+
+        logger.log(Level.INFO, "Task reload done");
     }
 }

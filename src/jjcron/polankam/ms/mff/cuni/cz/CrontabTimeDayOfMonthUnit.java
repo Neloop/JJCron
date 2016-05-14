@@ -2,6 +2,8 @@ package jjcron.polankam.ms.mff.cuni.cz;
 
 import java.time.LocalDateTime;
 
+// TODO: implement this!!!
+
 /**
  *
  * @author Neloop

@@ -4,22 +4,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * Interface for parsing values representing time in crontab.
  * @author Neloop
  */
 public interface CrontabTimeValueParser {
 
     /**
-     *
-     * @return
+     * Factory method which will create and return general time value parser.
+     * @return structure which implements this interface
      */
     public static CrontabTimeValueParser createGeneral() {
         return new CrontabTimeValueGeneralParser();
     }
 
     /**
-     *
-     * @return
+     * Factory method which will create special day of week time value parser.
+     * @return structure which implements this interface
      */
     public static CrontabTimeValueParser createDayOfWeek() {
         Map<String, Integer> dayOfWeeks = new HashMap<>();
@@ -35,8 +35,8 @@ public interface CrontabTimeValueParser {
     }
 
     /**
-     *
-     * @return
+     * Factory method which will create special month time value parser.
+     * @return structure which implements this interface
      */
     public static CrontabTimeValueParser createMonth() {
         Map<String, Integer> months = new HashMap<>();
@@ -57,10 +57,10 @@ public interface CrontabTimeValueParser {
     }
 
     /**
-     * 
-     * @param value
-     * @return
-     * @throws FormatException
+     * Parse given value into {@link CrontabTimeValue} structure.
+     * @param value textual representation of time value which will be parsed
+     * @return parsed info about crontab time value
+     * @throws FormatException if given string is in bad format
      */
     CrontabTimeValue parse(String value) throws FormatException;
 }

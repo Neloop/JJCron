@@ -9,7 +9,7 @@ package jjcron.polankam.ms.mff.cuni.cz;
 public abstract class Task {
 
     /**
-     *
+     * Stores all possible information about {@link Task}.
      */
     protected final TaskMetadata taskMeta;
 

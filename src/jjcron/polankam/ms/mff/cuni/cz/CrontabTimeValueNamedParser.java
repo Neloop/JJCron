@@ -6,18 +6,20 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- *
+ * Special implementation of parser which parse one column from crontab.
+ * This parser can parse named values which can be placed in list
+ *   or as single value.
  * @author Neloop
  */
 public class CrontabTimeValueNamedParser implements CrontabTimeValueParser {
 
     /**
-     *
+     * Named values which can be present as single value or as list.
      */
     private final Map<String, Integer> namedValues;
 
     /**
-     *
+     * To this parser named values has to be provided for proper functionality.
      * @param namedValues names which can be used as values in list
      */
     public CrontabTimeValueNamedParser(Map<String, Integer> namedValues) {
@@ -25,10 +27,11 @@ public class CrontabTimeValueNamedParser implements CrontabTimeValueParser {
     }
 
     /**
-     *
-     * @param value
-     * @return
-     * @throws FormatException
+     * Special parsing method which can distinguish single value,
+     *   list of values, named values, period of time and asterisk.
+     * @param value parsed value
+     * @return structure which can hold information about time value
+     * @throws FormatException if parsing of time value failed
      */
     @Override
     public CrontabTimeValue parse(String value) throws FormatException {

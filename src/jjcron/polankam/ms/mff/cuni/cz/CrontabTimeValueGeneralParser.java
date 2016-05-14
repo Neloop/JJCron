@@ -5,16 +5,17 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- *
+ * General implementation of parser which parse one column from crontab.
  * @author Neloop
  */
 public class CrontabTimeValueGeneralParser implements CrontabTimeValueParser {
 
     /**
-     *
-     * @param value
-     * @return
-     * @throws FormatException
+     * General parsing method which can distinguish single value,
+     *   list of values, period of time and asterisk.
+     * @param value textual description of parsed value
+     * @return structure which can hold all types of values
+     * @throws FormatException if parsing failed
      */
     @Override
     public CrontabTimeValue parse(String value) throws FormatException {
