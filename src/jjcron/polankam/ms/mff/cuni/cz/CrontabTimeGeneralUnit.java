@@ -3,50 +3,58 @@ package jjcron.polankam.ms.mff.cuni.cz;
 import java.time.LocalDateTime;
 
 /**
- *
+ * General implementation of {@link CrontabTimeUnit} interface
+ *   which should be sufficient for most of time unit in crontab
+ *   aka. second, minutes, hours, etc.
+ * It includes minimal and maximal value which can unit have
+ *   and also period with which specified unit operates.
  * @author Neloop
  */
 public class CrontabTimeGeneralUnit implements CrontabTimeUnit {
 
     /**
-     *
+     * Minimal value which can be in single value, list of values or in period.
      */
     private final int minValue;
     /**
-     *
+     * Maximal value which can be in single value, list of values or in period.
      */
     private final int maxValue;
     /**
-     *
+     * Period with which this unit operates.
      */
     private final int period;
 
     /**
-     *
+     * Textual description of unit extracted from column in crontab.
      */
     private final String unitStr;
     /**
-     *
+     * Structure parsed and constructed from <code>unitStr</code>.
+     * Which stores all needed info about time unit.
      */
     private final CrontabTimeValue unit;
     /**
-     *
+     * Parser which is able to parse given textual description of unit
+     *   and return constructed {@link CrontabTimeValue} structure.
      */
     private final CrontabTimeValueParser parser;
 
     /**
-     *
+     * Cached information about value change in last delay computation.
+     * Accessible through <code>isChanged()</code> method.
      */
     private boolean valueChanged;
 
     /**
-     *
-     * @param unit
-     * @param minValue
-     * @param maxValue
-     * @param period
-     * @param parser
-     * @throws FormatException
+     * Initialization of this structure, unit parsing and checking is performed.
+     * @param unit textual description of unit
+     * @param minValue minimal value of unit
+     * @param maxValue maximal value of unit
+     * @param period period of unit
+     * @param parser implementation of parser which is able to extract
+     *   needed information from given <code>unit</code>
+     * @throws FormatException if unit cannot be parsed
      */
     public CrontabTimeGeneralUnit(String unit, int minValue, int maxValue,
             int period, CrontabTimeValueParser parser)
@@ -64,9 +72,9 @@ public class CrontabTimeGeneralUnit implements CrontabTimeUnit {
     }
 
     /**
-     *
-     * @param value
-     * @throws FormatException
+     * Check if given value is valid according to minimal and maximal values.
+     * @param value checked value
+     * @throws FormatException if value is not valid
      */
     private void isValueValid(int value) throws FormatException {
         if (value < minValue || value > maxValue) {
@@ -76,8 +84,8 @@ public class CrontabTimeGeneralUnit implements CrontabTimeUnit {
     }
 
     /**
-     *
-     * @throws FormatException
+     * Check parsed {@link CrontabTimeValue} structure for proper valid values.
+     * @throws FormatException if value did not pass check
      */
     private void checkValue() throws FormatException {
         switch (unit.valueType) {
@@ -100,8 +108,7 @@ public class CrontabTimeGeneralUnit implements CrontabTimeUnit {
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public boolean isChanged()
@@ -110,11 +117,7 @@ public class CrontabTimeGeneralUnit implements CrontabTimeUnit {
     }
 
     /**
-     *
-     * @param current
-     * @param currentValue
-     * @param previousChanged
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public int delay(LocalDateTime current, int currentValue,

@@ -79,7 +79,7 @@ public class CrontabTimeDayOfMonthUnit implements CrontabTimeUnit {
      *
      * @throws FormatException
      */
-    public final void checkValue() throws FormatException {
+    private void checkValue() throws FormatException {
         switch (unit.valueType) {
             case ASTERISK:
                 // nothing to do here
@@ -100,8 +100,7 @@ public class CrontabTimeDayOfMonthUnit implements CrontabTimeUnit {
     }
 
     /**
-     *
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public boolean isChanged()
@@ -110,11 +109,7 @@ public class CrontabTimeDayOfMonthUnit implements CrontabTimeUnit {
     }
 
     /**
-     *
-     * @param current
-     * @param currentValue
-     * @param previousChanged
-     * @return
+     * {@inheritDoc}
      */
     @Override
     public int delay(LocalDateTime current, int currentValue,

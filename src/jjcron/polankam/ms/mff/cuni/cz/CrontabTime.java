@@ -5,7 +5,11 @@ import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
+ * Represents full information about time scheduling for one task.
+ * It contains specification of day of week, month, day of month, hour, minute
+ *   and second, these specifications are stored as structures
+ *   which implements {@link CrontabTimeUnit} interface.
+ * This units are self computable and can compute its own delays.
  * @author Neloop
  */
 public class CrontabTime {
