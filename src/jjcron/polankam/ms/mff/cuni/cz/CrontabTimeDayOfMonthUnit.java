@@ -2,110 +2,27 @@ package jjcron.polankam.ms.mff.cuni.cz;
 
 import java.time.LocalDateTime;
 
-// ***********************
-// TODO: implement this!!!
-// ***********************
-
 /**
- *
+ * Special time unit representing day of month which has different functionality
+ *   than {@link CrontabTimeGeneralUnit} implementation.
+ * If next timepoint should be on 31st day of a month but the month
+ *   has fewer days than 31, than this timepoint will be scheduled to last day
+ *   of specified month.
  * @author Neloop
  */
-public class CrontabTimeDayOfMonthUnit implements CrontabTimeUnit {
+public class CrontabTimeDayOfMonthUnit extends CrontabTimeGeneralUnit {
 
     /**
-     *
-     */
-    private final int minValue;
-    /**
-     *
-     */
-    private final int maxValue;
-    /**
-     *
-     */
-    private final int period;
-
-    /**
-     *
-     */
-    private final String unitStr;
-    /**
-     *
-     */
-    private final CrontabTimeValue unit;
-    /**
-     *
-     */
-    private final CrontabTimeValueParser parser;
-
-    /**
-     *
-     */
-    private boolean valueChanged;
-
-    /**
-     *
-     * @param unit
-     * @param parser
-     * @throws FormatException
+     * Construct also parent class with given information
+     *   and fill missing by myself.
+     * @param unit textual representation of unit from crontab
+     * @param parser parser which handles parsing of <code>unit</code> into
+     *   appropriate structure.
+     * @throws FormatException if parsing failed due to bad format of data
      */
     public CrontabTimeDayOfMonthUnit(String unit, CrontabTimeValueParser parser)
             throws FormatException {
-        this.unitStr = unit;
-        this.minValue = 1;
-        this.maxValue = 31;
-        this.period = 31;
-        this.parser = parser;
-        valueChanged = false;
-
-        this.unit = this.parser.parse(unitStr);
-
-        checkValue();
-    }
-
-    /**
-     *
-     * @param value
-     * @throws FormatException
-     */
-    private void isValueValid(int value) throws FormatException {
-        if (value < minValue || value > maxValue) {
-            throw new FormatException(
-                    "CrontabTimeUnit value is not valid number");
-        }
-    }
-
-    /**
-     *
-     * @throws FormatException
-     */
-    private void checkValue() throws FormatException {
-        switch (unit.valueType) {
-            case ASTERISK:
-                // nothing to do here
-                break;
-            case PERIOD:
-                isValueValid(unit.values.get(0));
-                if (maxValue % (unit.values.get(0)) != 0) {
-                    throw new FormatException(
-                            "GeneralUnit period value is not divisible");
-                }
-                break;
-            case LIST:
-                for (Integer number : unit.values) {
-                    isValueValid(number);
-                }
-                break;
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isChanged()
-    {
-        return valueChanged;
+        super(unit, 1, 31, 31, parser);
     }
 
     /**
@@ -116,8 +33,10 @@ public class CrontabTimeDayOfMonthUnit implements CrontabTimeUnit {
             boolean previousChanged)
     {
         int result;
-
         valueChanged = previousChanged;
+
+        int currentMonthMax = current.getMonth().length(
+                current.toLocalDate().isLeapYear());
 
         switch (unit.valueType) {
             case PERIOD:
@@ -135,8 +54,15 @@ public class CrontabTimeDayOfMonthUnit implements CrontabTimeUnit {
                     if (previousChanged && currentValue == val) {
                         result = 0;
                     } else {
-                        int toMinuteL = period - currentValue;
-                        int minTemp = (toMinuteL + val) % period;
+                        // if val is bigger than number of days in current month
+                        //   then val from list should be downsized to max
+                        int valTemp = val;
+                        if (val > currentMonthMax) {
+                            valTemp = currentMonthMax;
+                        }
+
+                        int toMinuteL = currentMonthMax - currentValue;
+                        int minTemp = (toMinuteL + valTemp) % period;
                         if (minTemp > 0 && minTemp < result) {
                             result = minTemp;
                         }

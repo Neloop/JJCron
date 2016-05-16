@@ -15,36 +15,36 @@ public class CrontabTimeGeneralUnit implements CrontabTimeUnit {
     /**
      * Minimal value which can be in single value, list of values or in period.
      */
-    private final int minValue;
+    protected final int minValue;
     /**
      * Maximal value which can be in single value, list of values or in period.
      */
-    private final int maxValue;
+    protected final int maxValue;
     /**
      * Period with which this unit operates.
      */
-    private final int period;
+    protected final int period;
 
     /**
      * Textual description of unit extracted from column in crontab.
      */
-    private final String unitStr;
+    protected final String unitStr;
     /**
      * Structure parsed and constructed from <code>unitStr</code>.
      * Which stores all needed info about time unit.
      */
-    private final CrontabTimeValue unit;
+    protected final CrontabTimeValue unit;
     /**
      * Parser which is able to parse given textual description of unit
      *   and return constructed {@link CrontabTimeValue} structure.
      */
-    private final CrontabTimeValueParser parser;
+    protected final CrontabTimeValueParser parser;
 
     /**
      * Cached information about value change in last delay computation.
      * Accessible through <code>isChanged()</code> method.
      */
-    private boolean valueChanged;
+    protected boolean valueChanged;
 
     /**
      * Initialization of this structure, unit parsing and checking is performed.
@@ -124,7 +124,6 @@ public class CrontabTimeGeneralUnit implements CrontabTimeUnit {
             boolean previousChanged)
     {
         int result;
-
         valueChanged = previousChanged;
 
         switch (unit.valueType) {

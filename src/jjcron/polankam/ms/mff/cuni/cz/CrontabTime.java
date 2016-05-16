@@ -15,39 +15,41 @@ import java.util.concurrent.TimeUnit;
 public class CrontabTime {
 
     /**
-     *
+     * Structure representing second time column from crontab.
      */
     private final CrontabTimeUnit second;
     /**
-     *
+     * Structure representing minute time column from crontab.
      */
     private final CrontabTimeUnit minute;
     /**
-     *
+     * Structure representing hour time column from crontab.
      */
     private final CrontabTimeUnit hour;
     /**
-     *
+     * Structure representing day of month time column from crontab.
      */
     private final CrontabTimeUnit dayOfMonth;
     /**
-     *
+     * Structure representing month time column from crontab.
      */
     private final CrontabTimeUnit month;
     /**
-     *
+     * Structure representing day of week time column from crontab.
      */
     private final CrontabTimeUnit dayOfWeek;
 
     /**
-     *
-     * @param second
-     * @param minute
-     * @param hour
-     * @param dayOfMonth
-     * @param month
-     * @param dayOfWeek
-     * @throws FormatException
+     * Constructor with splitted particular unit extracted from crontab.
+     * Textual description of these units is parsed and {@link CrontabTimeUnit}
+     *   structures are created.
+     * @param second representing seconds column
+     * @param minute representing minutes column
+     * @param hour representing hours column
+     * @param dayOfMonth representing day of months column
+     * @param month representing months column
+     * @param dayOfWeek representing day of weeks column
+     * @throws FormatException if parsing/creating of units failed
      */
     public CrontabTime(String second, String minute, String hour,
             String dayOfMonth, String month, String dayOfWeek)
@@ -55,14 +57,16 @@ public class CrontabTime {
         this.second = CrontabTimeUnit.createSecond(second);
         this.minute = CrontabTimeUnit.createMinute(minute);
         this.hour = CrontabTimeUnit.createHour(hour);
-        this.dayOfMonth = CrontabTimeUnit.createDayOfMonth(month);
+        this.dayOfMonth = CrontabTimeUnit.createDayOfMonth(dayOfMonth);
         this.month = CrontabTimeUnit.createMonth(month);
         this.dayOfWeek = CrontabTimeUnit.createDayOfWeek(dayOfWeek);
     }
 
     /**
-     *
-     * @return
+     * Compute delay from now to next scheduled time point
+     *   which is determined from all internal time units.
+     * @return count of specific units from now to next scheduled point.
+     *   Returned unit is specified by {@link timeUnit()} return type.
      */
     public final long delay() {
         LocalDateTime localNow = LocalDateTime.now();
@@ -86,8 +90,9 @@ public class CrontabTime {
     }
 
     /**
-     *
-     * @return
+     * Time unit in which delay is returned.
+     * Should be used for scheduling purposes.
+     * @return internal Java structure representing time unit
      */
     public final TimeUnit timeUnit() {
         return TimeUnit.SECONDS;
