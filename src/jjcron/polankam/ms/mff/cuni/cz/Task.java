@@ -26,7 +26,7 @@ public abstract class Task {
      * Returns this task name.
      * @return textual representation of command name (usually command name)
      */
-    public final String getName() {
+    public final String name() {
         return taskMeta.command();
     }
 
@@ -35,7 +35,7 @@ public abstract class Task {
      *   which is used for scheduling.
      * @return information about task time and scheduling
      */
-    public final CrontabTime getTime() {
+    public final CrontabTime time() {
         return taskMeta.time();
     }
 

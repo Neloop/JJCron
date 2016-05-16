@@ -117,7 +117,7 @@ public class TaskManager {
          */
         public RunTask(Task task) {
             this.task = task;
-            this.time = task.getTime();
+            this.time = task.time();
         }
 
         /**
@@ -133,13 +133,13 @@ public class TaskManager {
             } catch (Exception e) {
                 logger.log(Level.WARNING, "Task: {0} throws exception" +
                         " while execution: {1}",
-                        new Object[] { task.getName(), e.getMessage() } );
+                        new Object[] { task.name(), e.getMessage() } );
             }
 
             // ... and reschedule task to another time point
             long delay = time.delay();
             logger.log(Level.INFO, "Task {0} was scheduled to {1}",
-                    new Object[] { task.getName(),
+                    new Object[] { task.name(),
                         LocalDateTime.now().plusSeconds(delay) }); // TODO: try this using TemporalUnit
             scheduler.schedule(new RunTask(task), delay, time.timeUnit());
         }
@@ -157,14 +157,14 @@ public class TaskManager {
             throws TaskException {
         for (TaskMetadata taskMeta : tasksMeta) {
             Task task = taskFactory.createTask(taskMeta);
-            CrontabTime time = task.getTime();
+            CrontabTime time = task.time();
             tasks.add(task);
 
             // schedule first execution
             long delay = time.delay();
             logger.log(Level.INFO,
                     "First execution of task {0} was scheduled to {1}",
-                    new Object[] { task.getName(),
+                    new Object[] { task.name(),
                         LocalDateTime.now().plusSeconds(delay) }); // TODO: try this using TemporalUnit
             scheduler.schedule(new RunTask(task), delay, time.timeUnit());
         }
