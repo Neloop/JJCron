@@ -52,10 +52,8 @@ public class JJCronCore {
 
     /**
      * Runs all the fun and blocks until task scheduling is not interrupted.
-     * @throws jjcron.polankam.ms.mff.cuni.cz.TaskException
-     * if there are problems concerning task scheduling
-     * @throws jjcron.polankam.ms.mff.cuni.cz.ParserException
-     * if there were problem with parsing crontab
+     * @throws TaskException if there are problems concerning task scheduling
+     * @throws ParserException if there were problem with parsing crontab
      */
     public final void run() throws TaskException, ParserException {
         logger.log(Level.INFO, "*** Croning started ***");
