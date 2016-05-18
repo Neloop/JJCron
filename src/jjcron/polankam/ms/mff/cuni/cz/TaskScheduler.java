@@ -137,12 +137,37 @@ public class TaskScheduler {
             }
 
             // ... and reschedule task to another time point
-            long delay = time.delay();
-            logger.log(Level.INFO, "Task {0} was scheduled to {1}",
-                    new Object[] { task.name(),
-                        LocalDateTime.now().plusSeconds(delay) }); // TODO: try this using TemporalUnit
-            scheduler.schedule(new RunTask(task), delay, time.timeUnit());
+            scheduleTask(task);
         }
+    }
+
+    /**
+     * Schedule given task to its first execution point.
+     * @param task task which will be scheduled
+     */
+    private synchronized void scheduleTask(Task task) {
+        running.set(true);
+
+        long delay = task.time().delay();
+        logger.log(Level.INFO, "Task {0} was scheduled to {1}",
+                new Object[] { task.name(),
+                    LocalDateTime.now().plusSeconds(delay) }); // TODO: try this using TemporalUnit
+        scheduler.schedule(new RunTask(task), delay, task.time().timeUnit());
+    }
+
+    /**
+     * Create task from given <code>taskMeta</code> information
+     *   and schedule it to its frist time point.
+     * @param taskMeta information about task
+     * @throws TaskException if task creation failed
+     */
+    private synchronized void loadTask(TaskMetadata taskMeta)
+            throws TaskException {
+        Task task = taskFactory.createTask(taskMeta);
+        tasks.add(task);
+
+        // schedule first execution
+        scheduleTask(task);
     }
 
     /**
@@ -156,18 +181,29 @@ public class TaskScheduler {
     private synchronized void loadTasks(List<TaskMetadata> tasksMeta)
             throws TaskException {
         for (TaskMetadata taskMeta : tasksMeta) {
-            Task task = taskFactory.createTask(taskMeta);
-            CrontabTime time = task.time();
-            tasks.add(task);
-
-            // schedule first execution
-            long delay = time.delay();
-            logger.log(Level.INFO,
-                    "First execution of task {0} was scheduled to {1}",
-                    new Object[] { task.name(),
-                        LocalDateTime.now().plusSeconds(delay) }); // TODO: try this using TemporalUnit
-            scheduler.schedule(new RunTask(task), delay, time.timeUnit());
+            loadTask(taskMeta);
         }
+    }
+
+    /**
+     * Create task and schedule it, can be used to start croning
+     *   or during execution.
+     * @param taskMeta information about task
+     * @throws TaskException if task creation failed
+     */
+    public final synchronized void addTask(TaskMetadata taskMeta)
+            throws TaskException {
+        loadTask(taskMeta);
+    }
+
+    /**
+     * Add given task to currently executing ones, can be used to start croning
+     *   or during execution.
+     * @param task task which will be added to internal ones
+     */
+    public final synchronized void addTask(Task task) {
+        tasks.add(task);
+        scheduleTask(task);
     }
 
     /**
