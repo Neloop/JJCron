@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  * <p>After construction thread-safe structure.</p>
  * @author Neloop
  */
-public class TaskManager {
+public class TaskScheduler {
 
     /**
      * Sleep interval which is used for checking on task pool termination.
@@ -29,7 +29,7 @@ public class TaskManager {
      * Standard Java logger.
      */
     private static final Logger logger =
-            Logger.getLogger(TaskManager.class.getName());
+            Logger.getLogger(TaskScheduler.class.getName());
 
     /**
      * If set to true, than @ref startCronning function was called
@@ -60,7 +60,7 @@ public class TaskManager {
      *   tasks are not executed yet. All internal structures are initialized.
      * @param taskFactory factory which helps constructing tasks
      */
-    public TaskManager(TaskFactory taskFactory) {
+    public TaskScheduler(TaskFactory taskFactory) {
         logger.log(Level.INFO, "TaskManager was created");
 
         this.exit = new AtomicBoolean(false);

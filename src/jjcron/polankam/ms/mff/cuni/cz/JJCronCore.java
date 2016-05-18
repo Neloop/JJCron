@@ -35,7 +35,7 @@ public class JJCronCore {
     /**
      * Component which does loading of tasks, their scheduling and running.
      */
-    private final TaskManager taskManager;
+    private final TaskScheduler taskScheduler;
 
     /**
      * Only possible constructor with given command line arguments.
@@ -45,7 +45,7 @@ public class JJCronCore {
     public JJCronCore(String[] args) {
         logger.log(Level.INFO, "*** JJCron was created ***");
 
-        taskManager = new TaskManager(new TaskFactoryImpl());
+        taskScheduler = new TaskScheduler(new TaskFactoryImpl());
         this.args = args;
         parseArguments();
     }
@@ -59,8 +59,8 @@ public class JJCronCore {
         logger.log(Level.INFO, "*** Croning started ***");
 
         List<TaskMetadata> tasks = CrontabParser.parseFile(crontabFilename);
-        taskManager.startCroning(tasks);
-        taskManager.justWait();
+        taskScheduler.startCroning(tasks);
+        taskScheduler.justWait();
     }
 
     /**

@@ -1,5 +1,7 @@
 package jjcron.polankam.ms.mff.cuni.cz;
 
+import java.io.InputStream;
+
 /**
  * Classical cron task which is used to execute cmdline commands.
  * @author Neloop
