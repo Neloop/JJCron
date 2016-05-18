@@ -94,7 +94,8 @@ public class CrontabTimeGeneralUnit implements CrontabTimeUnit {
                 break;
             case PERIOD:
                 isValueValid(unit.values.get(0));
-                if (maxValue % (unit.values.get(0)) != 0) {
+                if (unit.values.get(0) == 0 ||
+                        maxValue % (unit.values.get(0)) != 0) {
                     throw new FormatException(
                             "GeneralUnit period value is not divisible");
                 }
