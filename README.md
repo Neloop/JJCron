@@ -1,5 +1,6 @@
 # JJCron - Just a Java Cron
 
+[![Build Status](https://travis-ci.org/JJCron/JJCron.svg?branch=master)](https://travis-ci.org/JJCron/JJCron)
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://badges.mit-license.org)
 [![Wiki](https://img.shields.io/badge/docs-wiki-orange.svg)](https://github.com/JJCron/JJCron/wiki)
 
@@ -46,5 +47,4 @@ Further description of configuration can be found in wiki on [Crontab Descriptio
 ## More information
 If you are interested enough read `JJCron` wiki pages [here](https://github.com/JJCron/JJCron/wiki) and start using it!
 
-## License
 [MIT license](LICENSE)
