@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * Special implementation of parser which parse one column from crontab.
+ * Implementation of parser which parse one column from crontab.
  * This parser can parse named values which can be placed in list
  *   or as single value.
  * @author Neloop

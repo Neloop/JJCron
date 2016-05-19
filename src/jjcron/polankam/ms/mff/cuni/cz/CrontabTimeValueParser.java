@@ -14,7 +14,8 @@ public interface CrontabTimeValueParser {
      * @return structure which implements this interface
      */
     public static CrontabTimeValueParser createGeneral() {
-        return new CrontabTimeValueGeneralParser();
+        Map<String, Integer> empty = new HashMap<>();
+        return new CrontabTimeValueNamedParser(empty);
     }
 
     /**
