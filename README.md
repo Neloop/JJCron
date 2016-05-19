@@ -1,5 +1,8 @@
 # JJCron - Just a Java Cron
 
+[![License](http://img.shields.io/:license-mit-blue.svg)](http://badges.mit-license.org)
+[![Wiki](https://img.shields.io/badge/docs-wiki-orange.svg)](https://github.com/JJCron/JJCron/wiki)
+
 **JJCron** is cron-like program written in `Java` which can be used to periodically execute given tasks. **JJCron** can serve as standalone program and also as library used in another application. From the beginning the whole architecture was meant to be modular, easy to use and simple to understand. This is managed by delicate design of internal structures and classes.
 
 ## Crontab
@@ -42,3 +45,6 @@ Further description of configuration can be found in wiki on [Crontab Descriptio
 
 ## More information
 If you are interested enough read `JJCron` wiki pages [here](https://github.com/JJCron/JJCron/wiki) and start using it!
+
+## License
+[MIT license](LICENSE)
