@@ -1,2 +1,4 @@
 ﻿language: java
-script: ant main
+script:
+  - jdk_switcher use oraclejdk8
+  - ant main
