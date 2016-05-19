@@ -4,11 +4,11 @@ package jjcron.polankam.ms.mff.cuni.cz;
  * Classical cron task which is used to execute cmdline commands.
  * @author Neloop
  */
-public class CmdTask extends Task {
+public class CmdTask extends HolderTask {
 
     /**
      * Construct task from given {@link TaskMetadata} information.
-     * @param taskMetadata handed over to {@link Task} parent
+     * @param taskMetadata handed over to {@link HolderTask} parent
      */
     public CmdTask(TaskMetadata taskMetadata) {
         super(taskMetadata);

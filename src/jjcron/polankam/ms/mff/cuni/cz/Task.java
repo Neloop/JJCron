@@ -1,47 +1,37 @@
 package jjcron.polankam.ms.mff.cuni.cz;
 
+import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
+
 /**
  * Every task which will be scheduled within JJCron
- *   has to extends this abstract class.
- * Task is abstract because of providing basic storage for {@link TaskMetadata}.
+ *   has to implement this interface.
  * @author Neloop
  */
-public abstract class Task {
-
-    /**
-     * Stores all possible information about {@link Task}.
-     */
-    protected final TaskMetadata taskMeta;
-
-    /**
-     * Structure which contains information about task
-     *   and is accessible through all {@link Task} children.
-     * @param taskMetadata task information
-     */
-    public Task(TaskMetadata taskMetadata) {
-        this.taskMeta = taskMetadata;
-    }
+public interface Task {
 
     /**
      * Returns this task name.
      * @return textual representation of command name (usually command name)
      */
-    public final String name() {
-        return taskMeta.command();
-    }
+    String name();
 
     /**
-     * Returns internal {@link CrontabTime} structure
-     *   which is used for scheduling.
-     * @return information about task time and scheduling
+     * Compute delay from <code>localNow</code> to next execution point of task.
+     * @param localNow current time point which will be used as base
+     * @return number of units specified from {@link timeUnit()} function call
      */
-    public final CrontabTime time() {
-        return taskMeta.time();
-    }
+    long delay(LocalDateTime localNow);
 
     /**
-     * Execute task job, should be implemented in {@link Task} children.
+     * Time unit in which delay is returned.
+     * @return time unit type
+     */
+    TimeUnit timeUnit();
+
+    /**
+     * Execute task job, should be implemented in {@link Task} implementations.
      * @throws Exception if task execution failed
      */
-    public abstract void run() throws Exception;
+    void run() throws Exception;
 }

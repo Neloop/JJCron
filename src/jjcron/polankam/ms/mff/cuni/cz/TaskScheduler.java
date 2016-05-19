@@ -56,11 +56,30 @@ public class TaskScheduler {
     private final TaskFactory taskFactory;
 
     /**
-     * Construct task manager with specified task factory,
-     *   tasks are not executed yet. All internal structures are initialized.
-     * @param taskFactory factory which helps constructing tasks
+     * Empty task factory which is used in case of unnecessary task factory.
+     * Implemented due to gentle way of telling null dereference.
      */
-    public TaskScheduler(TaskFactory taskFactory) {
+    private class NullTaskFactory implements TaskFactory {
+
+        /**
+         * Not implemented version of method which should not be used.
+         * @param taskMeta none
+         * @return none
+         * @throws TaskException always thrown
+         *   due to not implemented functionality
+         */
+        @Override
+        public Task createTask(TaskMetadata taskMeta) throws TaskException {
+            throw new TaskException("TaskFactory cannot be used");
+        }
+
+    }
+
+    /**
+     * Construct task scheduler without {@link TaskFactory}!
+     * This means that task creation from {@link TaskMetadata} cannot be used.
+     */
+    public TaskScheduler() {
         logger.log(Level.INFO, "TaskManager was created");
 
         this.exit = new AtomicBoolean(false);
@@ -68,6 +87,28 @@ public class TaskScheduler {
         this.tasks = new ArrayList<>();
         this.scheduler = Executors.newScheduledThreadPool(
                 Runtime.getRuntime().availableProcessors());
+
+        this.taskFactory = new NullTaskFactory();
+    }
+
+    /**
+     * Construct task scheduler with specified task factory,
+     *   tasks are not executed yet. All internal structures are initialized.
+     * @param taskFactory factory which helps constructing tasks
+     * @throws TaskException if {@link TaskFactory} was null
+     */
+    public TaskScheduler(TaskFactory taskFactory) throws TaskException {
+        logger.log(Level.INFO, "TaskManager was created");
+
+        this.exit = new AtomicBoolean(false);
+        this.running = new AtomicBoolean(false);
+        this.tasks = new ArrayList<>();
+        this.scheduler = Executors.newScheduledThreadPool(
+                Runtime.getRuntime().availableProcessors());
+
+        if (taskFactory == null) {
+            throw new TaskException("TaskFactory cannot be null");
+        }
         this.taskFactory = taskFactory;
     }
 
@@ -106,10 +147,6 @@ public class TaskScheduler {
          * {@link Task} associated with this object.
          */
         private final Task task;
-        /**
-         * Extracted time structure from {@link Task}.
-         */
-        private final CrontabTime time;
 
         /**
          * Given task is stored and time structure is extracted from it.
@@ -117,7 +154,6 @@ public class TaskScheduler {
          */
         public RunTask(Task task) {
             this.task = task;
-            this.time = task.time();
         }
 
         /**
@@ -149,11 +185,12 @@ public class TaskScheduler {
     private synchronized void scheduleTask(Task task) {
         running.set(true);
 
-        long delay = task.time().delay();
+        long delay = task.delay(LocalDateTime.now());
         logger.log(Level.INFO, "Task {0} was scheduled to {1}",
                 new Object[] { task.name(),
-                    LocalDateTime.now().plusSeconds(delay) }); // TODO: try this using TemporalUnit
-        scheduler.schedule(new RunTask(task), delay, task.time().timeUnit());
+                    LocalDateTime.now().plusSeconds(
+                            task.timeUnit().toSeconds(delay)) });
+        scheduler.schedule(new RunTask(task), delay, task.timeUnit());
     }
 
     /**

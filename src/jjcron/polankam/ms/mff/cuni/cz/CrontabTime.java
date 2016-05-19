@@ -63,14 +63,33 @@ public class CrontabTime {
     }
 
     /**
+     * Constructor with all supplied information no parsing needed.
+     * @param second representing seconds column
+     * @param minute representing minutes column
+     * @param hour representing hours column
+     * @param dayOfMonth representing day of months column
+     * @param month representing months column
+     * @param dayOfWeek representing day of weeks column
+     */
+    public CrontabTime(CrontabTimeUnit second, CrontabTimeUnit minute,
+            CrontabTimeUnit hour, CrontabTimeUnit dayOfMonth,
+            CrontabTimeUnit month, CrontabTimeUnit dayOfWeek) {
+        this.second = second;
+        this.minute = minute;
+        this.hour = hour;
+        this.dayOfMonth = dayOfMonth;
+        this.month = month;
+        this.dayOfWeek = dayOfWeek;
+    }
+
+    /**
      * Compute delay from now to next scheduled time point
      *   which is determined from all internal time units.
+     * @param localNow base time point
      * @return count of specific units from now to next scheduled point.
      *   Returned unit is specified by {@link timeUnit()} return type.
      */
-    public final long delay() {
-        LocalDateTime localNow = LocalDateTime.now();
-
+    public final long delay(LocalDateTime localNow) {
         LocalDateTime next = localNow;
         next = next.plusSeconds(second.delay(next, next.getSecond(),
                 false));

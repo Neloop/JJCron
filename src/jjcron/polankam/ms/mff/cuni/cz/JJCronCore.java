@@ -41,8 +41,9 @@ public class JJCronCore {
      * Only possible constructor with given command line arguments.
      * Arguments are parsed directly in this constructor.
      * @param args command line arguments
+     * @throws TaskException if {@link TaskScheduler} creation failed
      */
-    public JJCronCore(String[] args) {
+    public JJCronCore(String[] args) throws TaskException {
         logger.log(Level.INFO, "*** JJCron was created ***");
 
         taskScheduler = new TaskScheduler(new TaskFactoryImpl());

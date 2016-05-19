@@ -53,22 +53,35 @@ public class TaskFactoryImpl implements TaskFactory {
             }
 
             // check if loaded class is child of Task
-            if (Task.class.isAssignableFrom(clazz)) {
-                try {
-                    Constructor<?> constructor =
-                            clazz.getConstructor(TaskMetadata.class);
-                    result = (Task) constructor.newInstance(taskMeta);
-                } catch (Exception e) {
-                    logger.log(Level.SEVERE, "Specified class: {0}" +
-                            " cannot be instantiated", className);
-                    throw new TaskException("Specified class: " + className +
-                            " cannot be instantiated");
-                }
-            } else {
+            if (!Task.class.isAssignableFrom(clazz)) {
                 logger.log(Level.SEVERE, "Specified class: {0} does not" +
                         " implement abstract TaskBase class", className);
                 throw new TaskException("Specified class: " + className +
                         " does not implement abstract TaskBase class");
+            }
+
+
+            for (Constructor constr : clazz.getConstructors()) {
+                try {
+                    if (constr.getParameterCount() == 0) {
+                        result = (Task) constr.newInstance();
+                        break;
+                    } else if (constr.getParameterCount() == 1 &&
+                            constr.getParameterTypes()[0] ==
+                                    TaskMetadata.class) {
+                        result = (Task) constr.newInstance(taskMeta);
+                        break;
+                    }
+                } catch (Exception e) {
+                    // nothing to do here... will be handled later
+                }
+            }
+
+            if (result == null) {
+                logger.log(Level.SEVERE, "Specified class: {0}" +
+                        " cannot be instantiated", className);
+                throw new TaskException("Specified class: " + className +
+                        " cannot be instantiated");
             }
         } else {
             result = new CmdTask(taskMeta);
