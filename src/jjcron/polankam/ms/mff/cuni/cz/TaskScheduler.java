@@ -143,6 +143,7 @@ public class TaskScheduler {
 
     /**
      * Schedule given task to its first execution point.
+     * <p>Thread-safe function.</p>
      * @param task task which will be scheduled
      */
     private synchronized void scheduleTask(Task task) {
@@ -158,6 +159,7 @@ public class TaskScheduler {
     /**
      * Create task from given <code>taskMeta</code> information
      *   and schedule it to its frist time point.
+     * <p>Thread-safe function.</p>
      * @param taskMeta information about task
      * @throws TaskException if task creation failed
      */
@@ -188,6 +190,7 @@ public class TaskScheduler {
     /**
      * Create task and schedule it, can be used to start croning
      *   or during execution.
+     * <p>Thread-safe function.</p>
      * @param taskMeta information about task
      * @throws TaskException if task creation failed
      */
@@ -199,6 +202,7 @@ public class TaskScheduler {
     /**
      * Add given task to currently executing ones, can be used to start croning
      *   or during execution.
+     * <p>Thread-safe function.</p>
      * @param task task which will be added to internal ones
      */
     public final synchronized void addTask(Task task) {
