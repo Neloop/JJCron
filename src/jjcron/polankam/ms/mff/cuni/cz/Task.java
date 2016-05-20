@@ -19,7 +19,7 @@ public interface Task {
     /**
      * Compute delay from <code>localNow</code> to next execution point of task.
      * @param localNow current time point which will be used as base
-     * @return number of units specified from {@link timeUnit()} function call
+     * @return number of units specified from timeUnit() function call
      */
     long delay(LocalDateTime localNow);
 

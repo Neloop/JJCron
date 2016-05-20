@@ -87,7 +87,7 @@ public class CrontabTime {
      *   which is determined from all internal time units.
      * @param localNow base time point
      * @return count of specific units from now to next scheduled point.
-     *   Returned unit is specified by {@link timeUnit()} return type.
+     *   Returned unit is specified by timeUnit() return type.
      */
     public final long delay(LocalDateTime localNow) {
         LocalDateTime next = localNow;

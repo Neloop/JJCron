@@ -33,7 +33,7 @@ Further description of configuration can be found in wiki on [Crontab Descriptio
 ## Main features
 - All code written in pure `Java` using cutting edge `Java 8` version
 - Thanks to `Java` **JJCron** is multiplatform
-- Modular design
+- Modular and lightweight design
 - Easy to understand and use
 - Java classes can be used as tasks and can be scheduled to execution
 - Will be further improved to support `RMI` remote management
@@ -47,4 +47,5 @@ Further description of configuration can be found in wiki on [Crontab Descriptio
 ## More information
 If you are interested enough read `JJCron` wiki pages [here](https://github.com/JJCron/JJCron/wiki) and start using it!
 
-[MIT license](LICENSE)
+## License
+JJCron is and always will be licensed under [MIT license](LICENSE)
