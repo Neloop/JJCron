@@ -1,6 +1,6 @@
 # JJCronRM - Just a Java Cron Remote Manager
 
-[![Build Status](https://travis-ci.org/JJCron/JJCron.svg?branch=master)](https://travis-ci.org/JJCron/JJCronRM)
+[![Build Status](https://travis-ci.org/JJCron/JJCronRM.svg?branch=master)](https://travis-ci.org/JJCron/JJCronRM)
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://badges.mit-license.org)
 [![Wiki](https://img.shields.io/badge/docs-wiki-orange.svg)](https://github.com/JJCron/JJCronRM/wiki)
 
