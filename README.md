@@ -47,5 +47,9 @@ Further description of configuration can be found in wiki on [Crontab Descriptio
 ## More information
 If you are interested enough read `JJCron` wiki pages [here](https://github.com/JJCron/JJCron/wiki) and start using it!
 
+## Contribution
+
+This project is open for contribution for anyone who want to make it better. All feasible pull requests will be merged.
+
 ## License
 JJCron is and always will be licensed under [MIT license](LICENSE)

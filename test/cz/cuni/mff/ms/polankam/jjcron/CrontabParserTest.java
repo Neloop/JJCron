@@ -3,9 +3,6 @@ package cz.cuni.mff.ms.polankam.jjcron;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -16,30 +13,16 @@ import static org.junit.Assert.*;
  */
 public class CrontabParserTest {
 
-    public CrontabParserTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
+        System.out.println(">>> CrontabParserTest <<<");
     }
 
     /**
      * Test of parseFile method, of class CrontabParser.
      */
     @Test(expected=ParserException.class)
-    public void testParseEmptyFile() throws Exception {
+    public void testParseFile_EmptyFilename() throws Exception {
         System.out.println("parseFile");
         String filename = "";
         CrontabParser.parseFile(filename);
