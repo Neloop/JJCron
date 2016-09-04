@@ -9,5 +9,9 @@
 ## More information
 If you are interested enough read `JJCronRM` wiki pages [here](https://github.com/JJCron/JJCronRM/wiki) and start using it!
 
+## Contribution
+
+This project is open for contribution for anyone who want to make it better. All feasible pull requests will be merged.
+
 ## License
 JJCronRM is and always will be licensed under [MIT license](LICENSE)

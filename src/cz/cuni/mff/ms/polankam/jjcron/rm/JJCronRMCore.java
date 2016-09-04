@@ -1,4 +1,4 @@
-package cz.cuni.mff.ms.polankam.jjcronrm;
+package cz.cuni.mff.ms.polankam.jjcron.rm;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
