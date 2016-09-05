@@ -10,12 +10,15 @@ import javafx.collections.ObservableList;
  * @author Neloop
  */
 public class ClientsList {
+
+    private static final String ID_DELIMITER = "/";
+
     private final ObservableList<String> activeClientsList;
-    private final Map<String, ClientDetail> clientsDetailMap;
+    private final Map<String, ClientHolder> clientsMap;
 
     public ClientsList() {
         activeClientsList = FXCollections.observableArrayList();;
-        clientsDetailMap = new HashMap<>();
+        clientsMap = new HashMap<>();
     }
 
     public ObservableList<String> getObservableList() {
@@ -23,22 +26,25 @@ public class ClientsList {
     }
 
     public boolean isEmpty() {
-        return clientsDetailMap.isEmpty();
+        return clientsMap.isEmpty();
     }
 
     public String addConnection(String addr, String id) {
-        String concat = addr + "/" + id;
-        activeClientsList.add(concat);
-        clientsDetailMap.put(concat, new ClientDetail(addr, id));
+        String concat = addr + ID_DELIMITER + id;
+        if (!clientsMap.containsKey(concat)) {
+            activeClientsList.add(concat);
+            clientsMap.put(concat, new ClientHolder(addr, id));
+        }
+
         return concat;
     }
 
     public void deleteConnection(String mapId) {
         activeClientsList.remove(mapId);
-        clientsDetailMap.remove(mapId);
+        clientsMap.remove(mapId);
     }
 
-    public ClientDetail getConnection(String mapId) {
-        return clientsDetailMap.get(mapId);
+    public ClientHolder getConnection(String mapId) {
+        return clientsMap.get(mapId);
     }
 }

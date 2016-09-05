@@ -1,5 +1,7 @@
 package cz.cuni.mff.ms.polankam.jjcron.rm;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -26,16 +28,39 @@ import javafx.util.Pair;
  * @author Neloop
  */
 public class ClientDetailPaneHolder {
+
+    private static final String REGISTRY_URL_LABEL_TEXT = "Registry URL:";
+    private static final String CLIENT_ID_LABEL_TEXT = "Client ID:";
+    private static final String STATUS_LABEL_TEXT = "Status:";
+
+    private static final String PAUSE_BTN_TEXT = "Pause";
+    private static final String UNPAUSE_BTN_TEXT = "Unpause";
+    private static final String LIST_JOBS_BTN_TEXT = "List Cron Jobs";
+    private static final String SHUTDOWN_BTN_TEXT = "Shutdown";
+    private static final String DISCONNECT_BTN_TEXT = "Disconnect";
+
+    private static final double CLIENT_ACTION_BUTTON_WIDTH = 150;
+
+    private static final String RUNNING_STATUS = "Running";
+    private static final Color RUNNING_STATUS_COLOR = Color.LIMEGREEN;
+    private static final String PAUSED_STATUS = "Paused";
+    private static final Color PAUSED_STATUS_COLOR = Color.ORANGE;
+    private static final String DISCONNECTED_STATUS = "Disconnected";
+    private static final Color DISCONNECTED_STATUS_COLOR = Color.GREY;
+
     private Pane rootAnchorPane;
     private TextField registryAddressTextArea;
     private TextField clientIdentificationTextArea;
     private Circle clientStatusCircle;
+    private Button clientPauseButton;
+    private final List<Button> clientActionButtonsList;
 
     private final ClientsList clientsList;
-    private Pair<String, ClientDetail> activeClient;
+    private Pair<String, ClientHolder> activeClient;
 
     public ClientDetailPaneHolder(ClientsList connList) {
         clientsList = connList;
+        clientActionButtonsList = new ArrayList<>();
         initRootPane();
     }
 
@@ -44,25 +69,44 @@ public class ClientDetailPaneHolder {
     }
 
     public void switchToConnectionDetail(String name) {
-        ClientDetail conn = clientsList.getConnection(name);
+        ClientHolder conn = clientsList.getConnection(name);
 
         if (conn == null) {
             return;
+        }
+
+        if (activeClient == null) {
+            for (Button btn : clientActionButtonsList) {
+                btn.setDisable(false);
+            }
         }
 
         activeClient = new Pair<>(name, conn);
         registryAddressTextArea.setText(conn.getRegistryAddress());
         clientIdentificationTextArea.setText(conn.getClientIdentification());
 
-        clientStatusCircle.setFill(Color.LIMEGREEN); // TODO: read actual state
-        Tooltip.install(clientStatusCircle, new Tooltip("Running"));
+        if (activeClient.getValue().isPaused()) {
+            clientStatusCircle.setFill(PAUSED_STATUS_COLOR);
+            Tooltip.install(clientStatusCircle, new Tooltip(PAUSED_STATUS));
+            clientPauseButton.setText(UNPAUSE_BTN_TEXT);
+        } else {
+            clientStatusCircle.setFill(RUNNING_STATUS_COLOR);
+            Tooltip.install(clientStatusCircle, new Tooltip(RUNNING_STATUS));
+            clientPauseButton.setText(PAUSE_BTN_TEXT);
+        }
     }
 
     private void clearConnectionDetail() {
         activeClient = null;
         registryAddressTextArea.clear();
         clientIdentificationTextArea.clear();
-        clientStatusCircle.setFill(Color.GREY);
+
+        clientStatusCircle.setFill(DISCONNECTED_STATUS_COLOR);
+        Tooltip.install(clientStatusCircle, new Tooltip(DISCONNECTED_STATUS));
+
+        for (Button btn : clientActionButtonsList) {
+            btn.setDisable(true);
+        }
     }
 
     private void removeActiveClient() {
@@ -73,10 +117,6 @@ public class ClientDetailPaneHolder {
     }
 
     private void disconnectActiveClient() {
-        if (activeClient == null) {
-            return;
-        }
-
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Confirmation Dialog");
         alert.setHeaderText("JJCron instance will be disconnected!");
@@ -91,10 +131,6 @@ public class ClientDetailPaneHolder {
     }
 
     private void shutdownActiveClient() {
-        if (activeClient == null) {
-            return;
-        }
-
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Confirmation Dialog");
         alert.setHeaderText("Connected instance of JJCron will be shutted down!");
@@ -110,48 +146,48 @@ public class ClientDetailPaneHolder {
     }
 
     private void pauseActiveClient() {
-        // TODO: pause
+        if (activeClient.getValue().isPaused()) {
+            activeClient.getValue().unpause();
+            clientPauseButton.setText(PAUSE_BTN_TEXT);
+            clientStatusCircle.setFill(RUNNING_STATUS_COLOR);
+            Tooltip.install(clientStatusCircle, new Tooltip(RUNNING_STATUS));
+        } else {
+            activeClient.getValue().pause();
+            clientPauseButton.setText(UNPAUSE_BTN_TEXT);
+            clientStatusCircle.setFill(PAUSED_STATUS_COLOR);
+            Tooltip.install(clientStatusCircle, new Tooltip(PAUSED_STATUS));
+        }
     }
 
     private void listCronJobsInActiveClient() {
         // TODO:
     }
 
-    private void displayAddCronJob() {
-        // TODO:
-    }
-
-    private void displayDeleteCronJob() {
-        // TODO:
-    }
-
-    private void populateButtonsArea(VBox buttonsArea) {
-        Button disconnButton = new Button("Disconnect");
+    private void populateClientButtonsArea(VBox buttonsArea) {
+        Button disconnButton = new Button(DISCONNECT_BTN_TEXT);
+        disconnButton.setDisable(true);
+        disconnButton.setMinWidth(CLIENT_ACTION_BUTTON_WIDTH);
         disconnButton.setOnAction((ActionEvent event) -> {
             disconnectActiveClient();
         });
 
-        Button shutdownButton = new Button("Shutdown");
+        Button shutdownButton = new Button(SHUTDOWN_BTN_TEXT);
+        shutdownButton.setDisable(true);
+        shutdownButton.setMinWidth(CLIENT_ACTION_BUTTON_WIDTH);
         shutdownButton.setOnAction((ActionEvent event) -> {
             shutdownActiveClient();
         });
 
-        Button pauseButton = new Button("Pause");
-        pauseButton.setOnAction((ActionEvent event) -> {
+        clientPauseButton = new Button(PAUSE_BTN_TEXT);
+        clientPauseButton.setDisable(true);
+        clientPauseButton.setMinWidth(CLIENT_ACTION_BUTTON_WIDTH);
+        clientPauseButton.setOnAction((ActionEvent event) -> {
             pauseActiveClient();
         });
 
-        Button deleteButton = new Button("Delete Cron Job");
-        deleteButton.setOnAction((ActionEvent event) -> {
-            displayDeleteCronJob();
-        });
-
-        Button addButton = new Button("Add Cron Job");
-        addButton.setOnAction((ActionEvent event) -> {
-            displayAddCronJob();
-        });
-
-        Button listButton = new Button("List Cron Jobs");
+        Button listButton = new Button(LIST_JOBS_BTN_TEXT);
+        listButton.setDisable(true);
+        listButton.setMinWidth(CLIENT_ACTION_BUTTON_WIDTH);
         listButton.setOnAction((ActionEvent event) -> {
             listCronJobsInActiveClient();
         });
@@ -162,28 +198,34 @@ public class ClientDetailPaneHolder {
         buttonsArea.setSpacing(10);
         buttonsArea.setAlignment(Pos.TOP_CENTER);
         buttonsArea.setPadding(new Insets(10));
-        buttonsArea.getChildren().addAll(listButton, addButton, deleteButton,
-                pauseButton, shutdownButton, disconnButton);
+        buttonsArea.getChildren().addAll(listButton, clientPauseButton,
+                shutdownButton, disconnButton);
+
+
+        clientActionButtonsList.add(listButton);
+        clientActionButtonsList.add(clientPauseButton);
+        clientActionButtonsList.add(shutdownButton);
+        clientActionButtonsList.add(disconnButton);
     }
 
     private void populateDetailArea(GridPane detailArea) {
-        Label reg = new Label("Registry URL:");
+        Label reg = new Label(REGISTRY_URL_LABEL_TEXT);
         registryAddressTextArea = new TextField();
         registryAddressTextArea.setEditable(false);
         detailArea.add(reg, 0, 0);
         detailArea.add(registryAddressTextArea, 1, 0);
 
-        Label cli = new Label("Client ID: ");
+        Label cli = new Label(CLIENT_ID_LABEL_TEXT);
         clientIdentificationTextArea = new TextField();
         clientIdentificationTextArea.setEditable(false);
         detailArea.add(cli, 0, 1);
         detailArea.add(clientIdentificationTextArea, 1, 1);
 
-        Label stat = new Label("Status: ");
+        Label stat = new Label(STATUS_LABEL_TEXT);
         clientStatusCircle = new Circle(10);
         clientStatusCircle.setFill(Color.GREY);
         clientStatusCircle.setStroke(Color.BLACK);
-        Tooltip.install(clientStatusCircle, new Tooltip("Disconnected"));
+        Tooltip.install(clientStatusCircle, new Tooltip(DISCONNECTED_STATUS));
         detailArea.add(stat, 2, 0);
         detailArea.add(clientStatusCircle, 3, 0);
 
@@ -201,7 +243,7 @@ public class ClientDetailPaneHolder {
         VBox buttonsArea = new VBox();
 
         // populate separated parts
-        populateButtonsArea(buttonsArea);
+        populateClientButtonsArea(buttonsArea);
         populateDetailArea(detailArea);
 
         lowerPane.setPadding(new Insets(10, 0, 0, 0));

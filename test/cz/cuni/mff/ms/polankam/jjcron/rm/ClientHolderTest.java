@@ -11,9 +11,9 @@ import static org.junit.Assert.*;
  *
  * @author Neloop
  */
-public class ClientDetailTest {
+public class ClientHolderTest {
 
-    public ClientDetailTest() {
+    public ClientHolderTest() {
     }
 
     @BeforeClass

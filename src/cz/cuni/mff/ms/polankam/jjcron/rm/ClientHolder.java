@@ -4,12 +4,12 @@ package cz.cuni.mff.ms.polankam.jjcron.rm;
  *
  * @author Neloop
  */
-public class ClientDetail {
+public class ClientHolder {
     private final String registryAddress;
     private final String clientIdentification;
     private boolean paused = false;
 
-    public ClientDetail(String addr, String id) {
+    public ClientHolder(String addr, String id) {
         registryAddress = addr;
         clientIdentification = id;
 
@@ -22,6 +22,10 @@ public class ClientDetail {
 
     public String getClientIdentification() {
         return clientIdentification;
+    }
+
+    public boolean isPaused() {
+        return paused;
     }
 
     public void pause() {

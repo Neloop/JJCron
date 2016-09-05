@@ -28,9 +28,11 @@ public class Core extends Application {
 
     private static final String PRG_TITLE = "JJCronRM";
     private static final String PRG_DESC = "JJCronRM";
+    private static final String NEW_CONNECTION_BTN_TEXT = "New Connection";
 
     private Pane leftPane;
     private Pane descriptionPane;
+    private ListView<String> clientsListView;
     private final ClientsList clientsList;
     private final LoginDialogFactory loginDialogFactory;
     private final ClientDetailPaneHolder clientDetailPaneHolder;
@@ -52,6 +54,7 @@ public class Core extends Application {
         result.ifPresent(value -> {
             String id = clientsList.addConnection(value.getKey(), value.getValue());
             clientDetailPaneHolder.switchToConnectionDetail(id);
+            clientsListView.getSelectionModel().select(id);
         });
     }
 
@@ -61,16 +64,16 @@ public class Core extends Application {
         HBox buttonPane = new HBox();
 
         // construct list view which holds active connections list
-        ListView<String> connListView = new ListView<>();
-        connListView.setItems(clientsList.getObservableList());
-        connListView.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
+        clientsListView = new ListView<>();
+        clientsListView.setItems(clientsList.getObservableList());
+        clientsListView.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
                     clientDetailPaneHolder.switchToConnectionDetail(newValue);
                 }
         );
-        VBox.setVgrow(connListView, Priority.ALWAYS);
+        VBox.setVgrow(clientsListView, Priority.ALWAYS);
 
         // add button which will create new connection
-        Button newButton = new Button("New connection");
+        Button newButton = new Button(NEW_CONNECTION_BTN_TEXT);
         newButton.setOnAction((ActionEvent event) -> {
             newConnectionAction();
         });
@@ -81,7 +84,7 @@ public class Core extends Application {
         AnchorPane.setTopAnchor(leftVBox, 0.0);
         AnchorPane.setBottomAnchor(leftVBox, 0.0);
         leftVBox.setPadding(new Insets(10));
-        leftVBox.getChildren().addAll(buttonPane, connListView);
+        leftVBox.getChildren().addAll(buttonPane, clientsListView);
         leftPane.getChildren().add(leftVBox);
     }
 
