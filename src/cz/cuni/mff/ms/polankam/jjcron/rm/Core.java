@@ -1,11 +1,7 @@
 package cz.cuni.mff.ms.polankam.jjcron.rm;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -35,16 +31,14 @@ public class Core extends Application {
 
     private Pane leftPane;
     private Pane descriptionPane;
-    private final Map<String, ConnectionDetail> connectionsDetailMap;
-    private final ObservableList<String> activeConnections;
+    private final ClientsList clientsList;
     private final LoginDialogFactory loginDialogFactory;
-    private final ConnectionDetailPaneHolder connectionDetailPaneHolder;
+    private final ClientDetailPaneHolder clientDetailPaneHolder;
 
     public Core() {
-        this.connectionsDetailMap = new HashMap<>();
-        this.activeConnections = FXCollections.observableArrayList();
-        this.loginDialogFactory = new LoginDialogFactory();
-        this.connectionDetailPaneHolder = new ConnectionDetailPaneHolder(connectionsDetailMap);
+        clientsList = new ClientsList();
+        loginDialogFactory = new LoginDialogFactory();
+        clientDetailPaneHolder = new ClientDetailPaneHolder(clientsList);
 
         initLeftPane();
         initDescriptionPane();
@@ -56,10 +50,8 @@ public class Core extends Application {
         Optional<Pair<String, String>> result = dialog.showAndWait();
 
         result.ifPresent(value -> {
-            String concat = value.getKey() + "/" + value.getValue();
-            activeConnections.add(concat);
-            connectionsDetailMap.put(concat, new ConnectionDetail(value.getKey(), value.getValue()));
-            connectionDetailPaneHolder.switchToConnectionDetail(concat);
+            String id = clientsList.addConnection(value.getKey(), value.getValue());
+            clientDetailPaneHolder.switchToConnectionDetail(id);
         });
     }
 
@@ -70,10 +62,9 @@ public class Core extends Application {
 
         // construct list view which holds active connections list
         ListView<String> connListView = new ListView<>();
-        connListView.setItems(activeConnections);
-        connListView.getSelectionModel().selectedItemProperty().addListener(
-                (observableValue, oldValue, newValue) -> {
-                    connectionDetailPaneHolder.switchToConnectionDetail(newValue);
+        connListView.setItems(clientsList.getObservableList());
+        connListView.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
+                    clientDetailPaneHolder.switchToConnectionDetail(newValue);
                 }
         );
         VBox.setVgrow(connListView, Priority.ALWAYS);
@@ -111,14 +102,14 @@ public class Core extends Application {
     public void start(Stage primaryStage) {
         BorderPane rootPane = new BorderPane();
         rootPane.setLeft(leftPane);
-        rootPane.setCenter(connectionDetailPaneHolder.getRootPane());
+        rootPane.setCenter(clientDetailPaneHolder.getRootPane());
         rootPane.setBottom(descriptionPane);
 
         Scene scene = new Scene(rootPane);
 
         primaryStage.setTitle(PRG_TITLE);
         primaryStage.setScene(scene);
-        primaryStage.setMaximized(true);
+        //primaryStage.setMaximized(true);
         primaryStage.show();
     }
 
