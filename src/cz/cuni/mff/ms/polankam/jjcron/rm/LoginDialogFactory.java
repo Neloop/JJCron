@@ -1,6 +1,8 @@
 package cz.cuni.mff.ms.polankam.jjcron.rm;
 
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonBar.ButtonData;
@@ -43,13 +45,10 @@ public class LoginDialogFactory {
         Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
         loginButton.setDisable(true);
 
-        // Invalidate login button in case of all spaces
-        registryAddress.textProperty().addListener((observable, oldValue, newValue) -> {
-            loginButton.setDisable(newValue.trim().isEmpty());
-        });
-        clientIdentification.textProperty().addListener((observable, oldValue, newValue) -> {
-            loginButton.setDisable(newValue.trim().isEmpty());
-        });
+        // Invalidate login button in case of empty strings in both fields
+        loginButton.disableProperty().bind(
+                Bindings.isEmpty(registryAddress.textProperty())
+                        .or(Bindings.isEmpty(clientIdentification.textProperty())));
 
         dialog.getDialogPane().setContent(grid);
 
