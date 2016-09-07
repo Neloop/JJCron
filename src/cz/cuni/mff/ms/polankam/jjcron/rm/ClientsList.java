@@ -17,7 +17,7 @@ public class ClientsList {
     private final Map<String, ClientHolder> clientsMap;
 
     public ClientsList() {
-        activeClientsList = FXCollections.observableArrayList();;
+        activeClientsList = FXCollections.observableArrayList();
         clientsMap = new HashMap<>();
     }
 
@@ -29,11 +29,11 @@ public class ClientsList {
         return clientsMap.isEmpty();
     }
 
-    public String addConnection(String addr, String id) {
-        String concat = addr + ID_DELIMITER + id;
+    public String addConnection(ClientAddress addr) {
+        String concat = addr.toString();
         if (!clientsMap.containsKey(concat)) {
+            clientsMap.put(concat, new ClientHolder(addr, new RMIClientFactory()));
             activeClientsList.add(concat);
-            clientsMap.put(concat, new ClientHolder(addr, id));
         }
 
         return concat;

@@ -1,6 +1,8 @@
 package cz.cuni.mff.ms.polankam.jjcron.rm;
 
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -10,12 +12,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Pair;
@@ -46,13 +48,13 @@ public class Core extends Application {
         initDescriptionPane();
     }
 
-    private void newConnectionAction() {
-
+    private void newConnectionButtonAction() {
         Dialog<Pair<String, String>> dialog = loginDialogFactory.createLoginDialog();
         Optional<Pair<String, String>> result = dialog.showAndWait();
 
         result.ifPresent(value -> {
-            String id = clientsList.addConnection(value.getKey(), value.getValue());
+            ClientAddress addr = new ClientAddress(value.getKey(), value.getValue());
+            String id = clientsList.addConnection(addr);
             clientDetailPaneHolder.switchToConnectionDetail(id);
             clientsListView.getSelectionModel().select(id);
         });
@@ -66,7 +68,8 @@ public class Core extends Application {
         // construct list view which holds active connections list
         clientsListView = new ListView<>();
         clientsListView.setItems(clientsList.getObservableList());
-        clientsListView.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
+        clientsListView.getSelectionModel().selectedItemProperty().addListener(
+                (observableValue, oldValue, newValue) -> {
                     clientDetailPaneHolder.switchToConnectionDetail(newValue);
                 }
         );
@@ -75,7 +78,7 @@ public class Core extends Application {
         // add button which will create new connection
         Button newButton = new Button(NEW_CONNECTION_BTN_TEXT);
         newButton.setOnAction((ActionEvent event) -> {
-            newConnectionAction();
+            newConnectionButtonAction();
         });
         buttonPane.setPadding(new Insets(0, 0, 10, 0));
         buttonPane.getChildren().add(newButton);
@@ -89,14 +92,16 @@ public class Core extends Application {
     }
 
     private void initDescriptionPane() {
-        StackPane descPane = new StackPane();
+        HBox descPane = new HBox();
 
-        Label descLabel = new Label(PRG_DESC);
         descPane.setAlignment(Pos.CENTER);
         descPane.setStyle("-fx-padding: 10 0 10 0;" +
-                "-fx-border-width: 2 0 0 0; -fx-border-color: grey;" +
-                "-fx-border-style: dotted none none none;");
-        descPane.getChildren().add(descLabel);
+                "-fx-border-width: 2 0 0 0;" +
+                "-fx-border-color: grey;" +
+                "-fx-border-style: dotted;");
+
+        Label descLabel = new Label(PRG_DESC);
+        descPane.getChildren().addAll(descLabel);
 
         descriptionPane = descPane;
     }

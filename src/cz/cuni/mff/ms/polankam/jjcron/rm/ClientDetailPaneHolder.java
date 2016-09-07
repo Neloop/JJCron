@@ -35,7 +35,8 @@ public class ClientDetailPaneHolder {
 
     private static final String PAUSE_BTN_TEXT = "Pause";
     private static final String UNPAUSE_BTN_TEXT = "Unpause";
-    private static final String LIST_JOBS_BTN_TEXT = "List Cron Jobs";
+    private static final String LIST_TASKS_BTN_TEXT = "List Cron Tasks";
+    private static final String UNLIST_TASKS_BTN_TEXT = "Close Cron Tasks";
     private static final String SHUTDOWN_BTN_TEXT = "Shutdown";
     private static final String DISCONNECT_BTN_TEXT = "Disconnect";
 
@@ -52,7 +53,10 @@ public class ClientDetailPaneHolder {
     private TextField registryAddressTextArea;
     private TextField clientIdentificationTextArea;
     private Circle clientStatusCircle;
+    private final TaskListPaneHolder taskListPaneHolder;
+
     private Button clientPauseButton;
+    private Button listTasksButton;
     private final List<Button> clientActionButtonsList;
 
     private final ClientsList clientsList;
@@ -61,6 +65,7 @@ public class ClientDetailPaneHolder {
     public ClientDetailPaneHolder(ClientsList connList) {
         clientsList = connList;
         clientActionButtonsList = new ArrayList<>();
+        taskListPaneHolder = new TaskListPaneHolder();
         initRootPane();
     }
 
@@ -69,9 +74,9 @@ public class ClientDetailPaneHolder {
     }
 
     public void switchToConnectionDetail(String name) {
-        ClientHolder conn = clientsList.getConnection(name);
+        ClientHolder client = clientsList.getConnection(name);
 
-        if (conn == null) {
+        if (client == null) {
             return;
         }
 
@@ -81,11 +86,19 @@ public class ClientDetailPaneHolder {
             }
         }
 
-        activeClient = new Pair<>(name, conn);
-        registryAddressTextArea.setText(conn.getRegistryAddress());
-        clientIdentificationTextArea.setText(conn.getClientIdentification());
+        activeClient = new Pair<>(name, client);
+        registryAddressTextArea.setText(client.getClientAddress().registryAddress);
+        clientIdentificationTextArea.setText(client.getClientAddress().clientIdentification);
 
-        if (activeClient.getValue().isPaused()) {
+        if (client.isListOpened()) {
+            taskListPaneHolder.displayTaskList(client);
+            listTasksButton.setText(UNLIST_TASKS_BTN_TEXT);
+        } else {
+            taskListPaneHolder.clearTaskList();
+            listTasksButton.setText(LIST_TASKS_BTN_TEXT);
+        }
+
+        if (client.isPaused()) {
             clientStatusCircle.setFill(PAUSED_STATUS_COLOR);
             Tooltip.install(clientStatusCircle, new Tooltip(PAUSED_STATUS));
             clientPauseButton.setText(UNPAUSE_BTN_TEXT);
@@ -100,6 +113,7 @@ public class ClientDetailPaneHolder {
         activeClient = null;
         registryAddressTextArea.clear();
         clientIdentificationTextArea.clear();
+        taskListPaneHolder.clearTaskList();
 
         clientStatusCircle.setFill(DISCONNECTED_STATUS_COLOR);
         Tooltip.install(clientStatusCircle, new Tooltip(DISCONNECTED_STATUS));
@@ -116,7 +130,7 @@ public class ClientDetailPaneHolder {
         }
     }
 
-    private void disconnectActiveClient() {
+    private void disconnectClientButtonAction() {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Confirmation Dialog");
         alert.setHeaderText("JJCron instance will be disconnected!");
@@ -127,10 +141,11 @@ public class ClientDetailPaneHolder {
             return;
         }
 
+        activeClient.getValue().disconnect();
         removeActiveClient();
     }
 
-    private void shutdownActiveClient() {
+    private void shutdownClientButtonAction() {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Confirmation Dialog");
         alert.setHeaderText("Connected instance of JJCron will be shutted down!");
@@ -141,11 +156,11 @@ public class ClientDetailPaneHolder {
             return;
         }
 
-        // TODO: have to send stop message to client which will be ended
+        activeClient.getValue().shutdown();
         removeActiveClient();
     }
 
-    private void pauseActiveClient() {
+    private void pauseClientButtonAction() {
         if (activeClient.getValue().isPaused()) {
             activeClient.getValue().unpause();
             clientPauseButton.setText(PAUSE_BTN_TEXT);
@@ -159,8 +174,16 @@ public class ClientDetailPaneHolder {
         }
     }
 
-    private void listCronJobsInActiveClient() {
-        // TODO:
+    private void listTasksButtonAction() {
+        if (activeClient.getValue().isListOpened()) {
+            activeClient.getValue().closeTaskList();
+            taskListPaneHolder.clearTaskList();
+            listTasksButton.setText(LIST_TASKS_BTN_TEXT);
+        } else {
+            activeClient.getValue().openTaskList();
+            taskListPaneHolder.displayTaskList(activeClient.getValue());
+            listTasksButton.setText(UNLIST_TASKS_BTN_TEXT);
+        }
     }
 
     private void populateClientButtonsArea(VBox buttonsArea) {
@@ -168,41 +191,41 @@ public class ClientDetailPaneHolder {
         disconnButton.setDisable(true);
         disconnButton.setMinWidth(CLIENT_ACTION_BUTTON_WIDTH);
         disconnButton.setOnAction((ActionEvent event) -> {
-            disconnectActiveClient();
+            disconnectClientButtonAction();
         });
 
         Button shutdownButton = new Button(SHUTDOWN_BTN_TEXT);
         shutdownButton.setDisable(true);
         shutdownButton.setMinWidth(CLIENT_ACTION_BUTTON_WIDTH);
         shutdownButton.setOnAction((ActionEvent event) -> {
-            shutdownActiveClient();
+            shutdownClientButtonAction();
         });
 
         clientPauseButton = new Button(PAUSE_BTN_TEXT);
         clientPauseButton.setDisable(true);
         clientPauseButton.setMinWidth(CLIENT_ACTION_BUTTON_WIDTH);
         clientPauseButton.setOnAction((ActionEvent event) -> {
-            pauseActiveClient();
+            pauseClientButtonAction();
         });
 
-        Button listButton = new Button(LIST_JOBS_BTN_TEXT);
-        listButton.setDisable(true);
-        listButton.setMinWidth(CLIENT_ACTION_BUTTON_WIDTH);
-        listButton.setOnAction((ActionEvent event) -> {
-            listCronJobsInActiveClient();
+        listTasksButton = new Button(LIST_TASKS_BTN_TEXT);
+        listTasksButton.setDisable(true);
+        listTasksButton.setMinWidth(CLIENT_ACTION_BUTTON_WIDTH);
+        listTasksButton.setOnAction((ActionEvent event) -> {
+            listTasksButtonAction();
         });
 
         buttonsArea.setStyle("-fx-border-width: 0 0 0 1;" +
                 "-fx-border-color: grey;" +
-                "-fx-border-style: none none none solid;");
+                "-fx-border-style: solid;");
         buttonsArea.setSpacing(10);
         buttonsArea.setAlignment(Pos.TOP_CENTER);
-        buttonsArea.setPadding(new Insets(10));
-        buttonsArea.getChildren().addAll(listButton, clientPauseButton,
+        buttonsArea.setPadding(new Insets(0, 0, 0, 10));
+        buttonsArea.getChildren().addAll(listTasksButton, clientPauseButton,
                 shutdownButton, disconnButton);
 
 
-        clientActionButtonsList.add(listButton);
+        clientActionButtonsList.add(listTasksButton);
         clientActionButtonsList.add(clientPauseButton);
         clientActionButtonsList.add(shutdownButton);
         clientActionButtonsList.add(disconnButton);
@@ -237,31 +260,30 @@ public class ClientDetailPaneHolder {
     private void initRootPane() {
         rootAnchorPane = new AnchorPane();
         HBox centerHBox = new HBox();
-        VBox centerVBox = new VBox();
+        VBox detailAndListVBox = new VBox();
         GridPane detailArea = new GridPane();
-        GridPane lowerPane = new GridPane();
         VBox buttonsArea = new VBox();
 
         // populate separated parts
         populateClientButtonsArea(buttonsArea);
         populateDetailArea(detailArea);
 
-        lowerPane.setPadding(new Insets(10, 0, 0, 0));
-        lowerPane.setStyle("-fx-border-width: 1 0 0 0;" +
-                "-fx-border-color: grey;" +
-                "-fx-border-style: solid none none none;");
-        lowerPane.add(new Label("Lower Pane"), 0, 0);
-
         AnchorPane.setTopAnchor(centerHBox, 0.0);
         AnchorPane.setBottomAnchor(centerHBox, 0.0);
         AnchorPane.setRightAnchor(centerHBox, 0.0);
         AnchorPane.setLeftAnchor(centerHBox, 0.0);
 
-        HBox.setHgrow(centerVBox, Priority.ALWAYS);
-        centerVBox.getChildren().addAll(detailArea, lowerPane);
-        centerVBox.setPadding(new Insets(10));
-        centerHBox.setPadding(new Insets(10, 0, 10, 0));
-        centerHBox.getChildren().addAll(centerVBox, buttonsArea);
+        HBox.setHgrow(detailAndListVBox, Priority.ALWAYS);
+        VBox.setVgrow(taskListPaneHolder.getRootPane(), Priority.ALWAYS);
+
+        detailAndListVBox.getChildren().addAll(detailArea, taskListPaneHolder.getRootPane());
+        detailAndListVBox.setPadding(new Insets(10, 10, 0, 10));
+        detailAndListVBox.setStyle("-fx-border-width: 0 0 0 1;" +
+                "-fx-border-color: grey;" +
+                "-fx-border-style: solid;");
+
+        centerHBox.setPadding(new Insets(10, 10, 10, 0));
+        centerHBox.getChildren().addAll(detailAndListVBox, buttonsArea);
         rootAnchorPane.getChildren().add(centerHBox);
     }
 }
