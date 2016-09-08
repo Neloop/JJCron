@@ -1,14 +1,16 @@
 package cz.cuni.mff.ms.polankam.jjcron;
 
+import cz.cuni.mff.ms.polankam.jjcron.common.TaskMetadata;
+
 /**
  * Classical cron task which is used to execute cmdline commands.
  * @author Neloop
  */
-public class CmdTask extends HolderTask {
+public class CmdTask extends MetadataHolderTask {
 
     /**
      * Construct task from given {@link TaskMetadata} information.
-     * @param taskMetadata handed over to {@link HolderTask} parent
+     * @param taskMetadata handed over to {@link MetadataHolderTask} parent
      */
     public CmdTask(TaskMetadata taskMetadata) {
         super(taskMetadata);

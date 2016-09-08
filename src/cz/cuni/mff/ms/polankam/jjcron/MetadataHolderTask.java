@@ -1,19 +1,20 @@
 package cz.cuni.mff.ms.polankam.jjcron;
 
+import cz.cuni.mff.ms.polankam.jjcron.common.TaskMetadata;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
 /**
- * HolderTask should be used as holder for additional datas about task.
+ * MetadataHolderTask should be used as holder for additional datas about task.
  * Its advised to extends this abstract class in all possible tasks.
- * HolderTask is abstract because of providing basic storage
- *   for {@link TaskMetadata}.
+ MetadataHolderTask is abstract because of providing basic storage
+   for {@link TaskMetadata}.
  * @author Neloop
  */
-public abstract class HolderTask implements Task {
+public abstract class MetadataHolderTask implements Task {
 
     /**
-     * Stores all possible information about {@link HolderTask}.
+     * Stores all possible information about {@link MetadataHolderTask}.
      */
     protected final TaskMetadata taskMeta;
 
@@ -22,7 +23,7 @@ public abstract class HolderTask implements Task {
      *   and is accessible through all {@link Task} children.
      * @param taskMetadata task information
      */
-    public HolderTask(TaskMetadata taskMetadata) {
+    public MetadataHolderTask(TaskMetadata taskMetadata) {
         this.taskMeta = taskMetadata;
     }
 

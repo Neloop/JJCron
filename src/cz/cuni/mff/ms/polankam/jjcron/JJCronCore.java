@@ -1,5 +1,6 @@
 package cz.cuni.mff.ms.polankam.jjcron;
 
+import cz.cuni.mff.ms.polankam.jjcron.common.TaskMetadata;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
