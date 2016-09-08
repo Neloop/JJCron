@@ -1,6 +1,6 @@
-package cz.cuni.mff.ms.polankam.jjcron.rm;
+package cz.cuni.mff.ms.polankam.jjcron.remote.manager;
 
-import cz.cuni.mff.ms.polankam.jjcron.common.Client;
+import cz.cuni.mff.ms.polankam.jjcron.remote.Client;
 
 /**
  *

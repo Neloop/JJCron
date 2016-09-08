@@ -1,4 +1,4 @@
-package cz.cuni.mff.ms.polankam.jjcron.rm;
+package cz.cuni.mff.ms.polankam.jjcron.remote.manager;
 
 import java.util.Optional;
 import java.util.logging.Level;

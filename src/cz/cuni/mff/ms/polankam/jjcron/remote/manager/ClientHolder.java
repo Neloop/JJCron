@@ -1,7 +1,7 @@
-package cz.cuni.mff.ms.polankam.jjcron.rm;
+package cz.cuni.mff.ms.polankam.jjcron.remote.manager;
 
-import cz.cuni.mff.ms.polankam.jjcron.common.Client;
-import cz.cuni.mff.ms.polankam.jjcron.common.TaskDetail;
+import cz.cuni.mff.ms.polankam.jjcron.remote.Client;
+import cz.cuni.mff.ms.polankam.jjcron.remote.TaskDetail;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -122,5 +122,9 @@ public class ClientHolder {
 
     public void unpause() {
         client.unpause();
+    }
+
+    public void saveToCrontab() {
+        client.saveToCrontab();
     }
 }

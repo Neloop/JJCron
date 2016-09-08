@@ -1,6 +1,7 @@
-package cz.cuni.mff.ms.polankam.jjcron.rm;
+package cz.cuni.mff.ms.polankam.jjcron.remote.manager;
 
-import cz.cuni.mff.ms.polankam.jjcron.common.TaskDetail;
+import cz.cuni.mff.ms.polankam.jjcron.common.TaskMetadata;
+import cz.cuni.mff.ms.polankam.jjcron.remote.TaskDetail;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,7 +18,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.util.Pair;
 
 /**
  *
@@ -28,8 +28,9 @@ public class TaskListPaneHolder {
     private static final String REFRESH_BTN_TEXT = "Refresh";
     private static final String ADD_TASK_BTN_TEXT = "Add task";
     private static final String DELETE_TASK_BTN_TEXT = "Delete task";
+    private static final String SAVE_TASKS_BTN_TEXT = "Save to Crontab";
 
-    private static final double TASK_ACTION_BTN_WIDTH = 120;
+    private static final double TASK_ACTION_BTN_WIDTH = 130;
 
     private static final Logger logger = Logger.getLogger(Core.class.getName());
 
@@ -103,7 +104,13 @@ public class TaskListPaneHolder {
             deleteTaskButtonAction(tasksListView.getSelectionModel().getSelectedItem());
         });
 
-        buttonsArea.getChildren().addAll(refreshButton, addButton, deleteButton);
+        Button saveButton = new Button(SAVE_TASKS_BTN_TEXT);
+        saveButton.setMinWidth(TASK_ACTION_BTN_WIDTH);
+        saveButton.setOnAction((ActionEvent event) -> {
+            saveToCrontabButtonAction();
+        });
+
+        buttonsArea.getChildren().addAll(refreshButton, addButton, deleteButton, saveButton);
     }
 
     private void initContentPane() {
@@ -163,14 +170,15 @@ public class TaskListPaneHolder {
     }
 
     private void addTaskButtonAction() {
-        Dialog<Pair<String, String>> dialog = addTaskDialogFactory.createAddTaskDialog();
-        Optional<Pair<String, String>> result = dialog.showAndWait();
+        Dialog<TaskMetadata> dialog = addTaskDialogFactory.createAddTaskDialog();
+        Optional<TaskMetadata> result = dialog.showAndWait();
 
         // user gives us information needed for task creation so use them
         Task task = new Task() {
             @Override
             protected Object call() throws Exception {
                 if (result.isPresent()) {
+                    // TODO:
                     activeClient.addTask(new TaskDetail("hehe"));
                 }
                 activeClient.refreshTasks();
@@ -178,7 +186,7 @@ public class TaskListPaneHolder {
             }
         };
 
-        task.setOnRunning((event) -> { loadingScreen.show(); });
+        task.setOnRunning((event) -> { loadingScreen.show("Adding ..."); });
         task.setOnSucceeded((event) -> {
             activeClient.fillTaskObservableList();
             tasksListView.getSelectionModel().selectFirst();
@@ -209,7 +217,7 @@ public class TaskListPaneHolder {
             }
         };
 
-        task.setOnRunning((event) -> { loadingScreen.show(); });
+        task.setOnRunning((event) -> { loadingScreen.show("Removing  ..."); });
         task.setOnSucceeded((event) -> {
             activeClient.fillTaskObservableList();
             loadingScreen.hide();
@@ -225,7 +233,40 @@ public class TaskListPaneHolder {
         new Thread(task).start();
     }
 
+    private void saveToCrontabButtonAction() {
+        if (activeClient == null) {
+            return;
+        }
+
+        // we have active client!!! so save changes to crontab
+        Task task = new Task() {
+            @Override
+            protected Object call() throws Exception {
+                activeClient.saveToCrontab();
+                return null;
+            }
+        };
+
+        task.setOnRunning((event) -> { loadingScreen.show("Saving ..."); });
+        task.setOnSucceeded((event) -> {
+            loadingScreen.hide();
+        });
+        task.setOnFailed((event) -> {
+            loadingScreen.hide();
+            if (task.getException() != null) {
+                logger.log(Level.SEVERE, task.getException().getMessage());
+                alertDialogFactory.createErrorDialog(task.getException().getMessage()).show();
+            }
+        });
+
+        new Thread(task).start();
+    }
+
     private void switchToTaskDetailAction(String taskId) {
+        if (activeClient == null) {
+            return;
+        }
+
         TaskDetail task = activeClient.getTaskDetail(taskId);
         if (task == null) {
             return;
