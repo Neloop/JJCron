@@ -1,7 +1,9 @@
 package cz.cuni.mff.ms.polankam.jjcron.remote.manager;
 
+import cz.cuni.mff.ms.polankam.jjcron.common.CrontabTime;
 import cz.cuni.mff.ms.polankam.jjcron.common.TaskMetadata;
 import cz.cuni.mff.ms.polankam.jjcron.remote.TaskDetail;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -170,16 +172,20 @@ public class TaskListPaneHolder {
     }
 
     private void addTaskButtonAction() {
-        Dialog<TaskMetadata> dialog = addTaskDialogFactory.createAddTaskDialog();
-        Optional<TaskMetadata> result = dialog.showAndWait();
+        Dialog<List<String>> dialog = addTaskDialogFactory.createAddTaskDialog();
+        Optional<List<String>> result = dialog.showAndWait();
 
         // user gives us information needed for task creation so use them
         Task task = new Task() {
             @Override
             protected Object call() throws Exception {
                 if (result.isPresent()) {
-                    // TODO:
-                    activeClient.addTask(new TaskDetail("hehe"));
+                    List<String> list = result.get();
+                    CrontabTime time = new CrontabTime(list.get(0),
+                            list.get(1), list.get(2), list.get(3),
+                            list.get(4), list.get(5));
+                    TaskMetadata meta = new TaskMetadata(time, list.get(6));
+                    activeClient.addTask(meta);
                 }
                 activeClient.refreshTasks();
                 return null;

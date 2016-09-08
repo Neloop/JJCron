@@ -1,5 +1,6 @@
 package cz.cuni.mff.ms.polankam.jjcron.remote.manager;
 
+import cz.cuni.mff.ms.polankam.jjcron.common.TaskMetadata;
 import cz.cuni.mff.ms.polankam.jjcron.remote.Client;
 import cz.cuni.mff.ms.polankam.jjcron.remote.TaskDetail;
 import java.util.HashMap;
@@ -23,8 +24,9 @@ public class ClientHolder {
 
     private boolean isTaskListFetched = false;
     private boolean isListOpened = false;
+    private boolean isPaused = false;
 
-    private void fetchTasks(boolean force) {
+    private void fetchTasks(boolean force) throws Exception {
         if (!force && isTaskListFetched) {
             return;
         }
@@ -38,13 +40,14 @@ public class ClientHolder {
         }
     }
 
-    public ClientHolder(ClientAddress addr, ClientFactory factory) {
+    public ClientHolder(ClientAddress addr, ClientFactory factory) throws Exception {
         tasksObservableList = FXCollections.observableArrayList();
         tasksMap = new HashMap<>();
 
         clientAddress = addr;
         clientFactory = factory;
         client = factory.create(addr);
+        isPaused = client.isPaused();
     }
 
     public ClientAddress getClientAddress() {
@@ -55,7 +58,7 @@ public class ClientHolder {
         return tasksMap.get(taskId);
     }
 
-    public void addTask(TaskDetail task) {
+    public void addTask(TaskMetadata task) throws Exception {
         if (task == null) {
             return;
         }
@@ -64,7 +67,7 @@ public class ClientHolder {
         fetchTasks(true);
     }
 
-    public void deleteTask(String taskId) {
+    public void deleteTask(String taskId) throws Exception {
         TaskDetail task = tasksMap.get(taskId);
         if (task == null) {
             return;
@@ -79,19 +82,19 @@ public class ClientHolder {
         // TODO: actually disconnect from client
     }
 
-    public void shutdown() {
+    public void shutdown() throws Exception {
         client.shutdown();
     }
 
     public boolean isPaused() {
-        return client.isPaused();
+        return isPaused;
     }
 
     public boolean isListOpened() {
         return isListOpened;
     }
 
-    public void openTaskList() {
+    public void openTaskList() throws Exception {
         fetchTasks(false);
         isListOpened = true;
     }
@@ -112,19 +115,21 @@ public class ClientHolder {
         }
     }
 
-    public void refreshTasks() {
+    public void refreshTasks() throws Exception {
         fetchTasks(true);
     }
 
-    public void pause() {
+    public void pause() throws Exception {
+        isPaused = true;
         client.pause();
     }
 
-    public void unpause() {
+    public void unpause() throws Exception {
+        isPaused = false;
         client.unpause();
     }
 
-    public void saveToCrontab() {
+    public void saveToCrontab() throws Exception {
         client.saveToCrontab();
     }
 }

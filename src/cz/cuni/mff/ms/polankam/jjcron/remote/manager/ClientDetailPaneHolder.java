@@ -106,14 +106,18 @@ public class ClientDetailPaneHolder {
             listTasksButton.setText(LIST_TASKS_BTN_TEXT);
         }
 
-        if (client.isPaused()) {
-            clientStatusCircle.setFill(PAUSED_STATUS_COLOR);
-            Tooltip.install(clientStatusCircle, new Tooltip(PAUSED_STATUS));
-            clientPauseButton.setText(UNPAUSE_BTN_TEXT);
-        } else {
-            clientStatusCircle.setFill(RUNNING_STATUS_COLOR);
-            Tooltip.install(clientStatusCircle, new Tooltip(RUNNING_STATUS));
-            clientPauseButton.setText(PAUSE_BTN_TEXT);
+        try {
+            if (client.isPaused()) {
+                clientStatusCircle.setFill(PAUSED_STATUS_COLOR);
+                Tooltip.install(clientStatusCircle, new Tooltip(PAUSED_STATUS));
+                clientPauseButton.setText(UNPAUSE_BTN_TEXT);
+            } else {
+                clientStatusCircle.setFill(RUNNING_STATUS_COLOR);
+                Tooltip.install(clientStatusCircle, new Tooltip(RUNNING_STATUS));
+                clientPauseButton.setText(PAUSE_BTN_TEXT);
+            }
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Error during isPaused() function", ex);
         }
     }
 
@@ -205,17 +209,43 @@ public class ClientDetailPaneHolder {
     }
 
     private void pauseClientButtonAction() {
-        if (activeClient.getValue().isPaused()) {
-            activeClient.getValue().unpause();
-            clientPauseButton.setText(PAUSE_BTN_TEXT);
-            clientStatusCircle.setFill(RUNNING_STATUS_COLOR);
-            Tooltip.install(clientStatusCircle, new Tooltip(RUNNING_STATUS));
-        } else {
-            activeClient.getValue().pause();
-            clientPauseButton.setText(UNPAUSE_BTN_TEXT);
-            clientStatusCircle.setFill(PAUSED_STATUS_COLOR);
-            Tooltip.install(clientStatusCircle, new Tooltip(PAUSED_STATUS));
-        }
+        boolean paused = activeClient.getValue().isPaused();
+
+        Task task = new Task() {
+            @Override
+            protected Object call() throws Exception {
+                if (paused) {
+                    activeClient.getValue().unpause();
+                } else {
+                    activeClient.getValue().pause();
+                }
+                return null;
+            }
+        };
+
+        task.setOnRunning((event) -> { loadingScreen.show(); });
+        task.setOnSucceeded((event) -> {
+            if (paused) {
+                clientPauseButton.setText(PAUSE_BTN_TEXT);
+                clientStatusCircle.setFill(RUNNING_STATUS_COLOR);
+                Tooltip.install(clientStatusCircle, new Tooltip(RUNNING_STATUS));
+            } else {
+                clientPauseButton.setText(UNPAUSE_BTN_TEXT);
+                clientStatusCircle.setFill(PAUSED_STATUS_COLOR);
+                Tooltip.install(clientStatusCircle, new Tooltip(PAUSED_STATUS));
+            }
+
+            loadingScreen.hide();
+        });
+        task.setOnFailed((event) -> {
+            loadingScreen.hide();
+            if (task.getException() != null) {
+                logger.log(Level.SEVERE, task.getException().getMessage());
+                alertDialogFactory.createErrorDialog(task.getException().getMessage()).show();
+            }
+        });
+
+        new Thread(task).start();
     }
 
     private void listTasksButtonAction() {

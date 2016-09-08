@@ -1,25 +1,76 @@
 package cz.cuni.mff.ms.polankam.jjcron.remote.manager;
 
-import cz.cuni.mff.ms.polankam.jjcron.common.TaskMetadata;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
-import javafx.util.Pair;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
 /**
- * Using of official JavaFX Dialogs... JDK 8u40 needed
+ * @note Using of official JavaFX Dialogs, JDK 8u40 needed.
  * @author Neloop
  */
 public class AddTaskDialogFactory {
-    public Dialog<TaskMetadata> createAddTaskDialog() {
-        Dialog<TaskMetadata> dialog = new Dialog<>();
+
+    private static final String HINTS_NONE = "None";
+    private static final String HINTS_EVERY_SECOND = "Every second";
+    private static final String HINTS_MIDNIGHT = "Midnight";
+
+    private ComboBox createHintsComboBox(TextField secondText,
+            TextField minuteText, TextField hourText, TextField dayOfMonthText,
+            TextField monthText, TextField dayOfWeekText) {
+
+        ObservableList<String> hints = FXCollections.observableArrayList(
+                HINTS_NONE, HINTS_EVERY_SECOND, HINTS_MIDNIGHT
+        );
+        ComboBox comboBox = new ComboBox(hints);
+        comboBox.getSelectionModel().selectFirst();
+        comboBox.setMaxWidth(Double.MAX_VALUE);
+
+        // set hints actions
+        comboBox.getSelectionModel().selectedItemProperty().addListener(
+                (observableValue, oldValue, newValue) -> {
+                    if (HINTS_NONE.equals(newValue)) {
+                        secondText.clear();
+                        minuteText.clear();
+                        hourText.clear();
+                        dayOfMonthText.clear();
+                        monthText.clear();
+                        dayOfWeekText.clear();
+                    } else if (HINTS_EVERY_SECOND.equals(newValue)) {
+                        secondText.setText("*");
+                        minuteText.setText("*");
+                        hourText.setText("*");
+                        dayOfMonthText.setText("*");
+                        monthText.setText("*");
+                        dayOfWeekText.setText("*");
+                    } else if (HINTS_MIDNIGHT.equals(newValue)) {
+                        secondText.setText("0");
+                        minuteText.setText("0");
+                        hourText.setText("0");
+                        dayOfMonthText.setText("*");
+                        monthText.setText("*");
+                        dayOfWeekText.setText("*");
+                    }
+                }
+        );
+
+        return comboBox;
+    }
+
+    public Dialog<List<String>> createAddTaskDialog() {
+        Dialog<List<String>> dialog = new Dialog<>();
         dialog.setTitle("Add Task Dialog");
         dialog.setHeaderText("Please fill new cron task information");
 
@@ -29,39 +80,64 @@ public class AddTaskDialogFactory {
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
-        grid.setPadding(new Insets(20, 150, 10, 10));
+        grid.setPadding(new Insets(20));
 
+        // construct all needed labels
+        Label hintLabel = new Label("Hints:");
+        Label secondLabel = new Label("Sec:");
+        Label minuteLabel = new Label("Min:");
+        Label hourLabel = new Label("Hour:");
+        Label dayOfMonthLabel = new Label("Day of Month:");
+        Label monthLabel = new Label("Month:");
+        Label dayOfWeekLabel = new Label("Day of Week:");
+        Label commandLabel = new Label("Command:");
+
+        // align all labels to right
+        GridPane.setHalignment(hintLabel, HPos.RIGHT);
+        GridPane.setHalignment(secondLabel, HPos.RIGHT);
+        GridPane.setHalignment(minuteLabel, HPos.RIGHT);
+        GridPane.setHalignment(hourLabel, HPos.RIGHT);
+        GridPane.setHalignment(dayOfMonthLabel, HPos.RIGHT);
+        GridPane.setHalignment(monthLabel, HPos.RIGHT);
+        GridPane.setHalignment(dayOfWeekLabel, HPos.RIGHT);
+        GridPane.setHalignment(commandLabel, HPos.RIGHT);
+
+        // construct all textfields
         TextField secondText = new TextField();
-        secondText.setPromptText("s");
+        secondText.setPromptText("sec");
         TextField minuteText = new TextField();
-        minuteText.setPromptText("m");
+        minuteText.setPromptText("min");
         TextField hourText = new TextField();
-        hourText.setPromptText("s");
+        hourText.setPromptText("hour");
         TextField dayOfMonthText = new TextField();
-        dayOfMonthText.setPromptText("m");
+        dayOfMonthText.setPromptText("day of month");
         TextField monthText = new TextField();
-        monthText.setPromptText("s");
+        monthText.setPromptText("month");
         TextField dayOfWeekText = new TextField();
-        dayOfWeekText.setPromptText("m");
-
+        dayOfWeekText.setPromptText("day of week");
         TextField commandText = new TextField();
-        commandText.setPromptText("Command");
+        commandText.setPromptText("command");
 
-        grid.add(new Label("Sec:"), 0, 0);
-        grid.add(secondText, 1, 0);
-        grid.add(new Label("Min:"), 2, 0);
-        grid.add(minuteText, 3, 0);
-        grid.add(new Label("Hour:"), 0, 1);
-        grid.add(hourText, 1, 1);
-        grid.add(new Label("Day of Month:"), 2, 1);
-        grid.add(dayOfMonthText, 3, 1);
-        grid.add(new Label("Month:"), 0, 2);
-        grid.add(monthText, 1, 2);
-        grid.add(new Label("Day of Week:"), 2, 2);
-        grid.add(dayOfWeekText, 3, 2);
+        ComboBox hintsComboBox = createHintsComboBox(secondText, minuteText,
+                hourText, dayOfMonthText, monthText, dayOfWeekText);
 
-        grid.add(new Label("Command:"), 0, 3);
-        grid.add(commandText, 1, 3, 4, 1);
+        // and add all to grid pane
+        grid.add(hintLabel, 0, 0);
+        grid.add(hintsComboBox, 1, 0, 3, 1);
+        grid.add(secondLabel, 0, 2);
+        grid.add(secondText, 1, 2);
+        grid.add(minuteLabel, 2, 2);
+        grid.add(minuteText, 3, 2);
+        grid.add(hourLabel, 0, 3);
+        grid.add(hourText, 1, 3);
+        grid.add(dayOfMonthLabel, 2, 3);
+        grid.add(dayOfMonthText, 3, 3);
+        grid.add(monthLabel, 0, 4);
+        grid.add(monthText, 1, 4);
+        grid.add(dayOfWeekLabel, 2, 4);
+        grid.add(dayOfWeekText, 3, 4);
+        grid.add(commandLabel, 0, 6);
+        grid.add(commandText, 1, 6, 3, 1);
 
         // Login button is disabled by default
         Node addButton = dialog.getDialogPane().lookupButton(addButtonType);
@@ -85,7 +161,15 @@ public class AddTaskDialogFactory {
         // Convert results to pair of server address and client identification
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == addButtonType) {
-                //return new TaskMetadata();
+                List<String> result = new ArrayList<>();
+                result.add(secondText.getText());
+                result.add(minuteText.getText());
+                result.add(hourText.getText());
+                result.add(dayOfMonthText.getText());
+                result.add(monthText.getText());
+                result.add(dayOfWeekText.getText());
+                result.add(commandText.getText());
+                return result;
             }
             return null;
         });
