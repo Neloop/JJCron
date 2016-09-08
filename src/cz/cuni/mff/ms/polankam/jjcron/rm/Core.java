@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -12,7 +13,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -32,17 +32,24 @@ public class Core extends Application {
     private static final String PRG_DESC = "JJCronRM";
     private static final String NEW_CONNECTION_BTN_TEXT = "New Connection";
 
+    private static final Logger logger = Logger.getLogger(Core.class.getName());
+
     private Pane leftPane;
     private Pane descriptionPane;
     private ListView<String> clientsListView;
-    private final ClientsList clientsList;
-    private final LoginDialogFactory loginDialogFactory;
+
+    private final ClientsHolder clientsList;
+    private final ConnectionDialogFactory loginDialogFactory;
+    private final AlertDialogFactory alertDialogFactory;
     private final ClientDetailPaneHolder clientDetailPaneHolder;
+    private final LoadingScreen loadingScreen;
 
     public Core() {
-        clientsList = new ClientsList();
-        loginDialogFactory = new LoginDialogFactory();
-        clientDetailPaneHolder = new ClientDetailPaneHolder(clientsList);
+        clientsList = new ClientsHolder();
+        loginDialogFactory = new ConnectionDialogFactory();
+        alertDialogFactory = new AlertDialogFactory();
+        loadingScreen = new LoadingScreen();
+        clientDetailPaneHolder = new ClientDetailPaneHolder(clientsList, loadingScreen);
 
         initLeftPane();
         initDescriptionPane();
@@ -52,12 +59,38 @@ public class Core extends Application {
         Dialog<Pair<String, String>> dialog = loginDialogFactory.createLoginDialog();
         Optional<Pair<String, String>> result = dialog.showAndWait();
 
-        result.ifPresent(value -> {
-            ClientAddress addr = new ClientAddress(value.getKey(), value.getValue());
-            String id = clientsList.addConnection(addr);
-            clientDetailPaneHolder.switchToConnectionDetail(id);
-            clientsListView.getSelectionModel().select(id);
+        Task<ClientHolder> task = new Task<ClientHolder>() {
+            @Override
+            protected ClientHolder call() throws Exception {
+                if (result.isPresent()) {
+                    Pair<String, String> value = result.get();
+                    ClientAddress addr = new ClientAddress(value.getKey(), value.getValue());
+                    return new ClientHolder(addr, new RMIClientFactory());
+                }
+                return null;
+            }
+        };
+
+        task.setOnRunning((event) -> { loadingScreen.show("Connecting ..."); });
+        task.setOnSucceeded((event) -> {
+            try {
+                String id = clientsList.addClient(task.get());
+                clientDetailPaneHolder.switchToConnectionDetail(id);
+                clientsListView.getSelectionModel().select(id);
+                loadingScreen.hide();
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, e.getMessage());
+            }
         });
+        task.setOnFailed((event) -> {
+            loadingScreen.hide();
+            if (task.getException() != null) {
+                logger.log(Level.SEVERE, task.getException().getMessage());
+                alertDialogFactory.createErrorDialog(task.getException().getMessage()).show();
+            }
+        });
+
+        new Thread(task).start();
     }
 
     private void initLeftPane() {
@@ -67,7 +100,7 @@ public class Core extends Application {
 
         // construct list view which holds active connections list
         clientsListView = new ListView<>();
-        clientsListView.setItems(clientsList.getObservableList());
+        clientsListView.setItems(clientsList.clientsObservableList);
         clientsListView.getSelectionModel().selectedItemProperty().addListener(
                 (observableValue, oldValue, newValue) -> {
                     clientDetailPaneHolder.switchToConnectionDetail(newValue);

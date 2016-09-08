@@ -3,11 +3,13 @@ package cz.cuni.mff.ms.polankam.jjcron.rm;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
@@ -49,23 +51,29 @@ public class ClientDetailPaneHolder {
     private static final String DISCONNECTED_STATUS = "Disconnected";
     private static final Color DISCONNECTED_STATUS_COLOR = Color.GREY;
 
+    private static final Logger logger = Logger.getLogger(ClientDetailPaneHolder.class.getName());
+
     private Pane rootAnchorPane;
     private TextField registryAddressTextArea;
     private TextField clientIdentificationTextArea;
     private Circle clientStatusCircle;
     private final TaskListPaneHolder taskListPaneHolder;
+    private final LoadingScreen loadingScreen;
+    private final AlertDialogFactory alertDialogFactory;
 
     private Button clientPauseButton;
     private Button listTasksButton;
     private final List<Button> clientActionButtonsList;
 
-    private final ClientsList clientsList;
+    private final ClientsHolder clientsList;
     private Pair<String, ClientHolder> activeClient;
 
-    public ClientDetailPaneHolder(ClientsList connList) {
+    public ClientDetailPaneHolder(ClientsHolder connList, LoadingScreen loadingScreen) {
         clientsList = connList;
+        this.loadingScreen = loadingScreen;
         clientActionButtonsList = new ArrayList<>();
-        taskListPaneHolder = new TaskListPaneHolder();
+        taskListPaneHolder = new TaskListPaneHolder(loadingScreen);
+        alertDialogFactory = new AlertDialogFactory();
         initRootPane();
     }
 
@@ -74,7 +82,7 @@ public class ClientDetailPaneHolder {
     }
 
     public void switchToConnectionDetail(String name) {
-        ClientHolder client = clientsList.getConnection(name);
+        ClientHolder client = clientsList.getClient(name);
 
         if (client == null) {
             return;
@@ -124,40 +132,76 @@ public class ClientDetailPaneHolder {
     }
 
     private void removeActiveClient() {
-        clientsList.deleteConnection(activeClient.getKey());
+        clientsList.deleteClient(activeClient.getKey());
         if (clientsList.isEmpty()) {
             clearConnectionDetail();
         }
     }
 
     private void disconnectClientButtonAction() {
-        Alert alert = new Alert(AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation Dialog");
-        alert.setHeaderText("JJCron instance will be disconnected!");
-        alert.setContentText("Continue?");
+        Alert alert = alertDialogFactory.createConfirmationDialog("JJCron instance will be disconnected!");
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() != ButtonType.OK){
             return;
         }
 
-        activeClient.getValue().disconnect();
-        removeActiveClient();
+        // user confirmed dialog... proceed to actual action
+        Task task = new Task() {
+            @Override
+            protected Object call() throws Exception {
+                activeClient.getValue().disconnect();
+                return null;
+            }
+        };
+
+        task.setOnRunning((event) -> { loadingScreen.show("Disconnecting ..."); });
+        task.setOnSucceeded((event) -> {
+            removeActiveClient();
+            loadingScreen.hide();
+        });
+        task.setOnFailed((event) -> {
+            loadingScreen.hide();
+            if (task.getException() != null) {
+                logger.log(Level.SEVERE, task.getException().getMessage());
+                alertDialogFactory.createErrorDialog(task.getException().getMessage()).show();
+            }
+        });
+
+        new Thread(task).start();
     }
 
     private void shutdownClientButtonAction() {
-        Alert alert = new Alert(AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation Dialog");
-        alert.setHeaderText("Connected instance of JJCron will be shutted down!");
-        alert.setContentText("Continue?");
+        Alert alert = alertDialogFactory.createConfirmationDialog("Connected instance of JJCron will be shutted down!");
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() != ButtonType.OK){
             return;
         }
 
-        activeClient.getValue().shutdown();
-        removeActiveClient();
+        // user confirmed dialog... proceed to actual action
+        Task task = new Task() {
+            @Override
+            protected Object call() throws Exception {
+                activeClient.getValue().shutdown();
+                return null;
+            }
+        };
+
+        task.setOnRunning((event) -> { loadingScreen.show("Disconnecting ..."); });
+        task.setOnSucceeded((event) -> {
+            removeActiveClient();
+            loadingScreen.hide();
+        });
+        task.setOnFailed((event) -> {
+            loadingScreen.hide();
+            if (task.getException() != null) {
+                logger.log(Level.SEVERE, task.getException().getMessage());
+                alertDialogFactory.createErrorDialog(task.getException().getMessage()).show();
+            }
+        });
+
+        new Thread(task).start();
     }
 
     private void pauseClientButtonAction() {
@@ -176,13 +220,36 @@ public class ClientDetailPaneHolder {
 
     private void listTasksButtonAction() {
         if (activeClient.getValue().isListOpened()) {
+            // loading screen is not needed here...
+            //   list should be closed immediatelly
             activeClient.getValue().closeTaskList();
             taskListPaneHolder.clearTaskList();
             listTasksButton.setText(LIST_TASKS_BTN_TEXT);
         } else {
-            activeClient.getValue().openTaskList();
-            taskListPaneHolder.displayTaskList(activeClient.getValue());
-            listTasksButton.setText(UNLIST_TASKS_BTN_TEXT);
+            Task task = new Task() {
+                @Override
+                protected Object call() throws Exception {
+                    activeClient.getValue().openTaskList();
+                    return null;
+                }
+            };
+
+            task.setOnRunning((event) -> { loadingScreen.show(); });
+            task.setOnSucceeded((event) -> {
+                activeClient.getValue().fillTaskObservableList();
+                taskListPaneHolder.displayTaskList(activeClient.getValue());
+                listTasksButton.setText(UNLIST_TASKS_BTN_TEXT);
+                loadingScreen.hide();
+            });
+            task.setOnFailed((event) -> {
+                loadingScreen.hide();
+                if (task.getException() != null) {
+                    logger.log(Level.SEVERE, task.getException().getMessage());
+                    alertDialogFactory.createErrorDialog(task.getException().getMessage()).show();
+                }
+            });
+
+            new Thread(task).start();
         }
     }
 

@@ -2,6 +2,9 @@ package cz.cuni.mff.ms.polankam.jjcron.rm;
 
 import cz.cuni.mff.ms.polankam.jjcron.common.TaskDetail;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -28,15 +31,21 @@ public class TaskListPaneHolder {
 
     private static final double TASK_ACTION_BTN_WIDTH = 120;
 
+    private static final Logger logger = Logger.getLogger(Core.class.getName());
+
     private HBox rootPane;
     private VBox contentPane;
     private ListView<String> tasksListView;
 
+    private final LoadingScreen loadingScreen;
     private final AddTaskDialogFactory addTaskDialogFactory;
+    private final AlertDialogFactory alertDialogFactory;
     private ClientHolder activeClient;
 
-    public TaskListPaneHolder(){
+    public TaskListPaneHolder(LoadingScreen loadingScreen){
+        this.loadingScreen = loadingScreen;
         addTaskDialogFactory = new AddTaskDialogFactory();
+        alertDialogFactory = new AlertDialogFactory();
         initContentPane();
         initRootPane();
     }
@@ -48,7 +57,7 @@ public class TaskListPaneHolder {
     public void displayTaskList(ClientHolder client) {
         activeClient = client;
 
-        tasksListView.setItems(client.getTasksObservableList());
+        tasksListView.setItems(client.tasksObservableList);
         tasksListView.getSelectionModel().selectFirst();
         rootPane.getChildren().clear();
         rootPane.getChildren().add(contentPane);
@@ -127,23 +136,93 @@ public class TaskListPaneHolder {
             return;
         }
 
-        activeClient.refreshTaskList();
-        tasksListView.getSelectionModel().selectFirst();
+        // we have active client!!! so refresh tasks list
+        Task task = new Task() {
+            @Override
+            protected Object call() throws Exception {
+                activeClient.refreshTasks();
+                return null;
+            }
+        };
+
+        task.setOnRunning((event) -> { loadingScreen.show(); });
+        task.setOnSucceeded((event) -> {
+            activeClient.fillTaskObservableList();
+            tasksListView.getSelectionModel().selectFirst();
+            loadingScreen.hide();
+        });
+        task.setOnFailed((event) -> {
+            loadingScreen.hide();
+            if (task.getException() != null) {
+                logger.log(Level.SEVERE, task.getException().getMessage());
+                alertDialogFactory.createErrorDialog(task.getException().getMessage()).show();
+            }
+        });
+
+        new Thread(task).start();
     }
 
     private void addTaskButtonAction() {
         Dialog<Pair<String, String>> dialog = addTaskDialogFactory.createAddTaskDialog();
         Optional<Pair<String, String>> result = dialog.showAndWait();
 
-        result.ifPresent(value -> {
-            activeClient.addTask(new TaskDetail("hehe"));
+        // user gives us information needed for task creation so use them
+        Task task = new Task() {
+            @Override
+            protected Object call() throws Exception {
+                if (result.isPresent()) {
+                    activeClient.addTask(new TaskDetail("hehe"));
+                }
+                activeClient.refreshTasks();
+                return null;
+            }
+        };
+
+        task.setOnRunning((event) -> { loadingScreen.show(); });
+        task.setOnSucceeded((event) -> {
+            activeClient.fillTaskObservableList();
+            tasksListView.getSelectionModel().selectFirst();
+            loadingScreen.hide();
+        });
+        task.setOnFailed((event) -> {
+            loadingScreen.hide();
+            if (task.getException() != null) {
+                logger.log(Level.SEVERE, task.getException().getMessage());
+                alertDialogFactory.createErrorDialog(task.getException().getMessage()).show();
+            }
         });
 
-        tasksListView.getSelectionModel().selectFirst();
+        new Thread(task).start();
     }
 
     private void deleteTaskButtonAction(String taskId) {
-        activeClient.deleteTask(taskId);
+        if (activeClient == null) {
+            return;
+        }
+
+        // we have active client!!! so delete task
+        Task task = new Task() {
+            @Override
+            protected Object call() throws Exception {
+                activeClient.deleteTask(taskId);
+                return null;
+            }
+        };
+
+        task.setOnRunning((event) -> { loadingScreen.show(); });
+        task.setOnSucceeded((event) -> {
+            activeClient.fillTaskObservableList();
+            loadingScreen.hide();
+        });
+        task.setOnFailed((event) -> {
+            loadingScreen.hide();
+            if (task.getException() != null) {
+                logger.log(Level.SEVERE, task.getException().getMessage());
+                alertDialogFactory.createErrorDialog(task.getException().getMessage()).show();
+            }
+        });
+
+        new Thread(task).start();
     }
 
     private void switchToTaskDetailAction(String taskId) {

@@ -16,7 +16,7 @@ import javafx.scene.layout.GridPane;
  * Using of official JavaFX Dialogs... JDK 8u40 needed
  * @author Neloop
  */
-public class LoginDialogFactory {
+public class ConnectionDialogFactory {
     public Dialog<Pair<String, String>> createLoginDialog() {
         Dialog<Pair<String, String>> dialog = new Dialog<>();
         dialog.setTitle("Connection Dialog");

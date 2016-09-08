@@ -5,6 +5,7 @@ import cz.cuni.mff.ms.polankam.jjcron.common.TaskDetail;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -13,7 +14,7 @@ import javafx.collections.ObservableList;
  * @author Neloop
  */
 public class ClientHolder {
-    private final ObservableList<String> tasksList;
+    public final ObservableList<String> tasksObservableList;
     private final Map<String, TaskDetail> tasksMap;
 
     private final ClientAddress clientAddress;
@@ -28,18 +29,17 @@ public class ClientHolder {
             return;
         }
 
+        tasksMap.clear();
         isTaskListFetched = true;
-        tasksList.clear();
 
         List<TaskDetail> tasks = client.getTasks();
         for (TaskDetail task : tasks) {
-            tasksList.add(task.getId());
             tasksMap.put(task.getId(), task);
         }
     }
 
     public ClientHolder(ClientAddress addr, ClientFactory factory) {
-        tasksList = FXCollections.observableArrayList();
+        tasksObservableList = FXCollections.observableArrayList();
         tasksMap = new HashMap<>();
 
         clientAddress = addr;
@@ -49,12 +49,6 @@ public class ClientHolder {
 
     public ClientAddress getClientAddress() {
         return clientAddress;
-    }
-
-    public ObservableList<String> getTasksObservableList()
-    {
-        fetchTasks(false);
-        return tasksList;
     }
 
     public TaskDetail getTaskDetail(String taskId) {
@@ -72,12 +66,13 @@ public class ClientHolder {
 
     public void deleteTask(String taskId) {
         TaskDetail task = tasksMap.get(taskId);
-        tasksMap.remove(taskId);
-        tasksList.remove(taskId);
-
-        if (task != null) {
-            client.deleteTask(task);
+        if (task == null) {
+            return;
         }
+
+
+        client.deleteTask(task);
+        fetchTasks(true);
     }
 
     public void disconnect() {
@@ -97,6 +92,7 @@ public class ClientHolder {
     }
 
     public void openTaskList() {
+        fetchTasks(false);
         isListOpened = true;
     }
 
@@ -104,7 +100,19 @@ public class ClientHolder {
         isListOpened = false;
     }
 
-    public void refreshTaskList() {
+    /**
+     * Fills ObservableList of tasks with internal task list.
+     * This function has to be called after every change of tasks list.
+     * @note Has to be used in JavaFX UI thread.
+     */
+    public void fillTaskObservableList() {
+        tasksObservableList.clear();
+        for (Entry<String, TaskDetail> entry : tasksMap.entrySet()) {
+            tasksObservableList.add(entry.getKey());
+        }
+    }
+
+    public void refreshTasks() {
         fetchTasks(true);
     }
 
