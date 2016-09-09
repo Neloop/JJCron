@@ -1,5 +1,6 @@
 package cz.cuni.mff.ms.polankam.jjcron.common;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
  *   of specified month.
  * @author Neloop
  */
-public class CrontabTimeDayOfMonthUnit extends CrontabTimeGeneralUnit {
+public class CrontabTimeDayOfMonthUnit extends CrontabTimeGeneralUnit implements Serializable {
 
     /**
      * Construct also parent class with given information

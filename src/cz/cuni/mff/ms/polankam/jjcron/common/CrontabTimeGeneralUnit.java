@@ -1,5 +1,6 @@
 package cz.cuni.mff.ms.polankam.jjcron.common;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
  *   and also period with which specified unit operates.
  * @author Neloop
  */
-public class CrontabTimeGeneralUnit implements CrontabTimeUnit {
+public class CrontabTimeGeneralUnit implements CrontabTimeUnit, Serializable {
 
     /**
      * Minimal value which can be in single value, list of values or in period.
@@ -34,11 +35,6 @@ public class CrontabTimeGeneralUnit implements CrontabTimeUnit {
      * Which stores all needed info about time unit.
      */
     protected final CrontabTimeValue unit;
-    /**
-     * Parser which is able to parse given textual description of unit
-     *   and return constructed {@link CrontabTimeValue} structure.
-     */
-    protected final CrontabTimeValueParser parser;
 
     /**
      * Cached information about value change in last delay computation.
@@ -63,10 +59,9 @@ public class CrontabTimeGeneralUnit implements CrontabTimeUnit {
         this.minValue = minValue;
         this.maxValue = maxValue;
         this.period = period;
-        this.parser = parser;
         valueChanged = false;
 
-        this.unit = this.parser.parse(unitStr);
+        this.unit = parser.parse(unitStr);
 
         checkValue();
     }

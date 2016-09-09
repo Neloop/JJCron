@@ -1,5 +1,6 @@
 package cz.cuni.mff.ms.polankam.jjcron.common;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,16 +11,16 @@ import java.util.List;
  * Values which were parsed from crontab are stored in internal array.
  * @author Neloop
  */
-public class CrontabTimeValue {
+public class CrontabTimeValue implements Serializable {
 
     /**
      * Type of stored values.
      */
-    public CrontabTimeValueType valueType;
+    public final CrontabTimeValueType valueType;
     /**
      * Particular time values loaded from crontab.
      */
-    public List<Integer> values;
+    public final List<Integer> values;
 
     /**
      * Type and raw array are received as parameters and stored.

@@ -1,5 +1,7 @@
 package cz.cuni.mff.ms.polankam.jjcron.common;
 
+import java.io.Serializable;
+
 /**
  * Structure which represents all information about one task given in crontab.
  * It stores {@link CrontabTime} structure with information
@@ -7,7 +9,7 @@ package cz.cuni.mff.ms.polankam.jjcron.common;
  *   which will be executed on scheduled timepoint.
  * @author Neloop
  */
-public class TaskMetadata {
+public class TaskMetadata implements Serializable {
     /**
      * Stores information about time which was parsed from crontab.
      */

@@ -1,5 +1,6 @@
 package cz.cuni.mff.ms.polankam.jjcron.common;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
@@ -12,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  * This units are self computable and can compute its own delays.
  * @author Neloop
  */
-public class CrontabTime {
+public class CrontabTime implements Serializable {
 
     /**
      * Structure representing second time column from crontab.
