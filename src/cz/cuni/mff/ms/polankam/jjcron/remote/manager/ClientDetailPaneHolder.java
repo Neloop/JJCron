@@ -66,7 +66,7 @@ public class ClientDetailPaneHolder {
     private final List<Button> clientActionButtonsList;
 
     private final ClientsHolder clientsList;
-    private Pair<String, ClientHolder> activeClient;
+    private Pair<String, ClientWrapper> activeClient;
 
     public ClientDetailPaneHolder(ClientsHolder connList, LoadingScreen loadingScreen) {
         clientsList = connList;
@@ -82,7 +82,7 @@ public class ClientDetailPaneHolder {
     }
 
     public void switchToConnectionDetail(String name) {
-        ClientHolder client = clientsList.getClient(name);
+        ClientWrapper client = clientsList.getClient(name);
 
         if (client == null) {
             return;

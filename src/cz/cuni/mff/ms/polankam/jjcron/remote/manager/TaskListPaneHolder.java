@@ -15,6 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -40,10 +41,13 @@ public class TaskListPaneHolder {
     private VBox contentPane;
     private ListView<String> tasksListView;
 
+    private TextField taskDetailIdText;
+    private TextField taskDetailNameText;
+
     private final LoadingScreen loadingScreen;
     private final AddTaskDialogFactory addTaskDialogFactory;
     private final AlertDialogFactory alertDialogFactory;
-    private ClientHolder activeClient;
+    private ClientWrapper activeClient;
 
     public TaskListPaneHolder(LoadingScreen loadingScreen){
         this.loadingScreen = loadingScreen;
@@ -57,7 +61,7 @@ public class TaskListPaneHolder {
         return rootPane;
     }
 
-    public void displayTaskList(ClientHolder client) {
+    public void displayTaskList(ClientWrapper client) {
         activeClient = client;
 
         tasksListView.setItems(client.tasksObservableList);
@@ -80,7 +84,19 @@ public class TaskListPaneHolder {
     }
 
     private void populateTaskDetailArea(GridPane detailArea) {
-        detailArea.getChildren().add(new Label("TaskDetail"));
+        taskDetailIdText = new TextField();
+        taskDetailIdText.setEditable(false);
+        taskDetailNameText = new TextField();
+        taskDetailNameText.setEditable(false);
+        taskDetailNameText.autosize();
+
+        detailArea.add(new Label("UUID:"), 0, 0);
+        detailArea.add(taskDetailIdText, 1, 0, 3, 1);
+        detailArea.add(new Label("Name:"), 0, 1);
+        detailArea.add(taskDetailNameText, 1, 1, 3, 1);
+
+        detailArea.setHgap(5);
+        detailArea.setVgap(5);
     }
 
     private void populateTaskListButtonsArea(VBox buttonsArea) {
@@ -159,6 +175,9 @@ public class TaskListPaneHolder {
             activeClient.fillTaskObservableList();
             tasksListView.getSelectionModel().selectFirst();
             loadingScreen.hide();
+            if (activeClient.tasksObservableList.isEmpty()) {
+                clearTaskDetailAction();
+            }
         });
         task.setOnFailed((event) -> {
             loadingScreen.hide();
@@ -226,7 +245,11 @@ public class TaskListPaneHolder {
         task.setOnRunning((event) -> { loadingScreen.show("Removing  ..."); });
         task.setOnSucceeded((event) -> {
             activeClient.fillTaskObservableList();
+            tasksListView.getSelectionModel().selectFirst();
             loadingScreen.hide();
+            if (activeClient.tasksObservableList.isEmpty()) {
+                clearTaskDetailAction();
+            }
         });
         task.setOnFailed((event) -> {
             loadingScreen.hide();
@@ -278,6 +301,12 @@ public class TaskListPaneHolder {
             return;
         }
 
-        // TODO: fill data
+        taskDetailIdText.setText(task.id);
+        taskDetailNameText.setText(task.name);
+    }
+
+    private void clearTaskDetailAction() {
+        taskDetailIdText.clear();
+        taskDetailNameText.clear();
     }
 }

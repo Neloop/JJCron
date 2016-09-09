@@ -12,7 +12,7 @@ import javafx.collections.ObservableList;
 public class ClientsHolder {
 
     public final ObservableList<String> clientsObservableList;
-    private final Map<String, ClientHolder> clientsMap;
+    private final Map<String, ClientWrapper> clientsMap;
 
     public ClientsHolder() {
         clientsMap = new HashMap<>();
@@ -23,7 +23,7 @@ public class ClientsHolder {
         return clientsMap.isEmpty();
     }
 
-    public String addClient(ClientHolder client) {
+    public String addClient(ClientWrapper client) {
         String id = client.getClientAddress().toString();
         if (!clientsMap.containsKey(id)) {
             clientsObservableList.add(id);
@@ -38,7 +38,7 @@ public class ClientsHolder {
         clientsMap.remove(mapId);
     }
 
-    public ClientHolder getClient(String mapId) {
+    public ClientWrapper getClient(String mapId) {
         return clientsMap.get(mapId);
     }
 }

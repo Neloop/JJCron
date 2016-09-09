@@ -1,5 +1,6 @@
 package cz.cuni.mff.ms.polankam.jjcron.remote.manager;
 
+import java.util.UUID;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -11,9 +12,9 @@ import static org.junit.Assert.*;
  *
  * @author Neloop
  */
-public class ClientHolderTest {
+public class ClientWrapperTest {
 
-    public ClientHolderTest() {
+    public ClientWrapperTest() {
     }
 
     @BeforeClass
@@ -33,5 +34,6 @@ public class ClientHolderTest {
     }
 
     @Test
-    public void hello() {}
+    public void hello() {
+    }
 }

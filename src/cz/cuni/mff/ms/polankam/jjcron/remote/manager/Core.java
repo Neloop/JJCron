@@ -47,8 +47,8 @@ public class Core extends Application {
     public Core() {
         clientsList = new ClientsHolder();
         loginDialogFactory = new ConnectionDialogFactory();
-        alertDialogFactory = new AlertDialogFactory();
         loadingScreen = new LoadingScreen();
+        alertDialogFactory = new AlertDialogFactory();
         clientDetailPaneHolder = new ClientDetailPaneHolder(clientsList, loadingScreen);
 
         initLeftPane();
@@ -59,13 +59,13 @@ public class Core extends Application {
         Dialog<Pair<String, String>> dialog = loginDialogFactory.createLoginDialog();
         Optional<Pair<String, String>> result = dialog.showAndWait();
 
-        Task<ClientHolder> task = new Task<ClientHolder>() {
+        Task<ClientWrapper> task = new Task<ClientWrapper>() {
             @Override
-            protected ClientHolder call() throws Exception {
+            protected ClientWrapper call() throws Exception {
                 if (result.isPresent()) {
                     Pair<String, String> value = result.get();
                     ClientAddress addr = new ClientAddress(value.getKey(), value.getValue());
-                    return new ClientHolder(addr, new RMIClientFactory());
+                    return new ClientWrapper(addr, new RMIClientFactory());
                 }
                 return null;
             }
@@ -140,7 +140,10 @@ public class Core extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage stage) {
+        // set main stage to loading screen for proper positioning
+        loadingScreen.setMainStage(stage);
+
         BorderPane rootPane = new BorderPane();
         rootPane.setLeft(leftPane);
         rootPane.setCenter(clientDetailPaneHolder.getRootPane());
@@ -148,10 +151,10 @@ public class Core extends Application {
 
         Scene scene = new Scene(rootPane);
 
-        primaryStage.setTitle(PRG_TITLE);
-        primaryStage.setScene(scene);
+        stage.setTitle(PRG_TITLE);
+        stage.setScene(scene);
         //primaryStage.setMaximized(true);
-        primaryStage.show();
+        stage.show();
     }
 
     /**

@@ -25,6 +25,13 @@ public class LoadingScreen {
     private final Stage loadingStage;
     private final Label loadingText;
 
+    public void setMainStage(Stage mainStage) {
+        loadingStage.setOnShown((e) -> {
+            loadingStage.setX(mainStage.getX() + (mainStage.getWidth() / 2) - (loadingStage.getWidth() / 2));
+            loadingStage.setY(mainStage.getY() + (mainStage.getHeight() / 2) - (loadingStage.getHeight() / 2));
+        });
+    }
+
     public LoadingScreen() {
         loadingStage = new Stage(StageStyle.TRANSPARENT);
 

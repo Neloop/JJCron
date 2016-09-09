@@ -14,12 +14,11 @@ import javafx.collections.ObservableList;
  *
  * @author Neloop
  */
-public class ClientHolder {
+public class ClientWrapper {
     public final ObservableList<String> tasksObservableList;
     private final Map<String, TaskDetail> tasksMap;
 
     private final ClientAddress clientAddress;
-    private final ClientFactory clientFactory;
     private final Client client;
 
     private boolean isTaskListFetched = false;
@@ -36,16 +35,15 @@ public class ClientHolder {
 
         List<TaskDetail> tasks = client.getTasks();
         for (TaskDetail task : tasks) {
-            tasksMap.put(task.getId(), task);
+            tasksMap.put(task.id, task);
         }
     }
 
-    public ClientHolder(ClientAddress addr, ClientFactory factory) throws Exception {
+    public ClientWrapper(ClientAddress addr, ClientFactory factory) throws Exception {
         tasksObservableList = FXCollections.observableArrayList();
         tasksMap = new HashMap<>();
 
         clientAddress = addr;
-        clientFactory = factory;
         client = factory.create(addr);
         isPaused = client.isPaused();
     }
@@ -111,7 +109,7 @@ public class ClientHolder {
     public void fillTaskObservableList() {
         tasksObservableList.clear();
         for (Entry<String, TaskDetail> entry : tasksMap.entrySet()) {
-            tasksObservableList.add(entry.getKey());
+            tasksObservableList.add(entry.getValue().name);
         }
     }
 
