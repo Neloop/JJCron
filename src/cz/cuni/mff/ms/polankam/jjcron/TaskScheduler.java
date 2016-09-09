@@ -1,9 +1,12 @@
 package cz.cuni.mff.ms.polankam.jjcron;
 
 import cz.cuni.mff.ms.polankam.jjcron.common.TaskMetadata;
+import cz.cuni.mff.ms.polankam.jjcron.common.TaskStats;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -50,7 +53,7 @@ public class TaskScheduler {
     /**
      * Task pool which is managed by this class instance.
      */
-    private final List<Task> tasks;
+    private final Map<String, TaskHolder> tasks;
     /**
      * Helps with construction of proper Task children objects.
      */
@@ -85,7 +88,7 @@ public class TaskScheduler {
 
         this.exit = new AtomicBoolean(false);
         this.running = new AtomicBoolean(false);
-        this.tasks = new ArrayList<>();
+        this.tasks = new HashMap<>();
         this.scheduler = Executors.newScheduledThreadPool(
                 Runtime.getRuntime().availableProcessors());
 
@@ -103,7 +106,7 @@ public class TaskScheduler {
 
         this.exit = new AtomicBoolean(false);
         this.running = new AtomicBoolean(false);
-        this.tasks = new ArrayList<>();
+        this.tasks = new HashMap<>();
         this.scheduler = Executors.newScheduledThreadPool(
                 Runtime.getRuntime().availableProcessors());
 
@@ -147,14 +150,14 @@ public class TaskScheduler {
         /**
          * {@link Task} associated with this object.
          */
-        private final Task task;
+        private final TaskHolder taskHolder;
 
         /**
          * Given task is stored and time structure is extracted from it.
-         * @param task {@link Task} which will be executed in this object.
+         * @param task {@link TaskHolder} which will be executed in this object.
          */
-        public RunTask(Task task) {
-            this.task = task;
+        public RunTask(TaskHolder task) {
+            this.taskHolder = task;
         }
 
         /**
@@ -166,32 +169,34 @@ public class TaskScheduler {
         public void run() {
             // run task itself
             try {
-                task.run();
+                long start = System.nanoTime();
+                taskHolder.task.run();
+                long end = System.nanoTime();
+                taskHolder.stats.record(LocalDateTime.now(), end - start);
             } catch (Exception e) {
                 logger.log(Level.WARNING, "Task: {0} throws exception" +
                         " while execution: {1}",
-                        new Object[] { task.name(), e.getMessage() } );
+                        new Object[] { taskHolder.task.name(), e.getMessage() } );
             }
 
             // ... and reschedule task to another time point
-            scheduleTask(task);
+            scheduleTask(taskHolder);
         }
     }
 
     /**
      * Schedule given task to its first execution point.
      * <p>Thread-safe function.</p>
-     * @param task task which will be scheduled
+     * @param holder task which will be scheduled
      */
-    private synchronized void scheduleTask(Task task) {
+    private synchronized void scheduleTask(TaskHolder holder) {
         running.set(true);
 
-        long delay = task.delay(LocalDateTime.now());
+        long delay = holder.task.delay(LocalDateTime.now());
         logger.log(Level.INFO, "Task {0} was scheduled to {1}",
-                new Object[] { task.name(),
-                    LocalDateTime.now().plusSeconds(
-                            task.timeUnit().toSeconds(delay)) });
-        scheduler.schedule(new RunTask(task), delay, task.timeUnit());
+                new Object[] { holder.task.name(),
+                    LocalDateTime.now().plusSeconds(holder.task.timeUnit().toSeconds(delay)) });
+        scheduler.schedule(new RunTask(holder), delay, holder.task.timeUnit());
     }
 
     /**
@@ -203,11 +208,13 @@ public class TaskScheduler {
      */
     private synchronized void loadTask(TaskMetadata taskMeta)
             throws TaskException {
+        String id = UUID.randomUUID().toString();
         Task task = taskFactory.createTask(taskMeta);
-        tasks.add(task);
+        TaskHolder holder = new TaskHolder(id, task, new TaskStats());
+        tasks.put(id, holder);
 
         // schedule first execution
-        scheduleTask(task);
+        scheduleTask(holder);
     }
 
     /**
@@ -244,8 +251,10 @@ public class TaskScheduler {
      * @param task task which will be added to internal ones
      */
     public final synchronized void addTask(Task task) {
-        tasks.add(task);
-        scheduleTask(task);
+        String id = UUID.randomUUID().toString();
+        TaskHolder holder = new TaskHolder(id, task, new TaskStats());
+        tasks.put(id, holder);
+        scheduleTask(holder);
     }
 
     /**

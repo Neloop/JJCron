@@ -17,13 +17,13 @@ import org.apache.commons.cli.ParseException;
  * It constructs and runs all things necessary to execute cron functionality.
  * @author Neloop
  */
-public class JJCronCore {
+public class Core {
 
     /**
      * Standard Java logger.
      */
     private static final Logger logger =
-            Logger.getLogger(JJCronCore.class.getName());
+            Logger.getLogger(Core.class.getName());
 
     /**
      * Stored command line arguments.
@@ -44,7 +44,7 @@ public class JJCronCore {
      * @param args command line arguments
      * @throws TaskException if {@link TaskScheduler} creation failed
      */
-    public JJCronCore(String[] args) throws TaskException {
+    public Core(String[] args) throws TaskException {
         logger.log(Level.INFO, "*** JJCron was created ***");
 
         taskScheduler = new TaskScheduler(new TaskFactoryImpl());
@@ -123,7 +123,7 @@ public class JJCronCore {
      */
     public static void main(String[] args) {
         try {
-            JJCronCore core = new JJCronCore(args);
+            Core core = new Core(args);
             core.run();
         } catch (TaskException | ParserException e) {
             System.err.println(e.getMessage());
