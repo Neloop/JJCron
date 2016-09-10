@@ -27,6 +27,16 @@ public class AddTaskDialogFactory {
     private static final String HINTS_EVERY_SECOND = "Every second";
     private static final String HINTS_MIDNIGHT = "Midnight";
 
+    /**
+     *
+     * @param secondText
+     * @param minuteText
+     * @param hourText
+     * @param dayOfMonthText
+     * @param monthText
+     * @param dayOfWeekText
+     * @return
+     */
     private ComboBox createHintsComboBox(TextField secondText,
             TextField minuteText, TextField hourText, TextField dayOfMonthText,
             TextField monthText, TextField dayOfWeekText) {
@@ -69,6 +79,10 @@ public class AddTaskDialogFactory {
         return comboBox;
     }
 
+    /**
+     *
+     * @return
+     */
     public Dialog<List<String>> createAddTaskDialog() {
         Dialog<List<String>> dialog = new Dialog<>();
         dialog.setTitle("Add Task Dialog");

@@ -22,9 +22,19 @@ public class LoadingScreen {
     private static final double LOADING_CIRCLE_SIZE = 70;
     private static final double LOADING_DIALOG_SIZE = 150;
 
+    /**
+     *
+     */
     private final Stage loadingStage;
+    /**
+     *
+     */
     private final Label loadingText;
 
+    /**
+     *
+     * @param mainStage
+     */
     public void setMainStage(Stage mainStage) {
         loadingStage.setOnShown((e) -> {
             loadingStage.setX(mainStage.getX() + (mainStage.getWidth() / 2) - (loadingStage.getWidth() / 2));
@@ -32,6 +42,9 @@ public class LoadingScreen {
         });
     }
 
+    /**
+     *
+     */
     public LoadingScreen() {
         loadingStage = new Stage(StageStyle.TRANSPARENT);
 
@@ -62,15 +75,25 @@ public class LoadingScreen {
         loadingStage.setScene(scene);
     }
 
+    /**
+     *
+     */
     public void show() {
         loadingStage.show();
     }
 
+    /**
+     *
+     * @param text
+     */
     public void show(String text) {
         this.loadingText.setText(text);
         loadingStage.show();
     }
 
+    /**
+     * 
+     */
     public void hide() {
         loadingStage.hide();
         this.loadingText.setText(LOADING_TEXT);

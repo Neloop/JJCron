@@ -9,8 +9,14 @@ import cz.cuni.mff.ms.polankam.jjcron.remote.FakeClient;
  */
 public class RMIClientFactory implements ClientFactory {
 
+    /**
+     * 
+     * @param addr
+     * @return
+     * @throws Exception
+     */
     @Override
-    public Client create(ClientAddress addr) {
+    public Client create(ClientAddress addr) throws Exception {
         return new FakeClient();
     }
 }

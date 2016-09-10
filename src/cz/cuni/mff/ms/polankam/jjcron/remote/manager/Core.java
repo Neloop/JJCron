@@ -34,16 +34,43 @@ public class Core extends Application {
 
     private static final Logger logger = Logger.getLogger(Core.class.getName());
 
+    /**
+     *
+     */
     private Pane leftPane;
+    /**
+     *
+     */
     private Pane descriptionPane;
+    /**
+     *
+     */
     private ListView<String> clientsListView;
 
+    /**
+     *
+     */
     private final ClientsHolder clientsList;
+    /**
+     *
+     */
     private final ConnectionDialogFactory loginDialogFactory;
+    /**
+     *
+     */
     private final AlertDialogFactory alertDialogFactory;
+    /**
+     *
+     */
     private final ClientDetailPaneHolder clientDetailPaneHolder;
+    /**
+     *
+     */
     private final LoadingScreen loadingScreen;
 
+    /**
+     *
+     */
     public Core() {
         clientsList = new ClientsHolder();
         loginDialogFactory = new ConnectionDialogFactory();
@@ -55,6 +82,9 @@ public class Core extends Application {
         initDescriptionPane();
     }
 
+    /**
+     *
+     */
     private void newConnectionButtonAction() {
         Dialog<Pair<String, String>> dialog = loginDialogFactory.createLoginDialog();
         Optional<Pair<String, String>> result = dialog.showAndWait();
@@ -93,6 +123,9 @@ public class Core extends Application {
         new Thread(task).start();
     }
 
+    /**
+     *
+     */
     private void initLeftPane() {
         leftPane = new AnchorPane();
         VBox leftVBox = new VBox();
@@ -124,6 +157,9 @@ public class Core extends Application {
         leftPane.getChildren().add(leftVBox);
     }
 
+    /**
+     *
+     */
     private void initDescriptionPane() {
         HBox descPane = new HBox();
 
@@ -139,6 +175,10 @@ public class Core extends Application {
         descriptionPane = descPane;
     }
 
+    /**
+     * 
+     * @param stage
+     */
     @Override
     public void start(Stage stage) {
         // set main stage to loading screen for proper positioning

@@ -17,6 +17,10 @@ import javafx.scene.layout.GridPane;
  * @author Neloop
  */
 public class ConnectionDialogFactory {
+    /**
+     * 
+     * @return
+     */
     public Dialog<Pair<String, String>> createLoginDialog() {
         Dialog<Pair<String, String>> dialog = new Dialog<>();
         dialog.setTitle("Connection Dialog");

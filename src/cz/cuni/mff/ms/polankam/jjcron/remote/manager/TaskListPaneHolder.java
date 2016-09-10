@@ -13,10 +13,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -37,30 +35,65 @@ public class TaskListPaneHolder {
 
     private static final Logger logger = Logger.getLogger(Core.class.getName());
 
+    /**
+     *
+     */
     private HBox rootPane;
+    /**
+     *
+     */
     private VBox contentPane;
-    private ListView<String> tasksListView;
+    /**
+     *
+     */
+    private ListView<TaskDetail> tasksListView;
 
-    private TextField taskDetailIdText;
-    private TextField taskDetailNameText;
-
+    /**
+     *
+     */
+    private final TaskDetailPaneHolder detailHolder;
+    /**
+     *
+     */
     private final LoadingScreen loadingScreen;
+    /**
+     *
+     */
     private final AddTaskDialogFactory addTaskDialogFactory;
+    /**
+     *
+     */
     private final AlertDialogFactory alertDialogFactory;
+    /**
+     *
+     */
     private ClientWrapper activeClient;
 
+    /**
+     *
+     * @param loadingScreen
+     */
     public TaskListPaneHolder(LoadingScreen loadingScreen){
         this.loadingScreen = loadingScreen;
         addTaskDialogFactory = new AddTaskDialogFactory();
         alertDialogFactory = new AlertDialogFactory();
+        detailHolder = new TaskDetailPaneHolder();
         initContentPane();
         initRootPane();
     }
 
+    /**
+     *
+     * @return
+     */
     public Pane getRootPane() {
         return rootPane;
     }
 
+    /**
+     *
+     * @param client
+     */
     public void displayTaskList(ClientWrapper client) {
         activeClient = client;
 
@@ -70,11 +103,17 @@ public class TaskListPaneHolder {
         rootPane.getChildren().add(contentPane);
     }
 
+    /**
+     *
+     */
     public void clearTaskList() {
         activeClient = null;
         rootPane.getChildren().clear();
     }
 
+    /**
+     *
+     */
     private void initRootPane() {
         rootPane = new HBox();
         rootPane.setPadding(new Insets(10, 0, 0, 0));
@@ -83,26 +122,13 @@ public class TaskListPaneHolder {
                 "-fx-border-style: solid;");
     }
 
-    private void populateTaskDetailArea(GridPane detailArea) {
-        taskDetailIdText = new TextField();
-        taskDetailIdText.setEditable(false);
-        taskDetailNameText = new TextField();
-        taskDetailNameText.setEditable(false);
-        taskDetailNameText.autosize();
-
-        detailArea.add(new Label("UUID:"), 0, 0);
-        detailArea.add(taskDetailIdText, 1, 0, 3, 1);
-        detailArea.add(new Label("Name:"), 0, 1);
-        detailArea.add(taskDetailNameText, 1, 1, 3, 1);
-
-        detailArea.setHgap(5);
-        detailArea.setVgap(5);
-    }
-
+    /**
+     *
+     * @param buttonsArea
+     */
     private void populateTaskListButtonsArea(VBox buttonsArea) {
         buttonsArea.setSpacing(5);
         buttonsArea.setAlignment(Pos.BOTTOM_RIGHT);
-        HBox.setHgrow(buttonsArea, Priority.ALWAYS);
 
         Button refreshButton = new Button(REFRESH_BTN_TEXT);
         refreshButton.setMinWidth(TASK_ACTION_BTN_WIDTH);
@@ -131,9 +157,11 @@ public class TaskListPaneHolder {
         buttonsArea.getChildren().addAll(refreshButton, addButton, deleteButton, saveButton);
     }
 
+    /**
+     *
+     */
     private void initContentPane() {
         contentPane = new VBox();
-        GridPane taskDetail = new GridPane();
         HBox taskDetailAndButtonsArea = new HBox();
         VBox taskListButtons = new VBox();
 
@@ -143,19 +171,34 @@ public class TaskListPaneHolder {
                     switchToTaskDetailAction(newValue);
                 }
         );
+        tasksListView.setCellFactory(param -> new ListCell<TaskDetail>() {
+            @Override
+            protected void updateItem(TaskDetail item, boolean empty) {
+                super.updateItem(item, empty);
 
-        populateTaskDetailArea(taskDetail);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.name);
+                }
+            }
+        });
+
         populateTaskListButtonsArea(taskListButtons);
 
         taskDetailAndButtonsArea.setSpacing(10);
-        taskDetailAndButtonsArea.getChildren().addAll(taskDetail, taskListButtons);
+        taskDetailAndButtonsArea.getChildren().addAll(detailHolder.getRootPane(), taskListButtons);
 
         VBox.setVgrow(tasksListView, Priority.ALWAYS);
         HBox.setHgrow(contentPane, Priority.ALWAYS);
+        HBox.setHgrow(detailHolder.getRootPane(), Priority.ALWAYS);
         contentPane.setSpacing(10);
         contentPane.getChildren().addAll(tasksListView, taskDetailAndButtonsArea);
     }
 
+    /**
+     *
+     */
     private void refreshButtonAction() {
         if (activeClient == null) {
             return;
@@ -176,7 +219,7 @@ public class TaskListPaneHolder {
             tasksListView.getSelectionModel().selectFirst();
             loadingScreen.hide();
             if (activeClient.tasksObservableList.isEmpty()) {
-                clearTaskDetailAction();
+                detailHolder.clearTaskDetail();
             }
         });
         task.setOnFailed((event) -> {
@@ -190,6 +233,9 @@ public class TaskListPaneHolder {
         new Thread(task).start();
     }
 
+    /**
+     *
+     */
     private void addTaskButtonAction() {
         Dialog<List<String>> dialog = addTaskDialogFactory.createAddTaskDialog();
         Optional<List<String>> result = dialog.showAndWait();
@@ -228,7 +274,11 @@ public class TaskListPaneHolder {
         new Thread(task).start();
     }
 
-    private void deleteTaskButtonAction(String taskId) {
+    /**
+     *
+     * @param detail
+     */
+    private void deleteTaskButtonAction(TaskDetail detail) {
         if (activeClient == null) {
             return;
         }
@@ -237,7 +287,7 @@ public class TaskListPaneHolder {
         Task task = new Task() {
             @Override
             protected Object call() throws Exception {
-                activeClient.deleteTask(taskId);
+                activeClient.deleteTask(detail.id);
                 return null;
             }
         };
@@ -248,7 +298,7 @@ public class TaskListPaneHolder {
             tasksListView.getSelectionModel().selectFirst();
             loadingScreen.hide();
             if (activeClient.tasksObservableList.isEmpty()) {
-                clearTaskDetailAction();
+                detailHolder.clearTaskDetail();
             }
         });
         task.setOnFailed((event) -> {
@@ -262,6 +312,9 @@ public class TaskListPaneHolder {
         new Thread(task).start();
     }
 
+    /**
+     *
+     */
     private void saveToCrontabButtonAction() {
         if (activeClient == null) {
             return;
@@ -291,22 +344,15 @@ public class TaskListPaneHolder {
         new Thread(task).start();
     }
 
-    private void switchToTaskDetailAction(String taskId) {
+    /**
+     * 
+     * @param detail
+     */
+    private void switchToTaskDetailAction(TaskDetail detail) {
         if (activeClient == null) {
             return;
         }
 
-        TaskDetail task = activeClient.getTaskDetail(taskId);
-        if (task == null) {
-            return;
-        }
-
-        taskDetailIdText.setText(task.id);
-        taskDetailNameText.setText(task.name);
-    }
-
-    private void clearTaskDetailAction() {
-        taskDetailIdText.clear();
-        taskDetailNameText.clear();
+        detailHolder.switchToTaskDetail(detail);
     }
 }

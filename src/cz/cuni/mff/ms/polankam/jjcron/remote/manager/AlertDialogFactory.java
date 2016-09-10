@@ -9,6 +9,11 @@ import javafx.scene.control.Alert.AlertType;
  */
 public class AlertDialogFactory {
 
+    /**
+     *
+     * @param message
+     * @return
+     */
     public Alert createConfirmationDialog(String message) {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Confirmation Dialog");
@@ -17,6 +22,11 @@ public class AlertDialogFactory {
         return alert;
     }
 
+    /**
+     *
+     * @param message
+     * @return
+     */
     public Alert createWarningDialog(String message) {
         Alert alert = new Alert(AlertType.WARNING);
         alert.setTitle("Warning Dialog");
@@ -25,6 +35,11 @@ public class AlertDialogFactory {
         return alert;
     }
 
+    /**
+     * 
+     * @param message
+     * @return
+     */
     public Alert createErrorDialog(String message) {
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle("Error Dialog");

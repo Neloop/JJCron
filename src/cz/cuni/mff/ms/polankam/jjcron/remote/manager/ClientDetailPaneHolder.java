@@ -53,21 +53,62 @@ public class ClientDetailPaneHolder {
 
     private static final Logger logger = Logger.getLogger(ClientDetailPaneHolder.class.getName());
 
+    /**
+     *
+     */
     private Pane rootAnchorPane;
+    /**
+     *
+     */
     private TextField registryAddressTextArea;
+    /**
+     *
+     */
     private TextField clientIdentificationTextArea;
+    /**
+     *
+     */
     private Circle clientStatusCircle;
+    /**
+     *
+     */
     private final TaskListPaneHolder taskListPaneHolder;
+    /**
+     *
+     */
     private final LoadingScreen loadingScreen;
+    /**
+     *
+     */
     private final AlertDialogFactory alertDialogFactory;
 
+    /**
+     *
+     */
     private Button clientPauseButton;
+    /**
+     *
+     */
     private Button listTasksButton;
+    /**
+     *
+     */
     private final List<Button> clientActionButtonsList;
 
+    /**
+     *
+     */
     private final ClientsHolder clientsList;
+    /**
+     *
+     */
     private Pair<String, ClientWrapper> activeClient;
 
+    /**
+     *
+     * @param connList
+     * @param loadingScreen
+     */
     public ClientDetailPaneHolder(ClientsHolder connList, LoadingScreen loadingScreen) {
         clientsList = connList;
         this.loadingScreen = loadingScreen;
@@ -77,10 +118,18 @@ public class ClientDetailPaneHolder {
         initRootPane();
     }
 
+    /**
+     *
+     * @return
+     */
     public Pane getRootPane() {
         return rootAnchorPane;
     }
 
+    /**
+     *
+     * @param name
+     */
     public void switchToConnectionDetail(String name) {
         ClientWrapper client = clientsList.getClient(name);
 
@@ -121,6 +170,9 @@ public class ClientDetailPaneHolder {
         }
     }
 
+    /**
+     *
+     */
     private void clearConnectionDetail() {
         activeClient = null;
         registryAddressTextArea.clear();
@@ -135,6 +187,9 @@ public class ClientDetailPaneHolder {
         }
     }
 
+    /**
+     *
+     */
     private void removeActiveClient() {
         clientsList.deleteClient(activeClient.getKey());
         if (clientsList.isEmpty()) {
@@ -142,6 +197,9 @@ public class ClientDetailPaneHolder {
         }
     }
 
+    /**
+     *
+     */
     private void disconnectClientButtonAction() {
         Alert alert = alertDialogFactory.createConfirmationDialog("JJCron instance will be disconnected!");
 
@@ -175,6 +233,9 @@ public class ClientDetailPaneHolder {
         new Thread(task).start();
     }
 
+    /**
+     *
+     */
     private void shutdownClientButtonAction() {
         Alert alert = alertDialogFactory.createConfirmationDialog("Connected instance of JJCron will be shutted down!");
 
@@ -208,6 +269,9 @@ public class ClientDetailPaneHolder {
         new Thread(task).start();
     }
 
+    /**
+     *
+     */
     private void pauseClientButtonAction() {
         boolean paused = activeClient.getValue().isPaused();
 
@@ -248,6 +312,9 @@ public class ClientDetailPaneHolder {
         new Thread(task).start();
     }
 
+    /**
+     *
+     */
     private void listTasksButtonAction() {
         if (activeClient.getValue().isListOpened()) {
             // loading screen is not needed here...
@@ -283,6 +350,10 @@ public class ClientDetailPaneHolder {
         }
     }
 
+    /**
+     *
+     * @param buttonsArea
+     */
     private void populateClientButtonsArea(VBox buttonsArea) {
         Button disconnButton = new Button(DISCONNECT_BTN_TEXT);
         disconnButton.setDisable(true);
@@ -328,6 +399,10 @@ public class ClientDetailPaneHolder {
         clientActionButtonsList.add(disconnButton);
     }
 
+    /**
+     *
+     * @param detailArea
+     */
     private void populateDetailArea(GridPane detailArea) {
         Label reg = new Label(REGISTRY_URL_LABEL_TEXT);
         registryAddressTextArea = new TextField();
@@ -354,6 +429,9 @@ public class ClientDetailPaneHolder {
         detailArea.setPadding(new Insets(0, 0, 10, 0));
     }
 
+    /**
+     * 
+     */
     private void initRootPane() {
         rootAnchorPane = new AnchorPane();
         HBox centerHBox = new HBox();
