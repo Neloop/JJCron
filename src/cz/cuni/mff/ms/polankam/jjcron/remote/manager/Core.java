@@ -13,6 +13,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -36,6 +40,10 @@ public class Core extends Application {
 
     private static final Logger logger = Logger.getLogger(Core.class.getName());
 
+    /**
+     *
+     */
+    private MenuBar menuBar;
     /**
      *
      */
@@ -69,6 +77,10 @@ public class Core extends Application {
      *
      */
     private final LoadingScreen loadingScreen;
+    /**
+     *
+     */
+    private final AboutDialogFactory aboutDialogFactory;
 
     /**
      *
@@ -79,7 +91,9 @@ public class Core extends Application {
         loadingScreen = new LoadingScreen();
         alertDialogFactory = new AlertDialogFactory();
         clientDetailPaneHolder = new ClientDetailPaneHolder(clientsList, loadingScreen);
+        aboutDialogFactory = new AboutDialogFactory();
 
+        initMenu();
         initLeftPane();
         initDescriptionPane();
     }
@@ -130,6 +144,38 @@ public class Core extends Application {
     /**
      *
      */
+    private void initMenu() {
+        menuBar = new MenuBar();
+
+        Menu fileMenu = new Menu("File");
+        Menu clientMenu = clientDetailPaneHolder.getClientMenu();
+        Menu helpMenu = new Menu("Help");
+
+        MenuItem newConn = new MenuItem("New connection");
+        newConn.setOnAction((e) -> {
+            newConnectionButtonAction();
+        });
+
+        MenuItem exit = new MenuItem("Exit");
+        exit.setOnAction((e) -> {
+            System.exit(0);
+        });
+
+        MenuItem about = new MenuItem("About");
+        about.setOnAction((e) -> {
+            aboutDialogFactory.createAboutDialog().show();
+        });
+
+        fileMenu.getItems().addAll(newConn, new SeparatorMenuItem(), exit);
+        helpMenu.getItems().addAll(about);
+
+        menuBar.setPadding(Insets.EMPTY);
+        menuBar.getMenus().addAll(fileMenu, clientMenu, helpMenu);
+    }
+
+    /**
+     *
+     */
     private void initLeftPane() {
         leftPane = new AnchorPane();
         VBox leftVBox = new VBox();
@@ -147,7 +193,7 @@ public class Core extends Application {
 
         // add button which will create new connection
         Button newButton = new Button(NEW_CONNECTION_BTN_TEXT);
-        newButton.setOnAction((ActionEvent event) -> {
+        newButton.setOnAction((e) -> {
             newConnectionButtonAction();
         });
         buttonPane.setPadding(new Insets(0, 0, STANDARD_PADDING, 0));
@@ -189,6 +235,7 @@ public class Core extends Application {
         loadingScreen.setMainStage(stage);
 
         BorderPane rootPane = new BorderPane();
+        rootPane.setTop(menuBar);
         rootPane.setLeft(leftPane);
         rootPane.setCenter(clientDetailPaneHolder.getRootPane());
         rootPane.setBottom(descriptionPane);

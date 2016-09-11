@@ -13,6 +13,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
@@ -73,6 +75,11 @@ public class ClientDetailPaneHolder {
     /**
      *
      */
+    private Menu clientActionsMenu;
+
+    /**
+     *
+     */
     private final TaskListPaneHolder taskListPaneHolder;
     /**
      *
@@ -86,11 +93,19 @@ public class ClientDetailPaneHolder {
     /**
      *
      */
-    private Button clientPauseButton;
+    private Button pauseClientButton;
+    /**
+     *
+     */
+    private MenuItem pauseClientMenuItem;
     /**
      *
      */
     private Button listTasksButton;
+    /**
+     *
+     */
+    private MenuItem listTasksMenuItem;
     /**
      *
      */
@@ -117,6 +132,7 @@ public class ClientDetailPaneHolder {
         taskListPaneHolder = new TaskListPaneHolder(loadingScreen);
         alertDialogFactory = new AlertDialogFactory();
         initRootPane();
+        initClientActionsMenu();
     }
 
     /**
@@ -125,6 +141,10 @@ public class ClientDetailPaneHolder {
      */
     public Pane getRootPane() {
         return rootAnchorPane;
+    }
+
+    public Menu getClientMenu() {
+        return clientActionsMenu;
     }
 
     /**
@@ -151,20 +171,24 @@ public class ClientDetailPaneHolder {
         if (client.isListOpened()) {
             taskListPaneHolder.displayTaskList(client);
             listTasksButton.setText(UNLIST_TASKS_BTN_TEXT);
+            listTasksMenuItem.setText(UNLIST_TASKS_BTN_TEXT);
         } else {
             taskListPaneHolder.clearTaskList();
             listTasksButton.setText(LIST_TASKS_BTN_TEXT);
+            listTasksMenuItem.setText(LIST_TASKS_BTN_TEXT);
         }
 
         try {
             if (client.isPaused()) {
                 clientStatusCircle.setFill(PAUSED_STATUS_COLOR);
                 Tooltip.install(clientStatusCircle, new Tooltip(PAUSED_STATUS));
-                clientPauseButton.setText(UNPAUSE_BTN_TEXT);
+                pauseClientButton.setText(UNPAUSE_BTN_TEXT);
+                pauseClientMenuItem.setText(UNPAUSE_BTN_TEXT);
             } else {
                 clientStatusCircle.setFill(RUNNING_STATUS_COLOR);
                 Tooltip.install(clientStatusCircle, new Tooltip(RUNNING_STATUS));
-                clientPauseButton.setText(PAUSE_BTN_TEXT);
+                pauseClientButton.setText(PAUSE_BTN_TEXT);
+                pauseClientMenuItem.setText(PAUSE_BTN_TEXT);
             }
         } catch (Exception ex) {
             logger.log(Level.SEVERE, "Error during isPaused() function", ex);
@@ -202,6 +226,10 @@ public class ClientDetailPaneHolder {
      *
      */
     private void disconnectClientButtonAction() {
+        if (activeClient == null) {
+            return;
+        }
+
         Alert alert = alertDialogFactory.createConfirmationDialog("JJCron instance will be disconnected!");
 
         Optional<ButtonType> result = alert.showAndWait();
@@ -240,6 +268,10 @@ public class ClientDetailPaneHolder {
      *
      */
     private void shutdownClientButtonAction() {
+        if (activeClient == null) {
+            return;
+        }
+
         Alert alert = alertDialogFactory.createConfirmationDialog("Connected instance of JJCron will be shutted down!");
 
         Optional<ButtonType> result = alert.showAndWait();
@@ -278,6 +310,10 @@ public class ClientDetailPaneHolder {
      *
      */
     private void pauseClientButtonAction() {
+        if (activeClient == null) {
+            return;
+        }
+
         boolean paused = activeClient.getValue().isPaused();
 
         Task task = new Task() {
@@ -297,11 +333,13 @@ public class ClientDetailPaneHolder {
         });
         task.setOnSucceeded((event) -> {
             if (paused) {
-                clientPauseButton.setText(PAUSE_BTN_TEXT);
+                pauseClientButton.setText(PAUSE_BTN_TEXT);
+                pauseClientMenuItem.setText(PAUSE_BTN_TEXT);
                 clientStatusCircle.setFill(RUNNING_STATUS_COLOR);
                 Tooltip.install(clientStatusCircle, new Tooltip(RUNNING_STATUS));
             } else {
-                clientPauseButton.setText(UNPAUSE_BTN_TEXT);
+                pauseClientButton.setText(UNPAUSE_BTN_TEXT);
+                pauseClientMenuItem.setText(UNPAUSE_BTN_TEXT);
                 clientStatusCircle.setFill(PAUSED_STATUS_COLOR);
                 Tooltip.install(clientStatusCircle, new Tooltip(PAUSED_STATUS));
             }
@@ -323,12 +361,17 @@ public class ClientDetailPaneHolder {
      *
      */
     private void listTasksButtonAction() {
+        if (activeClient == null) {
+            return;
+        }
+
         if (activeClient.getValue().isListOpened()) {
             // loading screen is not needed here...
             //   list should be closed immediatelly
             activeClient.getValue().closeTaskList();
             taskListPaneHolder.clearTaskList();
             listTasksButton.setText(LIST_TASKS_BTN_TEXT);
+            listTasksMenuItem.setText(LIST_TASKS_BTN_TEXT);
         } else {
             Task task = new Task() {
                 @Override
@@ -345,6 +388,7 @@ public class ClientDetailPaneHolder {
                 activeClient.getValue().fillTaskObservableList();
                 taskListPaneHolder.displayTaskList(activeClient.getValue());
                 listTasksButton.setText(UNLIST_TASKS_BTN_TEXT);
+                listTasksMenuItem.setText(UNLIST_TASKS_BTN_TEXT);
                 loadingScreen.hide();
             });
             task.setOnFailed((event) -> {
@@ -378,10 +422,10 @@ public class ClientDetailPaneHolder {
             shutdownClientButtonAction();
         });
 
-        clientPauseButton = new Button(PAUSE_BTN_TEXT);
-        clientPauseButton.setDisable(true);
-        clientPauseButton.setMinWidth(CLIENT_ACTION_BUTTON_WIDTH);
-        clientPauseButton.setOnAction((ActionEvent event) -> {
+        pauseClientButton = new Button(PAUSE_BTN_TEXT);
+        pauseClientButton.setDisable(true);
+        pauseClientButton.setMinWidth(CLIENT_ACTION_BUTTON_WIDTH);
+        pauseClientButton.setOnAction((ActionEvent event) -> {
             pauseClientButtonAction();
         });
 
@@ -398,11 +442,11 @@ public class ClientDetailPaneHolder {
         buttonsArea.setSpacing(STANDARD_PADDING);
         buttonsArea.setAlignment(Pos.TOP_CENTER);
         buttonsArea.setPadding(new Insets(0, 0, 0, STANDARD_PADDING));
-        buttonsArea.getChildren().addAll(listTasksButton, clientPauseButton,
+        buttonsArea.getChildren().addAll(listTasksButton, pauseClientButton,
                 shutdownButton, disconnButton);
 
         clientActionButtonsList.add(listTasksButton);
-        clientActionButtonsList.add(clientPauseButton);
+        clientActionButtonsList.add(pauseClientButton);
         clientActionButtonsList.add(shutdownButton);
         clientActionButtonsList.add(disconnButton);
     }
@@ -468,5 +512,31 @@ public class ClientDetailPaneHolder {
         centerHBox.setPadding(new Insets(STANDARD_PADDING, STANDARD_PADDING, STANDARD_PADDING, 0));
         centerHBox.getChildren().addAll(detailAndListVBox, buttonsArea);
         rootAnchorPane.getChildren().add(centerHBox);
+    }
+
+    private void initClientActionsMenu() {
+        clientActionsMenu = new Menu("Client");
+
+        listTasksMenuItem = new MenuItem(LIST_TASKS_BTN_TEXT);
+        listTasksMenuItem.setOnAction((e) -> {
+            listTasksButtonAction();
+        });
+
+        pauseClientMenuItem = new MenuItem(PAUSE_BTN_TEXT);
+        pauseClientMenuItem.setOnAction((e) -> {
+            pauseClientButtonAction();
+        });
+
+        MenuItem shutdown = new MenuItem(SHUTDOWN_BTN_TEXT);
+        shutdown.setOnAction((e) -> {
+            shutdownClientButtonAction();
+        });
+
+        MenuItem disconn = new MenuItem(DISCONNECT_BTN_TEXT);
+        disconn.setOnAction((e) -> {
+            disconnectClientButtonAction();
+        });
+
+        clientActionsMenu.getItems().addAll(listTasksMenuItem, pauseClientMenuItem, shutdown, disconn);
     }
 }
