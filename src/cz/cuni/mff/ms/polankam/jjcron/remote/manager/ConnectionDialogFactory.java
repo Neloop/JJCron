@@ -14,11 +14,13 @@ import javafx.scene.layout.GridPane;
 
 /**
  * Using of official JavaFX Dialogs... JDK 8u40 needed
+ *
  * @author Neloop
  */
 public class ConnectionDialogFactory {
+
     /**
-     * 
+     *
      * @return
      */
     public Dialog<Pair<String, String>> createLoginDialog() {
@@ -26,8 +28,8 @@ public class ConnectionDialogFactory {
         dialog.setTitle("Connection Dialog");
         dialog.setHeaderText("Please fill registry address and client identification");
 
-        ButtonType loginButtonType = new ButtonType("Login", ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+        ButtonType connectButtonType = new ButtonType("Connect", ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(connectButtonType, ButtonType.CANCEL);
 
         GridPane grid = new GridPane();
         grid.setHgap(10);
@@ -45,13 +47,13 @@ public class ConnectionDialogFactory {
         grid.add(clientIdentification, 1, 1);
 
         // Login button is disabled by default
-        Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
-        loginButton.setDisable(true);
+        Node connectButton = dialog.getDialogPane().lookupButton(connectButtonType);
+        connectButton.setDisable(true);
 
         // Invalidate login button in case of empty strings in both fields
-        loginButton.disableProperty().bind(
+        connectButton.disableProperty().bind(
                 Bindings.isEmpty(registryAddress.textProperty())
-                        .or(Bindings.isEmpty(clientIdentification.textProperty())));
+                .or(Bindings.isEmpty(clientIdentification.textProperty())));
 
         dialog.getDialogPane().setContent(grid);
 
@@ -60,7 +62,7 @@ public class ConnectionDialogFactory {
 
         // Convert results to pair of server address and client identification
         dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == loginButtonType) {
+            if (dialogButton == connectButtonType) {
                 return new Pair<>(registryAddress.getText(), clientIdentification.getText());
             }
             return null;

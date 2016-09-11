@@ -3,7 +3,6 @@ package cz.cuni.mff.ms.polankam.jjcron.remote.manager;
 import cz.cuni.mff.ms.polankam.jjcron.common.CrontabTime;
 import cz.cuni.mff.ms.polankam.jjcron.common.TaskMetadata;
 import cz.cuni.mff.ms.polankam.jjcron.remote.TaskDetail;
-import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,6 +31,7 @@ public class TaskListPaneHolder {
     private static final String SAVE_TASKS_BTN_TEXT = "Save to Crontab";
 
     private static final double TASK_ACTION_BTN_WIDTH = 130;
+    private static final int STANDARD_PADDING = 10;
 
     private static final Logger logger = Logger.getLogger(Core.class.getName());
 
@@ -73,7 +73,7 @@ public class TaskListPaneHolder {
      *
      * @param loadingScreen
      */
-    public TaskListPaneHolder(LoadingScreen loadingScreen){
+    public TaskListPaneHolder(LoadingScreen loadingScreen) {
         this.loadingScreen = loadingScreen;
         addTaskDialogFactory = new AddTaskDialogFactory();
         alertDialogFactory = new AlertDialogFactory();
@@ -116,10 +116,10 @@ public class TaskListPaneHolder {
      */
     private void initRootPane() {
         rootPane = new HBox();
-        rootPane.setPadding(new Insets(10, 0, 0, 0));
-        rootPane.setStyle("-fx-border-width: 1 0 0 0;" +
-                "-fx-border-color: grey;" +
-                "-fx-border-style: solid;");
+        rootPane.setPadding(new Insets(STANDARD_PADDING, 0, 0, 0));
+        rootPane.setStyle("-fx-border-width: 1 0 0 0;"
+                + "-fx-border-color: grey;"
+                + "-fx-border-style: solid;");
     }
 
     /**
@@ -213,7 +213,9 @@ public class TaskListPaneHolder {
             }
         };
 
-        task.setOnRunning((event) -> { loadingScreen.show(); });
+        task.setOnRunning((event) -> {
+            loadingScreen.show();
+        });
         task.setOnSucceeded((event) -> {
             activeClient.fillTaskObservableList();
             tasksListView.getSelectionModel().selectFirst();
@@ -237,19 +239,19 @@ public class TaskListPaneHolder {
      *
      */
     private void addTaskButtonAction() {
-        Dialog<List<String>> dialog = addTaskDialogFactory.createAddTaskDialog();
-        Optional<List<String>> result = dialog.showAndWait();
+        Dialog<AddTaskDialogFactory.TaskInfo> dialog = addTaskDialogFactory.createAddTaskDialog();
+        Optional<AddTaskDialogFactory.TaskInfo> result = dialog.showAndWait();
 
         // user gives us information needed for task creation so use them
         Task task = new Task() {
             @Override
             protected Object call() throws Exception {
                 if (result.isPresent()) {
-                    List<String> list = result.get();
-                    CrontabTime time = new CrontabTime(list.get(0),
-                            list.get(1), list.get(2), list.get(3),
-                            list.get(4), list.get(5));
-                    TaskMetadata meta = new TaskMetadata(time, list.get(6));
+                    AddTaskDialogFactory.TaskInfo info = result.get();
+                    CrontabTime time = new CrontabTime(info.second, info.minute,
+                            info.hour, info.dayOfMonth, info.month,
+                            info.dayOfWeek);
+                    TaskMetadata meta = new TaskMetadata(time, info.command);
                     activeClient.addTask(meta);
                 }
                 activeClient.refreshTasks();
@@ -257,7 +259,9 @@ public class TaskListPaneHolder {
             }
         };
 
-        task.setOnRunning((event) -> { loadingScreen.show("Adding ..."); });
+        task.setOnRunning((event) -> {
+            loadingScreen.show("Adding ...");
+        });
         task.setOnSucceeded((event) -> {
             activeClient.fillTaskObservableList();
             tasksListView.getSelectionModel().selectFirst();
@@ -292,7 +296,9 @@ public class TaskListPaneHolder {
             }
         };
 
-        task.setOnRunning((event) -> { loadingScreen.show("Removing  ..."); });
+        task.setOnRunning((event) -> {
+            loadingScreen.show("Removing  ...");
+        });
         task.setOnSucceeded((event) -> {
             activeClient.fillTaskObservableList();
             tasksListView.getSelectionModel().selectFirst();
@@ -329,7 +335,9 @@ public class TaskListPaneHolder {
             }
         };
 
-        task.setOnRunning((event) -> { loadingScreen.show("Saving ..."); });
+        task.setOnRunning((event) -> {
+            loadingScreen.show("Saving ...");
+        });
         task.setOnSucceeded((event) -> {
             loadingScreen.hide();
         });
@@ -345,7 +353,7 @@ public class TaskListPaneHolder {
     }
 
     /**
-     * 
+     *
      * @param detail
      */
     private void switchToTaskDetailAction(TaskDetail detail) {

@@ -32,7 +32,7 @@ public class ClientAddress {
      * @return
      */
     @Override
-    public String toString(){
+    public String toString() {
         return registryAddress + ID_DELIMITER + clientIdentification;
     }
 }

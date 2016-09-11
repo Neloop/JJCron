@@ -2,6 +2,7 @@ package cz.cuni.mff.ms.polankam.jjcron.remote.manager;
 
 import cz.cuni.mff.ms.polankam.jjcron.common.CrontabTime;
 import cz.cuni.mff.ms.polankam.jjcron.remote.TaskDetail;
+import java.time.format.DateTimeFormatter;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -15,6 +16,7 @@ import javafx.scene.layout.Pane;
 public class TaskDetailPaneHolder {
 
     private static final double UNIT_TEXT_WIDTH = 70;
+    private static final int EXTENDED_PADDING = 20;
 
     /**
      *
@@ -33,10 +35,6 @@ public class TaskDetailPaneHolder {
      *
      */
     private final TextField nextText;
-    /**
-     *
-     */
-    private final TextField timeUnitText;
     /**
      *
      */
@@ -80,6 +78,11 @@ public class TaskDetailPaneHolder {
     private final TextField commandText;
 
     /**
+     * Formats time into standard year first date and hour first time.
+     */
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    /**
      *
      */
     public TaskDetailPaneHolder() {
@@ -87,7 +90,6 @@ public class TaskDetailPaneHolder {
         idText = new TextField();
         nameText = new TextField();
         nextText = new TextField();
-        timeUnitText = new TextField();
         lastExecutionText = new TextField();
         lastDurationText = new TextField();
         metadataPane = new GridPane();
@@ -102,7 +104,6 @@ public class TaskDetailPaneHolder {
         idText.setEditable(false);
         nameText.setEditable(false);
         nextText.setEditable(false);
-        timeUnitText.setEditable(false);
         lastExecutionText.setEditable(false);
         lastDurationText.setEditable(false);
 
@@ -111,12 +112,10 @@ public class TaskDetailPaneHolder {
         rootPane.add(new Label("Name:"), 0, 1);
         rootPane.add(nameText, 1, 1, 3, 1);
         rootPane.add(new Label("Next Execution:"), 0, 2);
-        rootPane.add(nextText, 1, 2);
-        rootPane.add(new Label("Time Unit:"), 2, 2);
-        rootPane.add(timeUnitText, 3, 2);
+        rootPane.add(nextText, 1, 2, 3, 1);
         rootPane.add(new Label("Last Execution:"), 0, 3);
         rootPane.add(lastExecutionText, 1, 3);
-        rootPane.add(new Label("Last Duration:"), 2, 3);
+        rootPane.add(new Label("Last Duration (ns):"), 2, 3);
         rootPane.add(lastDurationText, 3, 3);
         rootPane.add(metadataPane, 4, 0, 1, 4);
 
@@ -131,7 +130,7 @@ public class TaskDetailPaneHolder {
         rootPane.setVgap(5);
         metadataPane.setHgap(5);
         metadataPane.setVgap(5);
-        metadataPane.setPadding(new Insets(0, 0, 0, 10));
+        metadataPane.setPadding(new Insets(0, 0, 0, EXTENDED_PADDING));
     }
 
     /**
@@ -153,10 +152,9 @@ public class TaskDetailPaneHolder {
 
         idText.setText(task.id);
         nameText.setText(task.name);
-        nextText.setText(task.nextExecutionTime.toString());
-        timeUnitText.setText(task.timeUnit.toString());
+        nextText.setText(task.nextExecutionTime.format(dateTimeFormatter));
         if (task.stats.getLastExecution() != null) {
-            lastExecutionText.setText(task.stats.getLastExecution().toString());
+            lastExecutionText.setText(task.stats.getLastExecution().format(dateTimeFormatter));
         }
         if (task.stats.getLastDuration() != null) {
             lastDurationText.setText(task.stats.getLastDuration().toString());
@@ -191,13 +189,12 @@ public class TaskDetailPaneHolder {
     }
 
     /**
-     * 
+     *
      */
     public void clearTaskDetail() {
         idText.clear();
         nameText.clear();
         nextText.clear();
-        timeUnitText.clear();
         lastExecutionText.clear();
         lastDurationText.clear();
         metadataPane.getChildren().clear();

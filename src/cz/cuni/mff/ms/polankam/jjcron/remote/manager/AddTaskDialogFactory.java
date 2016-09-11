@@ -1,7 +1,5 @@
 package cz.cuni.mff.ms.polankam.jjcron.remote.manager;
 
-import java.util.ArrayList;
-import java.util.List;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
@@ -26,6 +24,28 @@ public class AddTaskDialogFactory {
     private static final String HINTS_NONE = "None";
     private static final String HINTS_EVERY_SECOND = "Every second";
     private static final String HINTS_MIDNIGHT = "Midnight";
+
+    public class TaskInfo {
+
+        public final String second;
+        public final String minute;
+        public final String hour;
+        public final String dayOfMonth;
+        public final String month;
+        public final String dayOfWeek;
+        public final String command;
+
+        public TaskInfo(String sec, String min, String hour, String dayOfMonth,
+                String month, String dayOfWeek, String cmd) {
+            this.second = sec;
+            this.minute = min;
+            this.hour = hour;
+            this.dayOfMonth = dayOfMonth;
+            this.month = month;
+            this.dayOfWeek = dayOfWeek;
+            this.command = cmd;
+        }
+    }
 
     /**
      *
@@ -83,8 +103,8 @@ public class AddTaskDialogFactory {
      *
      * @return
      */
-    public Dialog<List<String>> createAddTaskDialog() {
-        Dialog<List<String>> dialog = new Dialog<>();
+    public Dialog<TaskInfo> createAddTaskDialog() {
+        Dialog<TaskInfo> dialog = new Dialog<>();
         dialog.setTitle("Add Task Dialog");
         dialog.setHeaderText("Please fill new cron task information");
 
@@ -160,12 +180,12 @@ public class AddTaskDialogFactory {
         // Invalidate login button in case of empty strings in both fields
         addButton.disableProperty().bind(
                 Bindings.isEmpty(secondText.textProperty())
-                        .or(Bindings.isEmpty(minuteText.textProperty()))
-                        .or(Bindings.isEmpty(hourText.textProperty()))
-                        .or(Bindings.isEmpty(dayOfMonthText.textProperty()))
-                        .or(Bindings.isEmpty(monthText.textProperty()))
-                        .or(Bindings.isEmpty(dayOfWeekText.textProperty()))
-                        .or(Bindings.isEmpty(commandText.textProperty())));
+                .or(Bindings.isEmpty(minuteText.textProperty()))
+                .or(Bindings.isEmpty(hourText.textProperty()))
+                .or(Bindings.isEmpty(dayOfMonthText.textProperty()))
+                .or(Bindings.isEmpty(monthText.textProperty()))
+                .or(Bindings.isEmpty(dayOfWeekText.textProperty()))
+                .or(Bindings.isEmpty(commandText.textProperty())));
 
         dialog.getDialogPane().setContent(grid);
 
@@ -175,14 +195,11 @@ public class AddTaskDialogFactory {
         // Convert results to pair of server address and client identification
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == addButtonType) {
-                List<String> result = new ArrayList<>();
-                result.add(secondText.getText());
-                result.add(minuteText.getText());
-                result.add(hourText.getText());
-                result.add(dayOfMonthText.getText());
-                result.add(monthText.getText());
-                result.add(dayOfWeekText.getText());
-                result.add(commandText.getText());
+
+                TaskInfo result = new TaskInfo(secondText.getText(),
+                        minuteText.getText(), hourText.getText(),
+                        dayOfMonthText.getText(), monthText.getText(),
+                        dayOfWeekText.getText(), commandText.getText());
                 return result;
             }
             return null;

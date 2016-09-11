@@ -15,6 +15,7 @@ import javafx.collections.ObservableList;
  * @author Neloop
  */
 public class ClientWrapper {
+
     /**
      *
      */
@@ -32,6 +33,10 @@ public class ClientWrapper {
      *
      */
     private final Client client;
+    /**
+     *
+     */
+    private final ClientFactory clientFactory;
 
     /**
      *
@@ -76,7 +81,8 @@ public class ClientWrapper {
         tasksMap = new HashMap<>();
 
         clientAddress = addr;
-        client = factory.create(addr);
+        client = factory.connect(addr);
+        clientFactory = factory;
         isPaused = client.isPaused();
     }
 
@@ -122,16 +128,16 @@ public class ClientWrapper {
             return;
         }
 
-
         client.deleteTask(task);
         fetchTasks(true);
     }
 
     /**
      *
+     * @throws java.lang.Exception
      */
-    public void disconnect() {
-        // TODO: actually disconnect from client
+    public void disconnect() throws Exception {
+        clientFactory.disconnect(client);
     }
 
     /**
@@ -175,8 +181,9 @@ public class ClientWrapper {
     }
 
     /**
-     * Fills ObservableList of tasks with internal task list.
-     * This function has to be called after every change of tasks list.
+     * Fills ObservableList of tasks with internal task list. This function has
+     * to be called after every change of tasks list.
+     *
      * @note Has to be used in JavaFX UI thread.
      */
     public void fillTaskObservableList() {
@@ -213,7 +220,7 @@ public class ClientWrapper {
     }
 
     /**
-     * 
+     *
      * @throws Exception
      */
     public void saveToCrontab() throws Exception {

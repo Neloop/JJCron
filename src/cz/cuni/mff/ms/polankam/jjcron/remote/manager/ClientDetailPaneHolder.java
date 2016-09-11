@@ -42,6 +42,7 @@ public class ClientDetailPaneHolder {
     private static final String SHUTDOWN_BTN_TEXT = "Shutdown";
     private static final String DISCONNECT_BTN_TEXT = "Disconnect";
 
+    private static final int STANDARD_PADDING = 10;
     private static final double CLIENT_ACTION_BUTTON_WIDTH = 150;
 
     private static final String RUNNING_STATUS = "Running";
@@ -204,7 +205,7 @@ public class ClientDetailPaneHolder {
         Alert alert = alertDialogFactory.createConfirmationDialog("JJCron instance will be disconnected!");
 
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() != ButtonType.OK){
+        if (result.get() != ButtonType.OK) {
             return;
         }
 
@@ -217,7 +218,9 @@ public class ClientDetailPaneHolder {
             }
         };
 
-        task.setOnRunning((event) -> { loadingScreen.show("Disconnecting ..."); });
+        task.setOnRunning((event) -> {
+            loadingScreen.show("Disconnecting ...");
+        });
         task.setOnSucceeded((event) -> {
             removeActiveClient();
             loadingScreen.hide();
@@ -240,7 +243,7 @@ public class ClientDetailPaneHolder {
         Alert alert = alertDialogFactory.createConfirmationDialog("Connected instance of JJCron will be shutted down!");
 
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() != ButtonType.OK){
+        if (result.get() != ButtonType.OK) {
             return;
         }
 
@@ -253,7 +256,9 @@ public class ClientDetailPaneHolder {
             }
         };
 
-        task.setOnRunning((event) -> { loadingScreen.show("Disconnecting ..."); });
+        task.setOnRunning((event) -> {
+            loadingScreen.show("Disconnecting ...");
+        });
         task.setOnSucceeded((event) -> {
             removeActiveClient();
             loadingScreen.hide();
@@ -287,7 +292,9 @@ public class ClientDetailPaneHolder {
             }
         };
 
-        task.setOnRunning((event) -> { loadingScreen.show(); });
+        task.setOnRunning((event) -> {
+            loadingScreen.show();
+        });
         task.setOnSucceeded((event) -> {
             if (paused) {
                 clientPauseButton.setText(PAUSE_BTN_TEXT);
@@ -331,7 +338,9 @@ public class ClientDetailPaneHolder {
                 }
             };
 
-            task.setOnRunning((event) -> { loadingScreen.show(); });
+            task.setOnRunning((event) -> {
+                loadingScreen.show();
+            });
             task.setOnSucceeded((event) -> {
                 activeClient.getValue().fillTaskObservableList();
                 taskListPaneHolder.displayTaskList(activeClient.getValue());
@@ -383,15 +392,14 @@ public class ClientDetailPaneHolder {
             listTasksButtonAction();
         });
 
-        buttonsArea.setStyle("-fx-border-width: 0 0 0 1;" +
-                "-fx-border-color: grey;" +
-                "-fx-border-style: solid;");
-        buttonsArea.setSpacing(10);
+        buttonsArea.setStyle("-fx-border-width: 0 0 0 1;"
+                + "-fx-border-color: grey;"
+                + "-fx-border-style: solid;");
+        buttonsArea.setSpacing(STANDARD_PADDING);
         buttonsArea.setAlignment(Pos.TOP_CENTER);
-        buttonsArea.setPadding(new Insets(0, 0, 0, 10));
+        buttonsArea.setPadding(new Insets(0, 0, 0, STANDARD_PADDING));
         buttonsArea.getChildren().addAll(listTasksButton, clientPauseButton,
                 shutdownButton, disconnButton);
-
 
         clientActionButtonsList.add(listTasksButton);
         clientActionButtonsList.add(clientPauseButton);
@@ -426,11 +434,11 @@ public class ClientDetailPaneHolder {
 
         detailArea.setHgap(10);
         detailArea.setVgap(10);
-        detailArea.setPadding(new Insets(0, 0, 10, 0));
+        detailArea.setPadding(new Insets(0, 0, STANDARD_PADDING, 0));
     }
 
     /**
-     * 
+     *
      */
     private void initRootPane() {
         rootAnchorPane = new AnchorPane();
@@ -452,12 +460,12 @@ public class ClientDetailPaneHolder {
         VBox.setVgrow(taskListPaneHolder.getRootPane(), Priority.ALWAYS);
 
         detailAndListVBox.getChildren().addAll(detailArea, taskListPaneHolder.getRootPane());
-        detailAndListVBox.setPadding(new Insets(10, 10, 0, 10));
-        detailAndListVBox.setStyle("-fx-border-width: 0 0 0 1;" +
-                "-fx-border-color: grey;" +
-                "-fx-border-style: solid;");
+        detailAndListVBox.setPadding(new Insets(STANDARD_PADDING, STANDARD_PADDING, 0, STANDARD_PADDING));
+        detailAndListVBox.setStyle("-fx-border-width: 0 0 0 1;"
+                + "-fx-border-color: grey;"
+                + "-fx-border-style: solid;");
 
-        centerHBox.setPadding(new Insets(10, 10, 10, 0));
+        centerHBox.setPadding(new Insets(STANDARD_PADDING, STANDARD_PADDING, STANDARD_PADDING, 0));
         centerHBox.getChildren().addAll(detailAndListVBox, buttonsArea);
         rootAnchorPane.getChildren().add(centerHBox);
     }

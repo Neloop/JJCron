@@ -6,21 +6,15 @@ import cz.cuni.mff.ms.polankam.jjcron.remote.Client;
  *
  * @author Neloop
  */
-public class RMIClientFactory implements ClientFactory {
+public class FakeClientFactory implements ClientFactory {
 
-    /**
-     *
-     * @param addr
-     * @return
-     * @throws Exception
-     */
     @Override
     public Client connect(ClientAddress addr) throws Exception {
-        throw new Exception();
+        return new FakeClient();
     }
 
     @Override
     public void disconnect(Client client) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // nothing to do here
     }
 }

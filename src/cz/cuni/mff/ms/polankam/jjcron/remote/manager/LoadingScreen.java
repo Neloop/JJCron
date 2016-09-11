@@ -62,9 +62,9 @@ public class LoadingScreen {
 
         loadingLayout.setMinHeight(LOADING_DIALOG_SIZE);
         loadingLayout.setMinWidth(LOADING_DIALOG_SIZE);
-        loadingLayout.setStyle("-fx-border-width: 2;" +
-                "-fx-border-style: solid;" +
-                "-fx-border-color: grey");
+        loadingLayout.setStyle("-fx-border-width: 2;"
+                + "-fx-border-style: solid;"
+                + "-fx-border-color: grey");
         loadingLayout.setCenter(loadingCircle);
         loadingLayout.setBottom(textArea);
 
@@ -92,7 +92,7 @@ public class LoadingScreen {
     }
 
     /**
-     * 
+     *
      */
     public void hide() {
         loadingStage.hide();

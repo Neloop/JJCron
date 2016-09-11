@@ -32,6 +32,8 @@ public class Core extends Application {
     private static final String PRG_DESC = "JJCronRM";
     private static final String NEW_CONNECTION_BTN_TEXT = "New Connection";
 
+    private static final int STANDARD_PADDING = 10;
+
     private static final Logger logger = Logger.getLogger(Core.class.getName());
 
     /**
@@ -95,13 +97,15 @@ public class Core extends Application {
                 if (result.isPresent()) {
                     Pair<String, String> value = result.get();
                     ClientAddress addr = new ClientAddress(value.getKey(), value.getValue());
-                    return new ClientWrapper(addr, new RMIClientFactory());
+                    return new ClientWrapper(addr, new FakeClientFactory());
                 }
                 return null;
             }
         };
 
-        task.setOnRunning((event) -> { loadingScreen.show("Connecting ..."); });
+        task.setOnRunning((event) -> {
+            loadingScreen.show("Connecting ...");
+        });
         task.setOnSucceeded((event) -> {
             try {
                 String id = clientsList.addClient(task.get());
@@ -146,13 +150,13 @@ public class Core extends Application {
         newButton.setOnAction((ActionEvent event) -> {
             newConnectionButtonAction();
         });
-        buttonPane.setPadding(new Insets(0, 0, 10, 0));
+        buttonPane.setPadding(new Insets(0, 0, STANDARD_PADDING, 0));
         buttonPane.getChildren().add(newButton);
         buttonPane.setAlignment(Pos.CENTER);
 
         AnchorPane.setTopAnchor(leftVBox, 0.0);
         AnchorPane.setBottomAnchor(leftVBox, 0.0);
-        leftVBox.setPadding(new Insets(10));
+        leftVBox.setPadding(new Insets(STANDARD_PADDING));
         leftVBox.getChildren().addAll(buttonPane, clientsListView);
         leftPane.getChildren().add(leftVBox);
     }
@@ -164,10 +168,10 @@ public class Core extends Application {
         HBox descPane = new HBox();
 
         descPane.setAlignment(Pos.CENTER);
-        descPane.setStyle("-fx-padding: 10 0 10 0;" +
-                "-fx-border-width: 2 0 0 0;" +
-                "-fx-border-color: grey;" +
-                "-fx-border-style: dotted;");
+        descPane.setPadding(new Insets(STANDARD_PADDING, 0, STANDARD_PADDING, 0));
+        descPane.setStyle("-fx-border-width: 2 0 0 0;"
+                + "-fx-border-color: grey;"
+                + "-fx-border-style: dotted;");
 
         Label descLabel = new Label(PRG_DESC);
         descPane.getChildren().addAll(descLabel);
@@ -176,7 +180,7 @@ public class Core extends Application {
     }
 
     /**
-     * 
+     *
      * @param stage
      */
     @Override
