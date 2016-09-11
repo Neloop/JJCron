@@ -13,8 +13,9 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.ParseException;
 
 /**
- * Main class of JJCron and also entry point with main method.
- * It constructs and runs all things necessary to execute cron functionality.
+ * Main class of JJCron and also entry point with main method. It constructs and
+ * runs all things necessary to execute cron functionality.
+ *
  * @author Neloop
  */
 public class Core {
@@ -22,8 +23,8 @@ public class Core {
     /**
      * Standard Java logger.
      */
-    private static final Logger logger =
-            Logger.getLogger(Core.class.getName());
+    private static final Logger logger
+            = Logger.getLogger(Core.class.getName());
 
     /**
      * Stored command line arguments.
@@ -39,8 +40,9 @@ public class Core {
     private final TaskScheduler taskScheduler;
 
     /**
-     * Only possible constructor with given command line arguments.
-     * Arguments are parsed directly in this constructor.
+     * Only possible constructor with given command line arguments. Arguments
+     * are parsed directly in this constructor.
+     *
      * @param args command line arguments
      * @throws TaskException if {@link TaskScheduler} creation failed
      */
@@ -54,6 +56,7 @@ public class Core {
 
     /**
      * Runs all the fun and blocks until task scheduling is not interrupted.
+     *
      * @throws TaskException if there are problems concerning task scheduling
      * @throws ParserException if there were problem with parsing crontab
      */
@@ -66,9 +69,8 @@ public class Core {
     }
 
     /**
-     * Parse command line arguments into internal variables.
-     * Program can be exitted inside this method.
-     * Apache Commons CLI is used for parsing.
+     * Parse command line arguments into internal variables. Program can be
+     * exitted inside this method. Apache Commons CLI is used for parsing.
      */
     private void parseArguments() {
         // create Options object
@@ -96,7 +98,7 @@ public class Core {
         try {
             // parse the command line arguments
             cmd = parser.parse(options, args);
-        } catch(ParseException e) {
+        } catch (ParseException e) {
             // oops, something went wrong
             System.err.println("Parsing failed. Reason: " + e.getMessage());
             HelpFormatter formatter = new HelpFormatter();
@@ -104,7 +106,7 @@ public class Core {
             System.exit(1);
         }
 
-        if(cmd.hasOption("help")) {
+        if (cmd.hasOption("help")) {
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("JJCron", options);
             System.exit(0);

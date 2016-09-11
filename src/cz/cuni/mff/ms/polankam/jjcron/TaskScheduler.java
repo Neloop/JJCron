@@ -15,12 +15,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Class which is responsible for creation of tasks and their scheduling.
- * Pool of tasks is maintaned and work with here,
- *   all tasks can be stopped through api or new set of tasks can be realoaded.
- * Parsing of tasks from crontab has to be done elsewhere
- *   only task meta info is processed here.
- * <p>After construction thread-safe structure.</p>
+ * Class which is responsible for creation of tasks and their scheduling. Pool
+ * of tasks is maintaned and work with here, all tasks can be stopped through
+ * api or new set of tasks can be realoaded. Parsing of tasks from crontab has
+ * to be done elsewhere only task meta info is processed here.
+ * <p>
+ * After construction thread-safe structure.</p>
+ *
  * @author Neloop
  */
 public class TaskScheduler {
@@ -32,12 +33,12 @@ public class TaskScheduler {
     /**
      * Standard Java logger.
      */
-    private static final Logger logger =
-            Logger.getLogger(TaskScheduler.class.getName());
+    private static final Logger logger
+            = Logger.getLogger(TaskScheduler.class.getName());
 
     /**
-     * If set to true, than @ref startCronning function was called
-     *   and tasks are running.
+     * If set to true, than @ref startCronning function was called and tasks are
+     * running.
      */
     private final AtomicBoolean running;
     /**
@@ -45,9 +46,8 @@ public class TaskScheduler {
      */
     private final AtomicBoolean exit;
     /**
-     * Responsible for task scheduling.
-     * Its initialized with processor count equal to real CPU processors
-     *   (including HTT).
+     * Responsible for task scheduling. Its initialized with processor count
+     * equal to real CPU processors (including HTT).
      */
     private ScheduledExecutorService scheduler;
     /**
@@ -67,10 +67,11 @@ public class TaskScheduler {
 
         /**
          * Not implemented version of method which should not be used.
+         *
          * @param taskMeta none
          * @return none
-         * @throws TaskException always thrown
-         *   due to not implemented functionality
+         * @throws TaskException always thrown due to not implemented
+         * functionality
          */
         @Override
         public Task createTask(TaskMetadata taskMeta) throws TaskException {
@@ -80,8 +81,8 @@ public class TaskScheduler {
     }
 
     /**
-     * Construct task scheduler without {@link TaskFactory}!
-     * This means that task creation from {@link TaskMetadata} cannot be used.
+     * Construct task scheduler without {@link TaskFactory}! This means that
+     * task creation from {@link TaskMetadata} cannot be used.
      */
     public TaskScheduler() {
         logger.log(Level.INFO, "TaskManager was created");
@@ -96,8 +97,9 @@ public class TaskScheduler {
     }
 
     /**
-     * Construct task scheduler with specified task factory,
-     *   tasks are not executed yet. All internal structures are initialized.
+     * Construct task scheduler with specified task factory, tasks are not
+     * executed yet. All internal structures are initialized.
+     *
      * @param taskFactory factory which helps constructing tasks
      * @throws TaskException if {@link TaskFactory} was null
      */
@@ -118,7 +120,8 @@ public class TaskScheduler {
 
     /**
      * Wait until tasks execution is terminated.
-     * <p>Thread-safe function.</p>
+     * <p>
+     * Thread-safe function.</p>
      */
     public final void justWait() {
         try {
@@ -131,13 +134,14 @@ public class TaskScheduler {
     }
 
     /**
-     * Atomically sets termination of tasks execution
-     *   and shutdown all current executing tasks.
-     * <p>Thread-safe function.</p>
+     * Atomically sets termination of tasks execution and shutdown all current
+     * executing tasks.
+     * <p>
+     * Thread-safe function.</p>
      */
     public final void exit() {
-        logger.log(Level.INFO, "Exit function was called." +
-                " All scheduled tasks should be terminated");
+        logger.log(Level.INFO, "Exit function was called."
+                + " All scheduled tasks should be terminated");
 
         scheduler.shutdownNow();
         exit.set(true);
@@ -147,6 +151,7 @@ public class TaskScheduler {
      * Helper class which allows to run task and reschedule it after execution.
      */
     private class RunTask implements Runnable {
+
         /**
          * {@link Task} associated with this object.
          */
@@ -154,6 +159,7 @@ public class TaskScheduler {
 
         /**
          * Given task is stored and time structure is extracted from it.
+         *
          * @param task {@link TaskHolder} which will be executed in this object.
          */
         public RunTask(TaskHolder task) {
@@ -161,9 +167,8 @@ public class TaskScheduler {
         }
 
         /**
-         * Run method which is executed by scheduler.
-         * Task is executed inside and after execution is rescheduled
-         *   to next timepoint.
+         * Run method which is executed by scheduler. Task is executed inside
+         * and after execution is rescheduled to next timepoint.
          */
         @Override
         public void run() {
@@ -174,9 +179,9 @@ public class TaskScheduler {
                 long end = System.nanoTime();
                 taskHolder.stats.record(LocalDateTime.now(), end - start);
             } catch (Exception e) {
-                logger.log(Level.WARNING, "Task: {0} throws exception" +
-                        " while execution: {1}",
-                        new Object[] { taskHolder.task.name(), e.getMessage() } );
+                logger.log(Level.WARNING, "Task: {0} throws exception"
+                        + " while execution: {1}",
+                        new Object[]{taskHolder.task.name(), e.getMessage()});
             }
 
             // ... and reschedule task to another time point
@@ -186,7 +191,9 @@ public class TaskScheduler {
 
     /**
      * Schedule given task to its first execution point.
-     * <p>Thread-safe function.</p>
+     * <p>
+     * Thread-safe function.</p>
+     *
      * @param holder task which will be scheduled
      */
     private synchronized void scheduleTask(TaskHolder holder) {
@@ -194,15 +201,17 @@ public class TaskScheduler {
 
         long delay = holder.task.delay(LocalDateTime.now());
         logger.log(Level.INFO, "Task {0} was scheduled to {1}",
-                new Object[] { holder.task.name(),
-                    LocalDateTime.now().plusSeconds(holder.task.timeUnit().toSeconds(delay)) });
+                new Object[]{holder.task.name(),
+                    LocalDateTime.now().plusSeconds(holder.task.timeUnit().toSeconds(delay))});
         scheduler.schedule(new RunTask(holder), delay, holder.task.timeUnit());
     }
 
     /**
-     * Create task from given <code>taskMeta</code> information
-     *   and schedule it to its frist time point.
-     * <p>Thread-safe function.</p>
+     * Create task from given <code>taskMeta</code> information and schedule it
+     * to its frist time point.
+     * <p>
+     * Thread-safe function.</p>
+     *
      * @param taskMeta information about task
      * @throws TaskException if task creation failed
      */
@@ -219,9 +228,11 @@ public class TaskScheduler {
 
     /**
      * From {@link TaskMetadata} list create appropriate task and schedule them.
-     * Tasks are scheduled for next execution timepoint,
-     *   after execution they are rescheduled.
-     * <p>Thread-safe function.</p>
+     * Tasks are scheduled for next execution timepoint, after execution they
+     * are rescheduled.
+     * <p>
+     * Thread-safe function.</p>
+     *
      * @param tasksMeta list of task meta information
      * @throws TaskException if task creation failed
      */
@@ -233,9 +244,11 @@ public class TaskScheduler {
     }
 
     /**
-     * Create task and schedule it, can be used to start croning
-     *   or during execution.
-     * <p>Thread-safe function.</p>
+     * Create task and schedule it, can be used to start croning or during
+     * execution.
+     * <p>
+     * Thread-safe function.</p>
+     *
      * @param taskMeta information about task
      * @throws TaskException if task creation failed
      */
@@ -246,8 +259,10 @@ public class TaskScheduler {
 
     /**
      * Add given task to currently executing ones, can be used to start croning
-     *   or during execution.
-     * <p>Thread-safe function.</p>
+     * or during execution.
+     * <p>
+     * Thread-safe function.</p>
+     *
      * @param task task which will be added to internal ones
      */
     public final synchronized void addTask(Task task) {
@@ -258,11 +273,12 @@ public class TaskScheduler {
     }
 
     /**
-     * From given {@link TaskMetadata} list constructs all tasks
-     *   and schedule them to their first execution timepoint.
-     * Non-blocking function tasks are only created and scheduled.
-     * If called second time, nothing will happen.
-     * <p>Thread-safe function.</p>
+     * From given {@link TaskMetadata} list constructs all tasks and schedule
+     * them to their first execution timepoint. Non-blocking function tasks are
+     * only created and scheduled. If called second time, nothing will happen.
+     * <p>
+     * Thread-safe function.</p>
+     *
      * @param tasksMeta list of task meta information
      * @throws TaskException if task creation failed
      */
@@ -275,9 +291,11 @@ public class TaskScheduler {
     }
 
     /**
-     * Function stop all currently running tasks and load new ones.
-     * Should be used only during execution, not to start execution of cron.
-     * <p>Thread-safe function.</p>
+     * Function stop all currently running tasks and load new ones. Should be
+     * used only during execution, not to start execution of cron.
+     * <p>
+     * Thread-safe function.</p>
+     *
      * @param tasksMeta list of task meta information
      * @throws TaskException if task creation failed
      */

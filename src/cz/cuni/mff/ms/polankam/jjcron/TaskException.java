@@ -2,6 +2,7 @@ package cz.cuni.mff.ms.polankam.jjcron;
 
 /**
  * Used if something went wrong in task creation.
+ *
  * @author Neloop
  */
 public class TaskException extends Exception {
@@ -9,10 +10,12 @@ public class TaskException extends Exception {
     /**
      * Standard constructor.
      */
-    public TaskException() {}
+    public TaskException() {
+    }
 
     /**
      * Constructor which specify error message.
+     *
      * @param message description of error
      */
     public TaskException(String message) {
@@ -21,6 +24,7 @@ public class TaskException extends Exception {
 
     /**
      * Specify error message and exception which caused this particular one.
+     *
      * @param message description of error
      * @param cause exception which cause this one to be thrown
      */
@@ -30,6 +34,7 @@ public class TaskException extends Exception {
 
     /**
      * Contruct exception which was thrown as reaction to given one.
+     *
      * @param cause exception which cause this one to be thrown
      */
     public TaskException(Throwable cause) {

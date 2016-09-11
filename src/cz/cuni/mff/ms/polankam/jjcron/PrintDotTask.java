@@ -4,14 +4,16 @@ import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Example task which can be loaded through reflection.
- * It does nothing usefull, just print dot on the standard output.
+ * Example task which can be loaded through reflection. It does nothing usefull,
+ * just print dot on the standard output.
+ *
  * @author Neloop
  */
 public class PrintDotTask implements Task {
 
     /**
      * Prints dot on the standard output and then flush it.
+     *
      * @throws Exception if task failed (should never happen)
      */
     @Override

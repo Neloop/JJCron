@@ -7,8 +7,9 @@ import java.util.concurrent.TimeUnit;
 /**
  * MetadataHolderTask should be used as holder for additional datas about task.
  * Its advised to extends this abstract class in all possible tasks.
- MetadataHolderTask is abstract because of providing basic storage
-   for {@link TaskMetadata}.
+ * MetadataHolderTask is abstract because of providing basic storage for
+ * {@link TaskMetadata}.
+ *
  * @author Neloop
  */
 public abstract class MetadataHolderTask implements Task {
@@ -19,8 +20,9 @@ public abstract class MetadataHolderTask implements Task {
     protected final TaskMetadata taskMeta;
 
     /**
-     * Structure which contains information about task
-     *   and is accessible through all {@link Task} children.
+     * Structure which contains information about task and is accessible through
+     * all {@link Task} children.
+     *
      * @param taskMetadata task information
      */
     public MetadataHolderTask(TaskMetadata taskMetadata) {

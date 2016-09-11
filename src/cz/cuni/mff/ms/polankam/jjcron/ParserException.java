@@ -1,8 +1,9 @@
 package cz.cuni.mff.ms.polankam.jjcron;
 
 /**
- * Thrown in {@link CrontabParser} if something went wrong.
- * Further description should be provided.
+ * Thrown in {@link CrontabParser} if something went wrong. Further description
+ * should be provided.
+ *
  * @author Neloop
  */
 public class ParserException extends Exception {
@@ -10,10 +11,12 @@ public class ParserException extends Exception {
     /**
      * Standard constructor.
      */
-    public ParserException() {}
+    public ParserException() {
+    }
 
     /**
      * Constructor which specify error message.
+     *
      * @param message description of error
      */
     public ParserException(String message) {
@@ -22,6 +25,7 @@ public class ParserException extends Exception {
 
     /**
      * Specify error message and exception which caused this particular one.
+     *
      * @param message description of error
      * @param cause exception which cause this one to be thrown
      */
@@ -31,6 +35,7 @@ public class ParserException extends Exception {
 
     /**
      * Contruct exception which was thrown as reaction to given one.
+     *
      * @param cause exception which cause this one to be thrown
      */
     public ParserException(Throwable cause) {

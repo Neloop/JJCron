@@ -4,12 +4,14 @@ import cz.cuni.mff.ms.polankam.jjcron.common.TaskMetadata;
 
 /**
  * Classical cron task which is used to execute cmdline commands.
+ *
  * @author Neloop
  */
 public class CmdTask extends MetadataHolderTask {
 
     /**
      * Construct task from given {@link TaskMetadata} information.
+     *
      * @param taskMetadata handed over to {@link MetadataHolderTask} parent
      */
     public CmdTask(TaskMetadata taskMetadata) {
@@ -18,6 +20,7 @@ public class CmdTask extends MetadataHolderTask {
 
     /**
      * Create and execute cmdline command and than wait for it (blocking).
+     *
      * @throws Exception if command execution failed
      */
     @Override
