@@ -5,20 +5,21 @@ import java.time.LocalDateTime;
 
 /**
  * Special time unit representing day of month which has different functionality
- *   than {@link CrontabTimeGeneralUnit} implementation.
- * If next timepoint should be on 31st day of a month but the month
- *   has fewer days than 31, than this timepoint will be scheduled to last day
- *   of specified month.
+ * than {@link CrontabTimeGeneralUnit} implementation. If next timepoint should
+ * be on 31st day of a month but the month has fewer days than 31, than this
+ * timepoint will be scheduled to last day of specified month.
+ *
  * @author Neloop
  */
 public class CrontabTimeDayOfMonthUnit extends CrontabTimeGeneralUnit implements Serializable {
 
     /**
-     * Construct also parent class with given information
-     *   and fill missing by myself.
+     * Construct also parent class with given information and fill missing by
+     * myself.
+     *
      * @param unit textual representation of unit from crontab
      * @param parser parser which handles parsing of <code>unit</code> into
-     *   appropriate structure.
+     * appropriate structure.
      * @throws FormatException if parsing failed due to bad format of data
      */
     public CrontabTimeDayOfMonthUnit(String unit, CrontabTimeValueParser parser)
@@ -31,8 +32,7 @@ public class CrontabTimeDayOfMonthUnit extends CrontabTimeGeneralUnit implements
      */
     @Override
     public int delay(LocalDateTime current, int currentValue,
-            boolean previousChanged)
-    {
+            boolean previousChanged) {
         int result;
         valueChanged = previousChanged;
 

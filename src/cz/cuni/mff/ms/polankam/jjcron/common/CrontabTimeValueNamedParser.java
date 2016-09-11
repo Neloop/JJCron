@@ -6,9 +6,9 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * Implementation of parser which parse one column from crontab.
- * This parser can parse named values which can be placed in list
- *   or as single value.
+ * Implementation of parser which parse one column from crontab. This parser can
+ * parse named values which can be placed in list or as single value.
+ *
  * @author Neloop
  */
 public class CrontabTimeValueNamedParser implements CrontabTimeValueParser {
@@ -20,6 +20,7 @@ public class CrontabTimeValueNamedParser implements CrontabTimeValueParser {
 
     /**
      * To this parser named values has to be provided for proper functionality.
+     *
      * @param namedValues names which can be used as values in list
      */
     public CrontabTimeValueNamedParser(Map<String, Integer> namedValues) {
@@ -27,8 +28,9 @@ public class CrontabTimeValueNamedParser implements CrontabTimeValueParser {
     }
 
     /**
-     * Special parsing method which can distinguish single value,
-     *   list of values, named values, period of time and asterisk.
+     * Special parsing method which can distinguish single value, list of
+     * values, named values, period of time and asterisk.
+     *
      * @param value parsed value
      * @return structure which can hold information about time value
      * @throws FormatException if parsing of time value failed
@@ -38,7 +40,7 @@ public class CrontabTimeValueNamedParser implements CrontabTimeValueParser {
         // asterisk
         if (value.equals("*")) {
             return new CrontabTimeValue(CrontabTimeValueType.ASTERISK,
-                    new Integer[] {});
+                    new Integer[]{});
         }
 
         // period
@@ -51,7 +53,7 @@ public class CrontabTimeValueNamedParser implements CrontabTimeValueParser {
             try {
                 int number = Integer.parseUnsignedInt(numberStr);
                 return new CrontabTimeValue(CrontabTimeValueType.PERIOD,
-                        new Integer[] { number });
+                        new Integer[]{number});
             } catch (NumberFormatException e) {
                 throw new FormatException("Unknown period time format");
             }

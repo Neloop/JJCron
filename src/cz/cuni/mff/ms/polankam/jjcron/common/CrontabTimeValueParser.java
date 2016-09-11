@@ -5,12 +5,14 @@ import java.util.Map;
 
 /**
  * Interface for parsing values representing time in crontab.
+ *
  * @author Neloop
  */
 public interface CrontabTimeValueParser {
 
     /**
      * Factory method which will create and return general time value parser.
+     *
      * @return structure which implements this interface
      */
     public static CrontabTimeValueParser createGeneral() {
@@ -20,6 +22,7 @@ public interface CrontabTimeValueParser {
 
     /**
      * Factory method which will create special day of week time value parser.
+     *
      * @return structure which implements this interface
      */
     public static CrontabTimeValueParser createDayOfWeek() {
@@ -37,6 +40,7 @@ public interface CrontabTimeValueParser {
 
     /**
      * Factory method which will create special month time value parser.
+     *
      * @return structure which implements this interface
      */
     public static CrontabTimeValueParser createMonth() {
@@ -59,6 +63,7 @@ public interface CrontabTimeValueParser {
 
     /**
      * Parse given value into {@link CrontabTimeValue} structure.
+     *
      * @param value textual representation of time value which will be parsed
      * @return parsed info about crontab time value
      * @throws FormatException if given string is in bad format

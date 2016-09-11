@@ -5,11 +5,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * General implementation of {@link CrontabTimeUnit} interface
- *   which should be sufficient for most of time unit in crontab
- *   aka. second, minutes, hours, etc.
- * It includes minimal and maximal value which can unit have
- *   and also period with which specified unit operates.
+ * General implementation of {@link CrontabTimeUnit} interface which should be
+ * sufficient for most of time unit in crontab aka. second, minutes, hours, etc.
+ * It includes minimal and maximal value which can unit have and also period
+ * with which specified unit operates.
+ *
  * @author Neloop
  */
 public class CrontabTimeGeneralUnit implements CrontabTimeUnit, Serializable {
@@ -32,8 +32,8 @@ public class CrontabTimeGeneralUnit implements CrontabTimeUnit, Serializable {
      */
     protected final String unitStr;
     /**
-     * Structure parsed and constructed from <code>unitStr</code>.
-     * Which stores all needed info about time unit.
+     * Structure parsed and constructed from <code>unitStr</code>. Which stores
+     * all needed info about time unit.
      */
     protected final CrontabTimeValue unit;
 
@@ -45,12 +45,13 @@ public class CrontabTimeGeneralUnit implements CrontabTimeUnit, Serializable {
 
     /**
      * Initialization of this structure, unit parsing and checking is performed.
+     *
      * @param unit textual description of unit
      * @param minValue minimal value of unit
      * @param maxValue maximal value of unit
      * @param period period of unit
-     * @param parser implementation of parser which is able to extract
-     *   needed information from given <code>unit</code>
+     * @param parser implementation of parser which is able to extract needed
+     * information from given <code>unit</code>
      * @throws FormatException if unit cannot be parsed
      */
     public CrontabTimeGeneralUnit(String unit, int minValue, int maxValue,
@@ -69,6 +70,7 @@ public class CrontabTimeGeneralUnit implements CrontabTimeUnit, Serializable {
 
     /**
      * Check if given value is valid according to minimal and maximal values.
+     *
      * @param value checked value
      * @throws FormatException if value is not valid
      */
@@ -81,6 +83,7 @@ public class CrontabTimeGeneralUnit implements CrontabTimeUnit, Serializable {
 
     /**
      * Check parsed {@link CrontabTimeValue} structure for proper valid values.
+     *
      * @throws FormatException if value did not pass check
      */
     private void checkValue() throws FormatException {
@@ -90,8 +93,8 @@ public class CrontabTimeGeneralUnit implements CrontabTimeUnit, Serializable {
                 break;
             case PERIOD:
                 isValueValid(unit.values.get(0));
-                if (unit.values.get(0) == 0 ||
-                        maxValue % (unit.values.get(0)) != 0) {
+                if (unit.values.get(0) == 0
+                        || maxValue % (unit.values.get(0)) != 0) {
                     throw new FormatException(
                             "GeneralUnit period value is not divisible");
                 }
@@ -108,8 +111,7 @@ public class CrontabTimeGeneralUnit implements CrontabTimeUnit, Serializable {
      * {@inheritDoc}
      */
     @Override
-    public boolean isChanged()
-    {
+    public boolean isChanged() {
         return valueChanged;
     }
 
@@ -118,8 +120,7 @@ public class CrontabTimeGeneralUnit implements CrontabTimeUnit, Serializable {
      */
     @Override
     public int delay(LocalDateTime current, int currentValue,
-            boolean previousChanged)
-    {
+            boolean previousChanged) {
         int result;
         valueChanged = previousChanged;
 

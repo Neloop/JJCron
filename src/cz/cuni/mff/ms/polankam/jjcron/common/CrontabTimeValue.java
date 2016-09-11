@@ -9,6 +9,7 @@ import java.util.List;
  * Represents single time unit stored in one of the time columns in crontab.
  * Type of this unit is determined by {@link CrontabTimeValueType} structure.
  * Values which were parsed from crontab are stored in internal array.
+ *
  * @author Neloop
  */
 public class CrontabTimeValue implements Serializable {
@@ -24,6 +25,7 @@ public class CrontabTimeValue implements Serializable {
 
     /**
      * Type and raw array are received as parameters and stored.
+     *
      * @param valueType type of values given as parameter
      * @param values particular time values
      */
@@ -34,6 +36,7 @@ public class CrontabTimeValue implements Serializable {
 
     /**
      * Type and list are received as parameters and stored.
+     *
      * @param valueType type of values given as parameter
      * @param values particular time values
      */

@@ -2,8 +2,9 @@ package cz.cuni.mff.ms.polankam.jjcron.common;
 
 /**
  * Internal exception which is thrown in case of bad format of given data.
- * Should not be logged before throwing this exception.
- * Should be catched and then logged.
+ * Should not be logged before throwing this exception. Should be catched and
+ * then logged.
+ *
  * @author Neloop
  */
 public class FormatException extends Exception {
@@ -11,10 +12,12 @@ public class FormatException extends Exception {
     /**
      * Standard constructor.
      */
-    public FormatException() {}
+    public FormatException() {
+    }
 
     /**
      * Constructor which specify error message.
+     *
      * @param message description of error
      */
     public FormatException(String message) {
@@ -23,6 +26,7 @@ public class FormatException extends Exception {
 
     /**
      * Specify error message and exception which caused this particular one.
+     *
      * @param message description of error
      * @param cause exception which cause this one to be thrown
      */
@@ -32,6 +36,7 @@ public class FormatException extends Exception {
 
     /**
      * Contruct exception which was thrown as reaction to given one.
+     *
      * @param cause exception which cause this one to be thrown
      */
     public FormatException(Throwable cause) {

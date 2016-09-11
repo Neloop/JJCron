@@ -2,8 +2,9 @@ package cz.cuni.mff.ms.polankam.jjcron.common;
 
 /**
  * Represents all value types which can be stored in crontab in one time column.
- * There is shortcut for single value which can be viewed
- *   as list of values with one element.
+ * There is shortcut for single value which can be viewed as list of values with
+ * one element.
+ *
  * @author Neloop
  */
 public enum CrontabTimeValueType {

@@ -8,9 +8,11 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Used as data holder which is supposed to be distributed through connection.
+ *
  * @author Neloop
  */
 public class TaskDetail implements Serializable {
+
     public final String id;
 
     public final String name;

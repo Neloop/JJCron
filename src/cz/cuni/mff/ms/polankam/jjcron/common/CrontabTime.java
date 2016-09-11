@@ -6,11 +6,12 @@ import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Represents full information about time scheduling for one task.
- * It contains specification of day of week, month, day of month, hour, minute
- *   and second, these specifications are stored as structures
- *   which implements {@link CrontabTimeUnit} interface.
- * This units are self computable and can compute its own delays.
+ * Represents full information about time scheduling for one task. It contains
+ * specification of day of week, month, day of month, hour, minute and second,
+ * these specifications are stored as structures which implements
+ * {@link CrontabTimeUnit} interface. This units are self computable and can
+ * compute its own delays.
+ *
  * @author Neloop
  */
 public class CrontabTime implements Serializable {
@@ -41,9 +42,10 @@ public class CrontabTime implements Serializable {
     public final CrontabTimeUnit dayOfWeek;
 
     /**
-     * Constructor with splitted particular unit extracted from crontab.
-     * Textual description of these units is parsed and {@link CrontabTimeUnit}
-     *   structures are created.
+     * Constructor with splitted particular unit extracted from crontab. Textual
+     * description of these units is parsed and {@link CrontabTimeUnit}
+     * structures are created.
+     *
      * @param second representing seconds column
      * @param minute representing minutes column
      * @param hour representing hours column
@@ -65,6 +67,7 @@ public class CrontabTime implements Serializable {
 
     /**
      * Constructor with all supplied information no parsing needed.
+     *
      * @param second representing seconds column
      * @param minute representing minutes column
      * @param hour representing hours column
@@ -84,11 +87,12 @@ public class CrontabTime implements Serializable {
     }
 
     /**
-     * Compute delay from now to next scheduled time point
-     *   which is determined from all internal time units.
+     * Compute delay from now to next scheduled time point which is determined
+     * from all internal time units.
+     *
      * @param localNow base time point
      * @return count of specific units from now to next scheduled point.
-     *   Returned unit is specified by timeUnit() return type.
+     * Returned unit is specified by timeUnit() return type.
      */
     public final long delay(LocalDateTime localNow) {
         LocalDateTime next = localNow;
@@ -110,8 +114,9 @@ public class CrontabTime implements Serializable {
     }
 
     /**
-     * Time unit in which delay is returned.
-     * Should be used for scheduling purposes.
+     * Time unit in which delay is returned. Should be used for scheduling
+     * purposes.
+     *
      * @return internal Java structure representing time unit
      */
     public final TimeUnit timeUnit() {

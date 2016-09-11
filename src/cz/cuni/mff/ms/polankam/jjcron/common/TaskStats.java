@@ -9,6 +9,7 @@ import java.util.Deque;
  * @author Neloop
  */
 public class TaskStats {
+
     private static final int HISTORY_LENGTH = 10;
 
     private final Deque<LocalDateTime> lastExecutions;
