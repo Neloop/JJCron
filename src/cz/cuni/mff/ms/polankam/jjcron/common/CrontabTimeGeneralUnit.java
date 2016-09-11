@@ -2,6 +2,7 @@ package cz.cuni.mff.ms.polankam.jjcron.common;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * General implementation of {@link CrontabTimeUnit} interface
@@ -158,5 +159,10 @@ public class CrontabTimeGeneralUnit implements CrontabTimeUnit, Serializable {
         }
 
         return result;
+    }
+
+    @Override
+    public CrontabTimeValue value() {
+        return unit;
     }
 }

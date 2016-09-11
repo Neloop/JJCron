@@ -116,4 +116,6 @@ public interface CrontabTimeUnit {
      */
     public int delay(LocalDateTime current, int currentValue,
             boolean previousChanged);
+
+    public CrontabTimeValue value();
 }

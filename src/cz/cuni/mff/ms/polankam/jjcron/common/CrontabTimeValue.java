@@ -42,4 +42,23 @@ public class CrontabTimeValue implements Serializable {
         this.valueType = valueType;
         this.values = values;
     }
+
+    @Override
+    public String toString() {
+        switch (valueType) {
+            case ASTERISK:
+                return "*";
+            case PERIOD:
+                return "*/" + values.get(0);
+            default:
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < values.size(); ++i) {
+                    if (i > 0) {
+                        builder.append(",");
+                    }
+                    builder.append(values.get(i));
+                }
+                return builder.toString();
+        }
+    }
 }

@@ -25,13 +25,15 @@ public class FakeClient implements Client {
     private boolean paused = false;
     private final Map<String, TaskDetail> tasks;
 
-    public FakeClient() {
+    public FakeClient() throws Exception {
         tasks = new HashMap<>();
 
         for (int i = 0; i < TASKS_COUNT; ++i) {
             String id = UUID.randomUUID().toString();
+            CrontabTime time = new CrontabTime("0", "0", "0", "*", "*", "*");
             tasks.put(id, new TaskDetail(id, id, TimeUnit.SECONDS,
-                    LocalDateTime.now(), new TaskStats()));
+                    LocalDateTime.now(), new TaskStats(),
+                    new TaskMetadata(time, id)));
         }
     }
 

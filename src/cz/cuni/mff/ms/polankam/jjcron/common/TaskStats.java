@@ -28,4 +28,12 @@ public class TaskStats {
             lastExecutionsDuration.pollLast();
         }
     }
+
+    public LocalDateTime getLastExecution() {
+        return lastExecutions.peekFirst();
+    }
+
+    public Long getLastDuration() {
+        return lastExecutionsDuration.peekFirst();
+    }
 }

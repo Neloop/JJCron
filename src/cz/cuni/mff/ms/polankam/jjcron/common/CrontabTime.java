@@ -18,27 +18,27 @@ public class CrontabTime implements Serializable {
     /**
      * Structure representing second time column from crontab.
      */
-    private final CrontabTimeUnit second;
+    public final CrontabTimeUnit second;
     /**
      * Structure representing minute time column from crontab.
      */
-    private final CrontabTimeUnit minute;
+    public final CrontabTimeUnit minute;
     /**
      * Structure representing hour time column from crontab.
      */
-    private final CrontabTimeUnit hour;
+    public final CrontabTimeUnit hour;
     /**
      * Structure representing day of month time column from crontab.
      */
-    private final CrontabTimeUnit dayOfMonth;
+    public final CrontabTimeUnit dayOfMonth;
     /**
      * Structure representing month time column from crontab.
      */
-    private final CrontabTimeUnit month;
+    public final CrontabTimeUnit month;
     /**
      * Structure representing day of week time column from crontab.
      */
-    private final CrontabTimeUnit dayOfWeek;
+    public final CrontabTimeUnit dayOfWeek;
 
     /**
      * Constructor with splitted particular unit extracted from crontab.
