@@ -1,6 +1,7 @@
 package cz.cuni.mff.ms.polankam.jjcron;
 
 import cz.cuni.mff.ms.polankam.jjcron.common.TaskMetadata;
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,6 +41,22 @@ public class Core {
     private final TaskScheduler taskScheduler;
 
     /**
+     * Port where rmiregistry will listen.
+     */
+    private int rmPort = 1099;
+    /**
+     * Name of registered JJCron instance.
+     *
+     * @note If this name is stated as cmd option, then rmiregistry will be
+     * created.
+     */
+    private String rmName;
+    /**
+     * Server side implementation of this instance manager.
+     */
+    private ClientImpl clientManager;
+
+    /**
      * Only possible constructor with given command line arguments. Arguments
      * are parsed directly in this constructor.
      *
@@ -49,6 +66,7 @@ public class Core {
     public Core(String[] args) throws TaskException {
         logger.log(Level.INFO, "*** JJCron was created ***");
 
+        clientManager = null;
         taskScheduler = new TaskScheduler(new TaskFactoryImpl());
         this.args = args;
         parseArguments();
@@ -59,13 +77,31 @@ public class Core {
      *
      * @throws TaskException if there are problems concerning task scheduling
      * @throws ParserException if there were problem with parsing crontab
+     * @throws java.rmi.RemoteException
      */
-    public final void run() throws TaskException, ParserException {
+    public final void run() throws TaskException, ParserException, RemoteException {
         logger.log(Level.INFO, "*** Croning started ***");
 
         List<TaskMetadata> tasks = CrontabParser.parseFile(crontabFilename);
         taskScheduler.startCroning(tasks);
+        runClientIfStated();
         taskScheduler.justWait();
+    }
+
+    /**
+     * If user requested, server management will be engaged on this JJCron
+     * instance.
+     *
+     * @throws RemoteException
+     */
+    private void runClientIfStated() throws RemoteException {
+        if (rmName.isEmpty()) {
+            return;
+        }
+
+        logger.log(Level.INFO, "Remote management of JJCron requested, RMI will be initialized");
+        clientManager = new ClientImpl(rmPort, rmName, taskScheduler);
+        logger.log(Level.INFO, "RMI registry successfully created, listening...");
     }
 
     /**
@@ -87,10 +123,24 @@ public class Core {
                 .hasArg()
                 .desc("crontab file configuration")
                 .build();
+        Option portOption = Option.builder("p")
+                .longOpt("rm-port")
+                .argName("port")
+                .hasArg()
+                .desc("specifies port of remote management, which is allowed only if rm-name is given")
+                .build();
+        Option nameOption = Option.builder("n")
+                .longOpt("rm-name")
+                .argName("name")
+                .hasArg()
+                .desc("remote management name of registered object, if stated remote management will be allowed")
+                .build();
 
         // add options
         options.addOption(help);
         options.addOption(config);
+        options.addOption(portOption);
+        options.addOption(nameOption);
 
         // create parser and parse arguments
         CommandLineParser parser = new DefaultParser();
@@ -115,6 +165,12 @@ public class Core {
         if (cmd.hasOption("config")) {
             crontabFilename = cmd.getOptionValue("config");
         }
+        if (cmd.hasOption("rm-port")) {
+            rmPort = Integer.parseInt(cmd.getOptionValue("rm-port"));
+        }
+        if (cmd.hasOption("rm-name")) {
+            rmName = cmd.getOptionValue("rm-name");
+        }
 
         logger.log(Level.FINE, "Crontab file which will be loaded: {0}",
                 crontabFilename);
@@ -127,7 +183,7 @@ public class Core {
         try {
             Core core = new Core(args);
             core.run();
-        } catch (TaskException | ParserException e) {
+        } catch (TaskException | ParserException | RemoteException e) {
             System.err.println(e.getMessage());
         }
     }

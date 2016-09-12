@@ -2,10 +2,13 @@ package cz.cuni.mff.ms.polankam.jjcron;
 
 import cz.cuni.mff.ms.polankam.jjcron.common.TaskMetadata;
 import cz.cuni.mff.ms.polankam.jjcron.common.TaskStats;
+import cz.cuni.mff.ms.polankam.jjcron.remote.TaskDetail;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -311,5 +314,38 @@ public class TaskScheduler {
         loadTasks(tasksMeta);
 
         logger.log(Level.INFO, "Task reload done");
+    }
+
+    public final boolean isPaused() {
+        return !running.get();
+    }
+
+    public final synchronized void pause() {
+        // TODO:
+    }
+
+    public final synchronized void unpause() {
+        // TODO:
+    }
+
+    public final synchronized List<Task> getTasks() {
+        // TODO:
+        throw new UnsupportedOperationException();
+    }
+
+    public final synchronized List<TaskDetail> getTaskDetails() {
+        List<TaskDetail> result = new ArrayList<>();
+        for (Entry<String, TaskHolder> entry : tasks.entrySet()) {
+            TaskHolder holder = entry.getValue();
+            Task task = holder.task;
+            LocalDateTime next = LocalDateTime.now(); // TODO:
+            if (task instanceof MetadataHolderTask) {
+                MetadataHolderTask metadataTask = (MetadataHolderTask) task;
+                result.add(new TaskDetail(holder.id, task.name(), task.timeUnit(), next, holder.stats, metadataTask.taskMeta));
+            } else {
+                result.add(new TaskDetail(holder.id, task.name(), task.timeUnit(), next, holder.stats));
+            }
+        }
+        return result;
     }
 }

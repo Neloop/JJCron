@@ -17,7 +17,7 @@ public abstract class MetadataHolderTask implements Task {
     /**
      * Stores all possible information about {@link MetadataHolderTask}.
      */
-    protected final TaskMetadata taskMeta;
+    public final TaskMetadata taskMeta;
 
     /**
      * Structure which contains information about task and is accessible through
