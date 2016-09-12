@@ -123,7 +123,7 @@ public class Core extends Application {
                 if (result.isPresent()) {
                     Pair<String, String> value = result.get();
                     ClientAddress addr = new ClientAddress(value.getKey(), value.getValue());
-                    return new ClientWrapper(addr, new FakeClientFactory());
+                    return new ClientWrapper(addr, new RMIClientFactory());
                 }
                 return null;
             }

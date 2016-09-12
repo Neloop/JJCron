@@ -3,6 +3,7 @@ package cz.cuni.mff.ms.polankam.jjcron.remote.manager;
 import cz.cuni.mff.ms.polankam.jjcron.common.CrontabTime;
 import cz.cuni.mff.ms.polankam.jjcron.remote.TaskDetail;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.TimeUnit;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -115,7 +116,7 @@ public class TaskDetailPaneHolder {
         rootPane.add(nextText, 1, 2, 3, 1);
         rootPane.add(new Label("Last Execution:"), 0, 3);
         rootPane.add(lastExecutionText, 1, 3);
-        rootPane.add(new Label("Last Duration (ns):"), 2, 3);
+        rootPane.add(new Label("Last Duration (ms):"), 2, 3);
         rootPane.add(lastDurationText, 3, 3);
         rootPane.add(metadataPane, 4, 0, 1, 4);
 
@@ -157,7 +158,9 @@ public class TaskDetailPaneHolder {
             lastExecutionText.setText(task.stats.getLastExecution().format(dateTimeFormatter));
         }
         if (task.stats.getLastDuration() != null) {
-            lastDurationText.setText(task.stats.getLastDuration().toString());
+            long duration = task.stats.getLastDuration();
+            duration = TimeUnit.SECONDS.convert(duration, TimeUnit.MILLISECONDS);
+            lastDurationText.setText(String.valueOf(duration));
         }
 
         metadataPane.getChildren().clear();

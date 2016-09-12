@@ -36,7 +36,7 @@ public class ConnectionDialogFactory {
         grid.setVgap(10);
         grid.setPadding(new Insets(20, 150, 10, 10));
 
-        TextField registryAddress = new TextField();
+        TextField registryAddress = new TextField("//localhost");
         registryAddress.setPromptText("Registry URL");
         TextField clientIdentification = new TextField();
         clientIdentification.setPromptText("Client Identification");

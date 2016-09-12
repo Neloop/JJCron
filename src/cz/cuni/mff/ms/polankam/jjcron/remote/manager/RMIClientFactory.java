@@ -1,12 +1,15 @@
 package cz.cuni.mff.ms.polankam.jjcron.remote.manager;
 
 import cz.cuni.mff.ms.polankam.jjcron.remote.Client;
+import java.rmi.Naming;
 
 /**
  *
  * @author Neloop
  */
 public class RMIClientFactory implements ClientFactory {
+
+    private static final String DELIM = "/";
 
     /**
      *
@@ -16,11 +19,18 @@ public class RMIClientFactory implements ClientFactory {
      */
     @Override
     public Client connect(ClientAddress addr) throws Exception {
-        throw new Exception();
+        Client client = (Client) Naming.lookup(addr.registryAddress + DELIM
+                + addr.clientIdentification);
+        return client;
     }
 
+    /**
+     *
+     * @param client
+     * @throws Exception
+     */
     @Override
     public void disconnect(Client client) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // nothing to do here
     }
 }
