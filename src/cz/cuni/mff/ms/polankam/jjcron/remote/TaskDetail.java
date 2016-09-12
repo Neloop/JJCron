@@ -13,15 +13,41 @@ import java.util.concurrent.TimeUnit;
  */
 public class TaskDetail implements Serializable {
 
+    /**
+     *
+     */
     public final String id;
 
+    /**
+     *
+     */
     public final String name;
+    /**
+     *
+     */
     public final TimeUnit timeUnit;
+    /**
+     *
+     */
     public final LocalDateTime nextExecutionTime;
 
+    /**
+     *
+     */
     public final TaskStats stats;
+    /**
+     *
+     */
     public final TaskMetadata metadata;
 
+    /**
+     *
+     * @param id
+     * @param name
+     * @param timeUnit
+     * @param next
+     * @param stats
+     */
     public TaskDetail(String id, String name, TimeUnit timeUnit,
             LocalDateTime next, TaskStats stats) {
         this.id = id;
@@ -32,6 +58,15 @@ public class TaskDetail implements Serializable {
         this.metadata = null;
     }
 
+    /**
+     * 
+     * @param id
+     * @param name
+     * @param timeUnit
+     * @param next
+     * @param stats
+     * @param metadata
+     */
     public TaskDetail(String id, String name, TimeUnit timeUnit,
             LocalDateTime next, TaskStats stats, TaskMetadata metadata) {
         this.id = id;
