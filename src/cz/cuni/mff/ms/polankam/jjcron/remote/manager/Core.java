@@ -4,14 +4,14 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
+import javafx.application.HostServices;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -23,6 +23,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
@@ -32,8 +34,7 @@ import javafx.util.Pair;
  */
 public class Core extends Application {
 
-    private static final String PRG_TITLE = "JJCronRM";
-    private static final String PRG_DESC = "JJCronRM";
+    private static final String DESC_DELIM = " - ";
     private static final String NEW_CONNECTION_BTN_TEXT = "New Connection";
 
     private static final int STANDARD_PADDING = 10;
@@ -85,13 +86,24 @@ public class Core extends Application {
     /**
      *
      */
+    private final AppInfo appInfo;
+    /**
+     *
+     */
+    private final HostServices hostServices;
+
+    /**
+     *
+     */
     public Core() {
+        appInfo = new AppInfo();
+        hostServices = getHostServices();
         clientsList = new ClientsHolder();
         loginDialogFactory = new ConnectionDialogFactory();
         loadingScreen = new LoadingScreen();
         alertDialogFactory = new AlertDialogFactory();
         clientDetailPaneHolder = new ClientDetailPaneHolder(clientsList, loadingScreen);
-        aboutDialogFactory = new AboutDialogFactory();
+        aboutDialogFactory = new AboutDialogFactory(appInfo, hostServices);
 
         initMenu();
         initLeftPane();
@@ -125,9 +137,10 @@ public class Core extends Application {
                 String id = clientsList.addClient(task.get());
                 clientDetailPaneHolder.switchToConnectionDetail(id);
                 clientsListView.getSelectionModel().select(id);
-                loadingScreen.hide();
             } catch (Exception e) {
                 logger.log(Level.SEVERE, e.getMessage());
+            } finally {
+                loadingScreen.hide();
             }
         });
         task.setOnFailed((event) -> {
@@ -211,16 +224,24 @@ public class Core extends Application {
      *
      */
     private void initDescriptionPane() {
-        HBox descPane = new HBox();
+        Hyperlink link = new Hyperlink(appInfo.sourceLinkText);
+        link.setPadding(Insets.EMPTY);
+        link.setOnAction((e) -> {
+            hostServices.showDocument(appInfo.sourceLink);
+        });
 
+        TextFlow description = new TextFlow();
+        description.getChildren().addAll(new Text(appInfo.title),
+                new Text(DESC_DELIM), new Text(appInfo.license),
+                new Text(DESC_DELIM), link);
+
+        HBox descPane = new HBox();
         descPane.setAlignment(Pos.CENTER);
         descPane.setPadding(new Insets(STANDARD_PADDING, 0, STANDARD_PADDING, 0));
         descPane.setStyle("-fx-border-width: 2 0 0 0;"
                 + "-fx-border-color: grey;"
                 + "-fx-border-style: dotted;");
-
-        Label descLabel = new Label(PRG_DESC);
-        descPane.getChildren().addAll(descLabel);
+        descPane.getChildren().addAll(description);
 
         descriptionPane = descPane;
     }
@@ -242,7 +263,7 @@ public class Core extends Application {
 
         Scene scene = new Scene(rootPane);
 
-        stage.setTitle(PRG_TITLE);
+        stage.setTitle(appInfo.title);
         stage.setScene(scene);
         //primaryStage.setMaximized(true);
         stage.show();
