@@ -47,24 +47,6 @@ public class TaskDetail implements Serializable {
      * @param timeUnit
      * @param next
      * @param stats
-     */
-    public TaskDetail(String id, String name, TimeUnit timeUnit,
-            LocalDateTime next, TaskStats stats) {
-        this.id = id;
-        this.name = name;
-        this.timeUnit = timeUnit;
-        this.nextExecutionTime = next;
-        this.stats = stats;
-        this.metadata = null;
-    }
-
-    /**
-     * 
-     * @param id
-     * @param name
-     * @param timeUnit
-     * @param next
-     * @param stats
      * @param metadata
      */
     public TaskDetail(String id, String name, TimeUnit timeUnit,

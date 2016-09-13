@@ -60,5 +60,11 @@ public interface Client extends Remote {
      * 
      * @throws Exception
      */
+    public void reloadCrontab() throws Exception;
+
+    /**
+     *
+     * @throws Exception
+     */
     public void saveToCrontab() throws Exception;
 }

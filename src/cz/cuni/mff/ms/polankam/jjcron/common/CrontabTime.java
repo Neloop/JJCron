@@ -122,4 +122,25 @@ public class CrontabTime implements Serializable {
     public final TimeUnit timeUnit() {
         return TimeUnit.SECONDS;
     }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public final String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(second.value().toString());
+        builder.append(" ");
+        builder.append(minute.value().toString());
+        builder.append(" ");
+        builder.append(hour.value().toString());
+        builder.append(" ");
+        builder.append(dayOfMonth.value().toString());
+        builder.append(" ");
+        builder.append(month.value().toString());
+        builder.append(" ");
+        builder.append(dayOfWeek.value().toString());
+        return builder.toString();
+    }
 }
