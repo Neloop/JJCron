@@ -1,4 +1,4 @@
-package cz.cuni.mff.ms.polankam.jjcron.remote.manager;
+package cz.polankam.jjcron.remote.manager;
 
 import javafx.application.HostServices;
 import javafx.geometry.Insets;

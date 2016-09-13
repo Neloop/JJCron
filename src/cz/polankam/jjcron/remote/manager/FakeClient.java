@@ -1,10 +1,10 @@
-package cz.cuni.mff.ms.polankam.jjcron.remote.manager;
+package cz.polankam.jjcron.remote.manager;
 
-import cz.cuni.mff.ms.polankam.jjcron.common.CrontabTime;
-import cz.cuni.mff.ms.polankam.jjcron.common.TaskMetadata;
-import cz.cuni.mff.ms.polankam.jjcron.common.TaskStats;
-import cz.cuni.mff.ms.polankam.jjcron.remote.Client;
-import cz.cuni.mff.ms.polankam.jjcron.remote.TaskDetail;
+import cz.polankam.jjcron.common.CrontabTime;
+import cz.polankam.jjcron.common.TaskMetadata;
+import cz.polankam.jjcron.common.TaskStats;
+import cz.polankam.jjcron.remote.Client;
+import cz.polankam.jjcron.remote.TaskDetail;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;

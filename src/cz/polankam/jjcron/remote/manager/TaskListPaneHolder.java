@@ -1,8 +1,8 @@
-package cz.cuni.mff.ms.polankam.jjcron.remote.manager;
+package cz.polankam.jjcron.remote.manager;
 
-import cz.cuni.mff.ms.polankam.jjcron.common.CrontabTime;
-import cz.cuni.mff.ms.polankam.jjcron.common.TaskMetadata;
-import cz.cuni.mff.ms.polankam.jjcron.remote.TaskDetail;
+import cz.polankam.jjcron.common.CrontabTime;
+import cz.polankam.jjcron.common.TaskMetadata;
+import cz.polankam.jjcron.remote.TaskDetail;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;

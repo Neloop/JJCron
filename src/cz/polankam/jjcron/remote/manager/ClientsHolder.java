@@ -1,4 +1,4 @@
-package cz.cuni.mff.ms.polankam.jjcron.remote.manager;
+package cz.polankam.jjcron.remote.manager;
 
 import java.util.HashMap;
 import java.util.Map;

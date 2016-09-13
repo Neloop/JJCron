@@ -1,6 +1,6 @@
-package cz.cuni.mff.ms.polankam.jjcron.remote.manager;
+package cz.polankam.jjcron.remote.manager;
 
-import cz.cuni.mff.ms.polankam.jjcron.remote.Client;
+import cz.polankam.jjcron.remote.Client;
 import java.rmi.Naming;
 
 /**

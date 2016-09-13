@@ -1,7 +1,7 @@
-package cz.cuni.mff.ms.polankam.jjcron.remote.manager;
+package cz.polankam.jjcron.remote.manager;
 
-import cz.cuni.mff.ms.polankam.jjcron.common.CrontabTime;
-import cz.cuni.mff.ms.polankam.jjcron.remote.TaskDetail;
+import cz.polankam.jjcron.common.CrontabTime;
+import cz.polankam.jjcron.remote.TaskDetail;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;
 import javafx.geometry.Insets;
