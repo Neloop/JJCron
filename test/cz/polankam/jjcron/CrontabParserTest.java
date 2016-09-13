@@ -1,6 +1,8 @@
-package cz.cuni.mff.ms.polankam.jjcron;
+package cz.polankam.jjcron;
 
-import cz.cuni.mff.ms.polankam.jjcron.common.TaskMetadata;
+import cz.polankam.jjcron.CrontabParser;
+import cz.polankam.jjcron.ParserException;
+import cz.polankam.jjcron.common.TaskMetadata;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;

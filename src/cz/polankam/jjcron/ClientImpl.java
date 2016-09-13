@@ -1,8 +1,8 @@
-package cz.cuni.mff.ms.polankam.jjcron;
+package cz.polankam.jjcron;
 
-import cz.cuni.mff.ms.polankam.jjcron.common.TaskMetadata;
-import cz.cuni.mff.ms.polankam.jjcron.remote.Client;
-import cz.cuni.mff.ms.polankam.jjcron.remote.TaskDetail;
+import cz.polankam.jjcron.common.TaskMetadata;
+import cz.polankam.jjcron.remote.Client;
+import cz.polankam.jjcron.remote.TaskDetail;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;

@@ -1,6 +1,6 @@
-package cz.cuni.mff.ms.polankam.jjcron;
+package cz.polankam.jjcron;
 
-import cz.cuni.mff.ms.polankam.jjcron.common.TaskStats;
+import cz.polankam.jjcron.common.TaskStats;
 
 /**
  *

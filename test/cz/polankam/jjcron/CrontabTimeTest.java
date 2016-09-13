@@ -1,6 +1,6 @@
-package cz.cuni.mff.ms.polankam.jjcron;
+package cz.polankam.jjcron;
 
-import cz.cuni.mff.ms.polankam.jjcron.common.CrontabTime;
+import cz.polankam.jjcron.common.CrontabTime;
 import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;

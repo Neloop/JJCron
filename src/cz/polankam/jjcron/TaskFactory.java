@@ -1,6 +1,6 @@
-package cz.cuni.mff.ms.polankam.jjcron;
+package cz.polankam.jjcron;
 
-import cz.cuni.mff.ms.polankam.jjcron.common.TaskMetadata;
+import cz.polankam.jjcron.common.TaskMetadata;
 
 /**
  * Interface providing factory method for task creation.

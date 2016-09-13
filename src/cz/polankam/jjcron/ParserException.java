@@ -1,4 +1,4 @@
-package cz.cuni.mff.ms.polankam.jjcron;
+package cz.polankam.jjcron;
 
 /**
  * Thrown in {@link CrontabParser} if something went wrong. Further description

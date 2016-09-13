@@ -4,4 +4,4 @@
  *   and use them in task scheduling just like command tasks.
  * This package essentially gathers all classes needed for JJCron to run.
  */
-package cz.cuni.mff.ms.polankam.jjcron;
+package cz.polankam.jjcron;

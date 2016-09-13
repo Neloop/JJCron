@@ -1,4 +1,4 @@
-package cz.cuni.mff.ms.polankam.jjcron;
+package cz.polankam.jjcron;
 
 import java.util.logging.Logger;
 import org.apache.commons.cli.CommandLine;

@@ -1,4 +1,4 @@
-package cz.cuni.mff.ms.polankam.jjcron;
+package cz.polankam.jjcron;
 
 /**
  * Used if something went wrong in task creation.

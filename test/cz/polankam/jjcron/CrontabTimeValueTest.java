@@ -1,4 +1,4 @@
-package cz.cuni.mff.ms.polankam.jjcron;
+package cz.polankam.jjcron;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -11,9 +11,9 @@ import static org.junit.Assert.*;
  *
  * @author Neloop
  */
-public class TaskMetadataTest {
+public class CrontabTimeValueTest {
 
-    public TaskMetadataTest() {
+    public CrontabTimeValueTest() {
     }
 
     @BeforeClass
