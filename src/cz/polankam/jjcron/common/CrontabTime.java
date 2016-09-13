@@ -124,22 +124,25 @@ public class CrontabTime implements Serializable {
     }
 
     /**
+     * Returns textual representation of crontab time format. Basically result
+     * is the same as the one loaded from initial crontab file.
      *
-     * @return
+     * @return textual representation of crontab time
      */
     @Override
     public final String toString() {
+        String delim = " ";
         StringBuilder builder = new StringBuilder();
         builder.append(second.value().toString());
-        builder.append(" ");
+        builder.append(delim);
         builder.append(minute.value().toString());
-        builder.append(" ");
+        builder.append(delim);
         builder.append(hour.value().toString());
-        builder.append(" ");
+        builder.append(delim);
         builder.append(dayOfMonth.value().toString());
-        builder.append(" ");
+        builder.append(delim);
         builder.append(month.value().toString());
-        builder.append(" ");
+        builder.append(delim);
         builder.append(dayOfWeek.value().toString());
         return builder.toString();
     }

@@ -2,7 +2,6 @@ package cz.polankam.jjcron.common;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * General implementation of {@link CrontabTimeUnit} interface which should be
@@ -162,6 +161,9 @@ public class CrontabTimeGeneralUnit implements CrontabTimeUnit, Serializable {
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CrontabTimeValue value() {
         return unit;

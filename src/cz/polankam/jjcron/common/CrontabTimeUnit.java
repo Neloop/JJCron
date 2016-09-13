@@ -123,5 +123,11 @@ public interface CrontabTimeUnit {
     public int delay(LocalDateTime current, int currentValue,
             boolean previousChanged);
 
+    /**
+     * Returns {@link CrontabTimeValue} loaded from crontab which represents
+     * this unit.
+     *
+     * @return structure with this unit representation
+     */
     public CrontabTimeValue value();
 }

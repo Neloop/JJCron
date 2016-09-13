@@ -46,6 +46,12 @@ public class CrontabTimeValue implements Serializable {
         this.values = values;
     }
 
+    /**
+     * Returns text which represents this value. Basically this will be same as
+     * in loaded crontab file.
+     *
+     * @return textual representation of this value
+     */
     @Override
     public String toString() {
         switch (valueType) {
