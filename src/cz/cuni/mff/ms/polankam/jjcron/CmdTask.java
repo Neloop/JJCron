@@ -7,7 +7,7 @@ import cz.cuni.mff.ms.polankam.jjcron.common.TaskMetadata;
  *
  * @author Neloop
  */
-public class CmdTask extends MetadataHolderTask {
+public class CmdTask extends Task {
 
     /**
      * Construct task from given {@link TaskMetadata} information.

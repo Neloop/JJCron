@@ -27,7 +27,7 @@ import java.util.logging.Logger;
  *
  * @author Neloop
  */
-public class TaskScheduler {
+public final class TaskScheduler {
 
     /**
      * Sleep interval which is used for checking on task pool termination.
@@ -275,6 +275,19 @@ public class TaskScheduler {
         scheduleTask(holder);
     }
 
+    public final synchronized void deleteTask(TaskDetail taskDetail) {
+        scheduler.shutdownNow();
+        scheduler = Executors.newScheduledThreadPool(
+                Runtime.getRuntime().availableProcessors());
+
+        // actual deletion
+        tasks.remove(taskDetail.id);
+
+        for (Entry<String, TaskHolder> entry : tasks.entrySet()) {
+            scheduleTask(entry.getValue());
+        }
+    }
+
     /**
      * From given {@link TaskMetadata} list constructs all tasks and schedule
      * them to their first execution timepoint. Non-blocking function tasks are
@@ -285,12 +298,47 @@ public class TaskScheduler {
      * @param tasksMeta list of task meta information
      * @throws TaskException if task creation failed
      */
-    public final synchronized void startCroning(List<TaskMetadata> tasksMeta)
+    public final synchronized void start(List<TaskMetadata> tasksMeta)
             throws TaskException {
         if (running.get() == false) {
             loadTasks(tasksMeta);
             running.set(true);
         }
+    }
+
+    /**
+     * Reschedules all currently loaded tasks. Should be used only as
+     * counterpart of @ref stop() function. Cannot be used as restart running
+     * state is checked before any actions.
+     * <p>
+     * Thread-safe function.</p>
+     */
+    public final synchronized void start() {
+        if (running.get() == true) {
+            return;
+        }
+
+        running.set(true);
+        scheduler = Executors.newScheduledThreadPool(
+                Runtime.getRuntime().availableProcessors());
+
+        for (Entry<String, TaskHolder> entry : tasks.entrySet()) {
+            scheduleTask(entry.getValue());
+        }
+    }
+
+    /**
+     * Stop all currenty executing tasks. It is counterpart of @ref start()
+     * function. Multiple calls have no effect.
+     */
+    public final synchronized void stop() {
+        if (running.get() == false) {
+            return;
+        }
+
+        running.set(false);
+        scheduler.shutdownNow();
+        logger.log(Level.INFO, "Stop was requested, all task are stopped now");
     }
 
     /**
@@ -316,21 +364,16 @@ public class TaskScheduler {
         logger.log(Level.INFO, "Task reload done");
     }
 
-    public final boolean isPaused() {
-        return !running.get();
+    public final boolean isRunning() {
+        return running.get();
     }
 
-    public final synchronized void pause() {
-        // TODO:
-    }
-
-    public final synchronized void unpause() {
-        // TODO:
-    }
-
-    public final synchronized List<Task> getTasks() {
-        // TODO:
-        throw new UnsupportedOperationException();
+    public final synchronized List<TaskMetadata> getTaskMetadatas() {
+        List<TaskMetadata> result = new ArrayList<>();
+        for (Entry<String, TaskHolder> entry : tasks.entrySet()) {
+            result.add(entry.getValue().task.metadata());
+        }
+        return result;
     }
 
     public final synchronized List<TaskDetail> getTaskDetails() {
@@ -338,13 +381,9 @@ public class TaskScheduler {
         for (Entry<String, TaskHolder> entry : tasks.entrySet()) {
             TaskHolder holder = entry.getValue();
             Task task = holder.task;
-            LocalDateTime next = LocalDateTime.now(); // TODO:
-            if (task instanceof MetadataHolderTask) {
-                MetadataHolderTask metadataTask = (MetadataHolderTask) task;
-                result.add(new TaskDetail(holder.id, task.name(), task.timeUnit(), next, holder.stats, metadataTask.taskMeta));
-            } else {
-                result.add(new TaskDetail(holder.id, task.name(), task.timeUnit(), next, holder.stats));
-            }
+            LocalDateTime next = LocalDateTime.now();
+            next = next.plusSeconds(task.timeUnit().toSeconds(task.delay(next)));
+            result.add(new TaskDetail(holder.id, task.name(), task.timeUnit(), next, holder.stats, task.metadata()));
         }
         return result;
     }

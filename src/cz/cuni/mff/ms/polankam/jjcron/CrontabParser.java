@@ -7,9 +7,11 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -146,7 +148,7 @@ public class CrontabParser {
      * @return array of newly created {@link TaskMetadata} structures
      * @throws ParserException if parsing failed
      */
-    private static List<TaskMetadata> internalParse(InputStream input)
+    private static List<TaskMetadata> internalLoad(InputStream input)
             throws ParserException {
         if (input == null) {
             throw new ParserException("Input is null");
@@ -154,10 +156,8 @@ public class CrontabParser {
 
         List<TaskMetadata> result = new ArrayList<>();
 
-        try {
-            BufferedReader reader
-                    = new BufferedReader(new InputStreamReader(input));
-
+        try (BufferedReader reader
+                = new BufferedReader(new InputStreamReader(input))) {
             // check for utf-8 encoding
             reader.mark(4);
             if (UTF_BOM != reader.read()) {
@@ -188,17 +188,15 @@ public class CrontabParser {
      * @return array of {@link TaskMetadata} structures loaded from file
      * @throws ParserException if parsing failed
      */
-    public static List<TaskMetadata> parseFile(String filename)
+    public static List<TaskMetadata> loadFile(String filename)
             throws ParserException {
-        InputStream file = null;
-        try {
-            file = new FileInputStream(filename);
-        } catch (FileNotFoundException e) {
+
+        try (InputStream file = new FileInputStream(filename)) {
+            return internalLoad(file);
+        } catch (IOException e) {
             logger.log(Level.SEVERE, e.getMessage());
             throw new ParserException(e.getMessage(), e);
         }
-
-        return internalParse(file);
     }
 
     /**
@@ -208,9 +206,9 @@ public class CrontabParser {
      * @return array of {@link TaskMetadata} structures
      * @throws ParserException if parsing failed
      */
-    public static List<TaskMetadata> parse(InputStream input)
+    public static List<TaskMetadata> load(InputStream input)
             throws ParserException {
-        return internalParse(input);
+        return internalLoad(input);
     }
 
     /**
@@ -220,9 +218,27 @@ public class CrontabParser {
      * @return array of {@link TaskMetadata} structures
      * @throws ParserException if parsing failed
      */
-    public static List<TaskMetadata> parse(String input)
+    public static List<TaskMetadata> load(String input)
             throws ParserException {
         InputStream inputStream = new ByteArrayInputStream(input.getBytes());
-        return internalParse(inputStream);
+        return internalLoad(inputStream);
+    }
+
+    /**
+     * Saves given tasks into given crontab file.
+     *
+     * @param tasks list of tasks which will be written into crontab
+     * @param crontab filename of crontab
+     */
+    static void save(List<TaskMetadata> tasks, String crontab) throws ParserException {
+
+        try (PrintWriter file = new PrintWriter(new FileWriter(crontab))) {
+            for (TaskMetadata task : tasks) {
+                file.println(task.time().toString() + " " + task.command());
+            }
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            throw new ParserException(e.getMessage(), e);
+        }
     }
 }

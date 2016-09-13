@@ -6,17 +6,17 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Example task which can be loaded through reflection. It does nothing usefull,
- * just print dot on the standard output.
+ * just print double dot on the standard output.
  *
  * @author Neloop
  */
-public class PrintDotTask extends Task {
+public class PrintDoubleDotTask extends Task {
 
     /**
      *
      * @param taskMeta
      */
-    public PrintDotTask(TaskMetadata taskMeta) {
+    public PrintDoubleDotTask(TaskMetadata taskMeta) {
         super(taskMeta);
     }
 
@@ -27,13 +27,13 @@ public class PrintDotTask extends Task {
      */
     @Override
     public void run() throws Exception {
-        System.out.print(".");
+        System.out.print(":");
         System.out.flush();
     }
 
     @Override
     public String name() {
-        return "<class>PrintDotTask</class>";
+        return "<class>PrintDoubleDotTask</class>";
     }
 
     @Override

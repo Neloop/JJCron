@@ -26,7 +26,7 @@ public class CrontabParserTest {
     public void testParseFile_EmptyFilename() throws Exception {
         System.out.println("parseFile");
         String filename = "";
-        CrontabParser.parseFile(filename);
+        CrontabParser.loadFile(filename);
     }
 
     /**
@@ -36,7 +36,7 @@ public class CrontabParserTest {
     public void testParse_NullInputStream() throws Exception {
         System.out.println("parse");
         InputStream input = null;
-        CrontabParser.parse(input);
+        CrontabParser.load(input);
     }
 
     /**
@@ -47,7 +47,7 @@ public class CrontabParserTest {
         System.out.println("parse");
         String input = "";
         List<TaskMetadata> expResult = new ArrayList<>();
-        List<TaskMetadata> result = CrontabParser.parse(input);
+        List<TaskMetadata> result = CrontabParser.load(input);
         assertEquals(expResult, result);
     }
 

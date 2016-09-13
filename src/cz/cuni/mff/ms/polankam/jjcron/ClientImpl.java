@@ -20,18 +20,16 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
 
     private static final Logger logger = Logger.getLogger(ClientImpl.class.getName());
 
-    private final int port;
-    private final String name;
+    private final CmdOptions options;
     private final TaskScheduler taskScheduler;
     private final Registry registry;
 
-    public ClientImpl(int port, String name, TaskScheduler cron) throws RemoteException {
-        this.port = port;
-        this.name = name;
+    public ClientImpl(CmdOptions options, TaskScheduler cron) throws RemoteException {
+        this.options = options;
         this.taskScheduler = cron;
 
-        registry = LocateRegistry.createRegistry(port);
-        registry.rebind(name, this);
+        registry = LocateRegistry.createRegistry(options.rmPort);
+        registry.rebind(options.rmName, this);
     }
 
     @Override
@@ -39,7 +37,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
         logger.log(Level.INFO, "Shutdown command arrived from manager...");
 
         try {
-            registry.unbind(name);
+            registry.unbind(options.rmName);
             UnicastRemoteObject.unexportObject(this, true);
         } catch (RemoteException | NotBoundException ex) {
             logger.log(Level.SEVERE, ex.getMessage());
@@ -52,17 +50,17 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
 
     @Override
     public boolean isPaused() throws Exception {
-        return taskScheduler.isPaused();
+        return !taskScheduler.isRunning();
     }
 
     @Override
     public void pause() throws Exception {
-        taskScheduler.pause();
+        taskScheduler.stop();
     }
 
     @Override
     public void unpause() throws Exception {
-        taskScheduler.unpause();
+        taskScheduler.start();
     }
 
     @Override
@@ -72,7 +70,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
 
     @Override
     public void deleteTask(TaskDetail task) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        taskScheduler.deleteTask(task);
     }
 
     @Override
@@ -82,6 +80,15 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
 
     @Override
     public void saveToCrontab() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        logger.log(Level.INFO, "Save to Crontab was requested from manager.");
+        List<TaskMetadata> tasks = taskScheduler.getTaskMetadatas();
+        CrontabParser.save(tasks, options.crontab);
+    }
+
+    @Override
+    public void reloadCrontab() throws Exception {
+        logger.log(Level.INFO, "Reload Crontab was requested from manager.");
+        List<TaskMetadata> tasks = CrontabParser.loadFile(options.crontab);
+        taskScheduler.reloadTasks(tasks);
     }
 }

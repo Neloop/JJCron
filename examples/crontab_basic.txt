@@ -1,1 +1,1 @@
-﻿0    */1 * * * * <class>cz.cuni.mff.ms.polankam.jjcron.PrintDotTask</class>  # simple task just for show basic functionality
+* * * * * * <class>cz.cuni.mff.ms.polankam.jjcron.PrintDotTask</class>
