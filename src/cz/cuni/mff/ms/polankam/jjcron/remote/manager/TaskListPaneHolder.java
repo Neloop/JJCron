@@ -28,6 +28,7 @@ public class TaskListPaneHolder {
     private static final String REFRESH_BTN_TEXT = "Refresh";
     private static final String ADD_TASK_BTN_TEXT = "Add task";
     private static final String DELETE_TASK_BTN_TEXT = "Delete task";
+    private static final String RELOAD_CRONTAB_BTN_TEXT = "Reload Crontab";
     private static final String SAVE_TASKS_BTN_TEXT = "Save to Crontab";
 
     private static final double TASK_ACTION_BTN_WIDTH = 130;
@@ -148,13 +149,19 @@ public class TaskListPaneHolder {
             deleteTaskButtonAction(tasksListView.getSelectionModel().getSelectedItem());
         });
 
+        Button reloadButton = new Button(RELOAD_CRONTAB_BTN_TEXT);
+        reloadButton.setMinWidth(TASK_ACTION_BTN_WIDTH);
+        reloadButton.setOnAction((ActionEvent event) -> {
+            reloadCrontabButtonAction();
+        });
+
         Button saveButton = new Button(SAVE_TASKS_BTN_TEXT);
         saveButton.setMinWidth(TASK_ACTION_BTN_WIDTH);
         saveButton.setOnAction((ActionEvent event) -> {
             saveToCrontabButtonAction();
         });
 
-        buttonsArea.getChildren().addAll(refreshButton, addButton, deleteButton, saveButton);
+        buttonsArea.getChildren().addAll(refreshButton, addButton, deleteButton, reloadButton, saveButton);
     }
 
     /**
@@ -339,6 +346,41 @@ public class TaskListPaneHolder {
             loadingScreen.show("Saving ...");
         });
         task.setOnSucceeded((event) -> {
+            loadingScreen.hide();
+        });
+        task.setOnFailed((event) -> {
+            loadingScreen.hide();
+            if (task.getException() != null) {
+                logger.log(Level.SEVERE, task.getException().getMessage());
+                alertDialogFactory.createErrorDialog(task.getException().getMessage()).show();
+            }
+        });
+
+        new Thread(task).start();
+    }
+
+    /**
+     *
+     */
+    private void reloadCrontabButtonAction() {
+        if (activeClient == null) {
+            return;
+        }
+
+        // we have active client!!! so reload crontab
+        Task task = new Task() {
+            @Override
+            protected Object call() throws Exception {
+                activeClient.reloadCrontab();
+                return null;
+            }
+        };
+
+        task.setOnRunning((event) -> {
+            loadingScreen.show("Reloading ...");
+        });
+        task.setOnSucceeded((event) -> {
+            activeClient.fillTaskObservableList();
             loadingScreen.hide();
         });
         task.setOnFailed((event) -> {

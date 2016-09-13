@@ -223,6 +223,15 @@ public class ClientWrapper {
      *
      * @throws Exception
      */
+    public void reloadCrontab() throws Exception {
+        client.reloadCrontab();
+        fetchTasks(true);
+    }
+
+    /**
+     *
+     * @throws Exception
+     */
     public void saveToCrontab() throws Exception {
         client.saveToCrontab();
     }

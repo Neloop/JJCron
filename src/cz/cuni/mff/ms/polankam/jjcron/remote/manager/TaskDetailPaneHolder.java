@@ -107,6 +107,13 @@ public class TaskDetailPaneHolder {
         nextText.setEditable(false);
         lastExecutionText.setEditable(false);
         lastDurationText.setEditable(false);
+        secondText.setEditable(false);
+        minuteText.setEditable(false);
+        hourText.setEditable(false);
+        dayOfMonthText.setEditable(false);
+        monthText.setEditable(false);
+        dayOfWeekText.setEditable(false);
+        commandText.setEditable(false);
 
         rootPane.add(new Label("UUID:"), 0, 0);
         rootPane.add(idText, 1, 0, 3, 1);

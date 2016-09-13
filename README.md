@@ -4,7 +4,7 @@
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://badges.mit-license.org)
 [![Wiki](https://img.shields.io/badge/docs-wiki-orange.svg)](https://github.com/JJCron/JJCronRM/wiki)
 
-**JJCronRM** is management UI application for **[JJCron](https://github.com/JJCron/JJCron "JJCron")** instances. Connection between _UI_ and _cron_ is managed through **RMI** Java technology thus application can be used for remote management of huge number of concurent connections. Admins can use manager for listing tasks on particular instance, adding task, deleting task and permanently save all changes. Other handy features can be shutdown instance or pause all execution.
+**JJCronRM** is management `JavaFX` application for **[JJCron](https://github.com/JJCron/JJCron "JJCron")** instances. Connection between _UI_ and _cron_ is managed through `RMI` Java technology thus application can be used for remote management of huge number of concurent connections. Admins can use manager for listing tasks on particular instance, adding task, deleting task and permanently save all changes. Other handy features can be shutdown instance or pause all execution.
 
 ![JJCronRM](src/doc-files/jjcronrm.png)
 

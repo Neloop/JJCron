@@ -80,7 +80,7 @@ public class FakeClient implements Client {
         LocalDateTime next = LocalDateTime.now();
         next.plusSeconds(time.delay(next));
         tasks.put(id, new TaskDetail(id, task.command(), time.timeUnit(), next,
-                new TaskStats()));
+                new TaskStats(), new TaskMetadata(time, task.command())));
     }
 
     @Override
@@ -90,6 +90,11 @@ public class FakeClient implements Client {
 
     @Override
     public void saveToCrontab() throws Exception {
+        Thread.sleep(LATENCY);
+    }
+
+    @Override
+    public void reloadCrontab() throws Exception {
         Thread.sleep(LATENCY);
     }
 }
