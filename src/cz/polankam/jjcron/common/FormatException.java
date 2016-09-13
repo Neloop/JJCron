@@ -1,4 +1,4 @@
-package cz.cuni.mff.ms.polankam.jjcron.common;
+package cz.polankam.jjcron.common;
 
 /**
  * Internal exception which is thrown in case of bad format of given data.

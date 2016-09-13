@@ -1,7 +1,7 @@
-package cz.cuni.mff.ms.polankam.jjcron.remote;
+package cz.polankam.jjcron.remote;
 
-import cz.cuni.mff.ms.polankam.jjcron.common.TaskMetadata;
-import cz.cuni.mff.ms.polankam.jjcron.common.TaskStats;
+import cz.polankam.jjcron.common.TaskMetadata;
+import cz.polankam.jjcron.common.TaskStats;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;

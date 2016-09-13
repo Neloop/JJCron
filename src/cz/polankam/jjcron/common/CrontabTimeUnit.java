@@ -1,4 +1,4 @@
-package cz.cuni.mff.ms.polankam.jjcron.common;
+package cz.polankam.jjcron.common;
 
 import java.time.LocalDateTime;
 

@@ -1,4 +1,4 @@
-package cz.cuni.mff.ms.polankam.jjcron.common;
+package cz.polankam.jjcron.common;
 
 /**
  * Represents all value types which can be stored in crontab in one time column.

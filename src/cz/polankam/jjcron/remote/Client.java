@@ -1,6 +1,6 @@
-package cz.cuni.mff.ms.polankam.jjcron.remote;
+package cz.polankam.jjcron.remote;
 
-import cz.cuni.mff.ms.polankam.jjcron.common.TaskMetadata;
+import cz.polankam.jjcron.common.TaskMetadata;
 import java.rmi.Remote;
 import java.util.List;
 
