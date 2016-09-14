@@ -1,5 +1,7 @@
 package cz.polankam.jjcron;
 
+import cz.polankam.jjcron.common.CrontabTime;
+import cz.polankam.jjcron.common.FormatException;
 import cz.polankam.jjcron.common.TaskMetadata;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
@@ -11,6 +13,17 @@ import java.util.concurrent.TimeUnit;
  * @author Neloop
  */
 public class PrintDotTask extends Task {
+
+    /**
+     * Default parameterless constructor which will make up some
+     * {@link TaskMetadata} structure needed for construction of {@link Task}.
+     *
+     * @throws FormatException in case of format error (should never happen)
+     */
+    public PrintDotTask() throws FormatException {
+        super(new TaskMetadata(new CrontabTime("*", "*", "*", "*", "*", "*"),
+                "<class>cz.polankam.jjcron.PrintDotTask</class>"));
+    }
 
     /**
      * Constructor which needs {@link TaskMetadata} structure for this class
