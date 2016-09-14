@@ -13,37 +13,38 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 /**
+ * Represents loading dialog screen which can be shared and used amongst whole
+ * application. Loading dialog contains text which can be changed on dialog
+ * show.
  *
  * @author Neloop
  */
 public class LoadingScreen {
 
+    /**
+     * Default text which is displayed on loading dialog.
+     */
     private static final String LOADING_TEXT = "Loading ...";
+    /**
+     * Size of loading circle.
+     */
     private static final double LOADING_CIRCLE_SIZE = 70;
+    /**
+     * Size of whole loading dialog.
+     */
     private static final double LOADING_DIALOG_SIZE = 150;
 
     /**
-     *
+     * Loading dialog itself in form of JavaFX stage.
      */
     private final Stage loadingStage;
     /**
-     *
+     * Label which contains editable loading text.
      */
     private final Label loadingText;
 
     /**
-     *
-     * @param mainStage
-     */
-    public void setMainStage(Stage mainStage) {
-        loadingStage.setOnShown((e) -> {
-            loadingStage.setX(mainStage.getX() + (mainStage.getWidth() / 2) - (loadingStage.getWidth() / 2));
-            loadingStage.setY(mainStage.getY() + (mainStage.getHeight() / 2) - (loadingStage.getHeight() / 2));
-        });
-    }
-
-    /**
-     *
+     * Construct whole loading dialog but do not show it.
      */
     public LoadingScreen() {
         loadingStage = new Stage(StageStyle.TRANSPARENT);
@@ -76,15 +77,31 @@ public class LoadingScreen {
     }
 
     /**
+     * Sets primary stage which was given to application from JavaFX engine.
+     * Primary stage is used for centering loading dialog.
      *
+     * @param mainStage
+     */
+    public void setMainStage(Stage mainStage) {
+        loadingStage.setOnShown((e) -> {
+            loadingStage.setX(mainStage.getX() + (mainStage.getWidth() / 2)
+                    - (loadingStage.getWidth() / 2));
+            loadingStage.setY(mainStage.getY() + (mainStage.getHeight() / 2)
+                    - (loadingStage.getHeight() / 2));
+        });
+    }
+
+    /**
+     * Shows loading dialog with default text.
      */
     public void show() {
         loadingStage.show();
     }
 
     /**
+     * Shows loading dialog with given text.
      *
-     * @param text
+     * @param text text which will be visible on loading dialog
      */
     public void show(String text) {
         this.loadingText.setText(text);
@@ -92,7 +109,7 @@ public class LoadingScreen {
     }
 
     /**
-     *
+     * Hide loading dialog and resets default loading text.
      */
     public void hide() {
         loadingStage.hide();

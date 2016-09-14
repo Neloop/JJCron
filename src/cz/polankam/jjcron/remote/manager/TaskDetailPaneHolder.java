@@ -81,7 +81,8 @@ public class TaskDetailPaneHolder {
     /**
      * Formats time into standard year first date and hour first time.
      */
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private final DateTimeFormatter dateTimeFormatter
+            = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
      *
@@ -162,11 +163,13 @@ public class TaskDetailPaneHolder {
         nameText.setText(task.name);
         nextText.setText(task.nextExecutionTime.format(dateTimeFormatter));
         if (task.stats.getLastExecution() != null) {
-            lastExecutionText.setText(task.stats.getLastExecution().format(dateTimeFormatter));
+            lastExecutionText.setText(
+                    task.stats.getLastExecution().format(dateTimeFormatter));
         }
         if (task.stats.getLastDuration() != null) {
             long duration = task.stats.getLastDuration();
-            duration = TimeUnit.SECONDS.convert(duration, TimeUnit.MILLISECONDS);
+            duration = TimeUnit.SECONDS.convert(duration,
+                    TimeUnit.MILLISECONDS);
             lastDurationText.setText(String.valueOf(duration));
         }
 

@@ -54,7 +54,8 @@ public class ClientDetailPaneHolder {
     private static final String DISCONNECTED_STATUS = "Disconnected";
     private static final Color DISCONNECTED_STATUS_COLOR = Color.GREY;
 
-    private static final Logger logger = Logger.getLogger(ClientDetailPaneHolder.class.getName());
+    private static final Logger logger
+            = Logger.getLogger(ClientDetailPaneHolder.class.getName());
 
     /**
      *
@@ -125,7 +126,8 @@ public class ClientDetailPaneHolder {
      * @param connList
      * @param loadingScreen
      */
-    public ClientDetailPaneHolder(ClientsHolder connList, LoadingScreen loadingScreen) {
+    public ClientDetailPaneHolder(ClientsHolder connList,
+            LoadingScreen loadingScreen) {
         clientsList = connList;
         this.loadingScreen = loadingScreen;
         clientActionButtonsList = new ArrayList<>();
@@ -165,8 +167,10 @@ public class ClientDetailPaneHolder {
         }
 
         activeClient = new Pair<>(name, client);
-        registryAddressTextArea.setText(client.getClientAddress().registryAddress);
-        clientIdentificationTextArea.setText(client.getClientAddress().clientIdentification);
+        registryAddressTextArea.setText(
+                client.getClientAddress().registryAddress);
+        clientIdentificationTextArea.setText(
+                client.getClientAddress().clientIdentification);
 
         if (client.isListOpened()) {
             taskListPaneHolder.displayTaskList(client);
@@ -186,7 +190,8 @@ public class ClientDetailPaneHolder {
                 pauseClientMenuItem.setText(UNPAUSE_BTN_TEXT);
             } else {
                 clientStatusCircle.setFill(RUNNING_STATUS_COLOR);
-                Tooltip.install(clientStatusCircle, new Tooltip(RUNNING_STATUS));
+                Tooltip.install(clientStatusCircle,
+                        new Tooltip(RUNNING_STATUS));
                 pauseClientButton.setText(PAUSE_BTN_TEXT);
                 pauseClientMenuItem.setText(PAUSE_BTN_TEXT);
             }
@@ -230,7 +235,8 @@ public class ClientDetailPaneHolder {
             return;
         }
 
-        Alert alert = alertDialogFactory.createConfirmationDialog("JJCron instance will be disconnected!");
+        Alert alert = alertDialogFactory.createConfirmationDialog(
+                "JJCron instance will be disconnected!");
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() != ButtonType.OK) {
@@ -257,7 +263,8 @@ public class ClientDetailPaneHolder {
             loadingScreen.hide();
             if (task.getException() != null) {
                 logger.log(Level.SEVERE, task.getException().getMessage());
-                alertDialogFactory.createErrorDialog(task.getException().getMessage()).show();
+                alertDialogFactory.createErrorDialog(
+                        task.getException().getMessage()).show();
             }
         });
 
@@ -272,7 +279,8 @@ public class ClientDetailPaneHolder {
             return;
         }
 
-        Alert alert = alertDialogFactory.createConfirmationDialog("Connected instance of JJCron will be shutted down!");
+        Alert alert = alertDialogFactory.createConfirmationDialog(
+                "Connected instance of JJCron will be shutted down!");
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() != ButtonType.OK) {
@@ -299,7 +307,8 @@ public class ClientDetailPaneHolder {
             loadingScreen.hide();
             if (task.getException() != null) {
                 logger.log(Level.SEVERE, task.getException().getMessage());
-                alertDialogFactory.createErrorDialog(task.getException().getMessage()).show();
+                alertDialogFactory.createErrorDialog(
+                        task.getException().getMessage()).show();
             }
         });
 
@@ -336,7 +345,8 @@ public class ClientDetailPaneHolder {
                 pauseClientButton.setText(PAUSE_BTN_TEXT);
                 pauseClientMenuItem.setText(PAUSE_BTN_TEXT);
                 clientStatusCircle.setFill(RUNNING_STATUS_COLOR);
-                Tooltip.install(clientStatusCircle, new Tooltip(RUNNING_STATUS));
+                Tooltip.install(clientStatusCircle,
+                        new Tooltip(RUNNING_STATUS));
             } else {
                 pauseClientButton.setText(UNPAUSE_BTN_TEXT);
                 pauseClientMenuItem.setText(UNPAUSE_BTN_TEXT);
@@ -350,7 +360,8 @@ public class ClientDetailPaneHolder {
             loadingScreen.hide();
             if (task.getException() != null) {
                 logger.log(Level.SEVERE, task.getException().getMessage());
-                alertDialogFactory.createErrorDialog(task.getException().getMessage()).show();
+                alertDialogFactory.createErrorDialog(
+                        task.getException().getMessage()).show();
             }
         });
 
@@ -395,7 +406,8 @@ public class ClientDetailPaneHolder {
                 loadingScreen.hide();
                 if (task.getException() != null) {
                     logger.log(Level.SEVERE, task.getException().getMessage());
-                    alertDialogFactory.createErrorDialog(task.getException().getMessage()).show();
+                    alertDialogFactory.createErrorDialog(
+                            task.getException().getMessage()).show();
                 }
             });
 
@@ -503,13 +515,16 @@ public class ClientDetailPaneHolder {
         HBox.setHgrow(detailAndListVBox, Priority.ALWAYS);
         VBox.setVgrow(taskListPaneHolder.getRootPane(), Priority.ALWAYS);
 
-        detailAndListVBox.getChildren().addAll(detailArea, taskListPaneHolder.getRootPane());
-        detailAndListVBox.setPadding(new Insets(STANDARD_PADDING, STANDARD_PADDING, 0, STANDARD_PADDING));
+        detailAndListVBox.getChildren().addAll(detailArea,
+                taskListPaneHolder.getRootPane());
+        detailAndListVBox.setPadding(new Insets(STANDARD_PADDING,
+                STANDARD_PADDING, 0, STANDARD_PADDING));
         detailAndListVBox.setStyle("-fx-border-width: 0 0 0 1;"
                 + "-fx-border-color: grey;"
                 + "-fx-border-style: solid;");
 
-        centerHBox.setPadding(new Insets(STANDARD_PADDING, STANDARD_PADDING, STANDARD_PADDING, 0));
+        centerHBox.setPadding(new Insets(STANDARD_PADDING, STANDARD_PADDING,
+                STANDARD_PADDING, 0));
         centerHBox.getChildren().addAll(detailAndListVBox, buttonsArea);
         rootAnchorPane.getChildren().add(centerHBox);
     }
@@ -537,6 +552,7 @@ public class ClientDetailPaneHolder {
             disconnectClientButtonAction();
         });
 
-        clientActionsMenu.getItems().addAll(listTasksMenuItem, pauseClientMenuItem, shutdown, disconn);
+        clientActionsMenu.getItems().addAll(listTasksMenuItem,
+                pauseClientMenuItem, shutdown, disconn);
     }
 }

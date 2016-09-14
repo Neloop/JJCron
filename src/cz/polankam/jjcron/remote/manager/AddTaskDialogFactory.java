@@ -16,7 +16,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
 /**
- * @note Using of official JavaFX Dialogs, JDK 8u40 needed.
+ * <p>
+ * Using of official JavaFX Dialogs, JDK 8u40 needed.</p>
+ *
  * @author Neloop
  */
 public class AddTaskDialogFactory {
@@ -109,7 +111,8 @@ public class AddTaskDialogFactory {
         dialog.setHeaderText("Please fill new cron task information");
 
         ButtonType addButtonType = new ButtonType("Add", ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(addButtonType, ButtonType.CANCEL);
+        dialog.getDialogPane().getButtonTypes().addAll(addButtonType,
+                ButtonType.CANCEL);
 
         GridPane grid = new GridPane();
         grid.setHgap(10);

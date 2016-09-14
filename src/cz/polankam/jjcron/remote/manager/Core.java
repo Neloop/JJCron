@@ -102,7 +102,8 @@ public class Core extends Application {
         loginDialogFactory = new ConnectionDialogFactory();
         loadingScreen = new LoadingScreen();
         alertDialogFactory = new AlertDialogFactory();
-        clientDetailPaneHolder = new ClientDetailPaneHolder(clientsList, loadingScreen);
+        clientDetailPaneHolder = new ClientDetailPaneHolder(clientsList,
+                loadingScreen);
         aboutDialogFactory = new AboutDialogFactory(appInfo, hostServices);
 
         initMenu();
@@ -114,7 +115,8 @@ public class Core extends Application {
      *
      */
     private void newConnectionButtonAction() {
-        Dialog<Pair<String, String>> dialog = loginDialogFactory.createLoginDialog();
+        Dialog<Pair<String, String>> dialog
+                = loginDialogFactory.createLoginDialog();
         Optional<Pair<String, String>> result = dialog.showAndWait();
 
         Task<ClientWrapper> task = new Task<ClientWrapper>() {
@@ -122,7 +124,8 @@ public class Core extends Application {
             protected ClientWrapper call() throws Exception {
                 if (result.isPresent()) {
                     Pair<String, String> value = result.get();
-                    ClientAddress addr = new ClientAddress(value.getKey(), value.getValue());
+                    ClientAddress addr = new ClientAddress(value.getKey(),
+                            value.getValue());
                     return new ClientWrapper(addr, new RMIClientFactory());
                 }
                 return null;
@@ -147,7 +150,8 @@ public class Core extends Application {
             loadingScreen.hide();
             if (task.getException() != null) {
                 logger.log(Level.SEVERE, task.getException().getMessage());
-                alertDialogFactory.createErrorDialog(task.getException().getMessage()).show();
+                alertDialogFactory.createErrorDialog(
+                        task.getException().getMessage()).show();
             }
         });
 
@@ -237,7 +241,8 @@ public class Core extends Application {
 
         HBox descPane = new HBox();
         descPane.setAlignment(Pos.CENTER);
-        descPane.setPadding(new Insets(STANDARD_PADDING, 0, STANDARD_PADDING, 0));
+        descPane.setPadding(new Insets(STANDARD_PADDING, 0,
+                STANDARD_PADDING, 0));
         descPane.setStyle("-fx-border-width: 2 0 0 0;"
                 + "-fx-border-color: grey;"
                 + "-fx-border-style: dotted;");

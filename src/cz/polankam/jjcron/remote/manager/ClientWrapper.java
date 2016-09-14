@@ -76,7 +76,8 @@ public class ClientWrapper {
      * @param factory
      * @throws Exception
      */
-    public ClientWrapper(ClientAddress addr, ClientFactory factory) throws Exception {
+    public ClientWrapper(ClientAddress addr, ClientFactory factory)
+            throws Exception {
         tasksObservableList = FXCollections.observableArrayList();
         tasksMap = new HashMap<>();
 
@@ -184,7 +185,8 @@ public class ClientWrapper {
      * Fills ObservableList of tasks with internal task list. This function has
      * to be called after every change of tasks list.
      *
-     * @note Has to be used in JavaFX UI thread.
+     * <p>
+     * Has to be used in JavaFX UI thread.</p>
      */
     public void fillTaskObservableList() {
         tasksObservableList.clear();

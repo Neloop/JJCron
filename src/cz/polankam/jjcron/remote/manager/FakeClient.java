@@ -12,21 +12,39 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 /**
+ * Imitates behaviour of remote cron client.
+ * <p>
+ * This class is only for debugging purposes.</p>
  *
- * @note This class is only for debugging purposes.
  * @author Neloop
  */
 public class FakeClient implements Client {
 
+    /**
+     * Count of tasks which will be constructed on initialization.
+     */
     private static final int TASKS_COUNT = 10;
+    /**
+     * Latency which is used on every command request.
+     */
     private static final long LATENCY = 500;
 
+    /**
+     * True if client is paused, false otherwise.
+     */
     private boolean paused = false;
+    /**
+     * Collection of tasks with their identifiers.
+     */
     private final Map<String, TaskDetail> tasks;
 
+    /**
+     * Construct fake client and initialize some default tasks.
+     *
+     * @throws Exception in case of any error
+     */
     public FakeClient() throws Exception {
         tasks = new HashMap<>();
 

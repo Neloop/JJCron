@@ -146,7 +146,8 @@ public class TaskListPaneHolder {
         Button deleteButton = new Button(DELETE_TASK_BTN_TEXT);
         deleteButton.setMinWidth(TASK_ACTION_BTN_WIDTH);
         deleteButton.setOnAction((ActionEvent event) -> {
-            deleteTaskButtonAction(tasksListView.getSelectionModel().getSelectedItem());
+            deleteTaskButtonAction(
+                    tasksListView.getSelectionModel().getSelectedItem());
         });
 
         Button reloadButton = new Button(RELOAD_CRONTAB_BTN_TEXT);
@@ -161,7 +162,8 @@ public class TaskListPaneHolder {
             saveToCrontabButtonAction();
         });
 
-        buttonsArea.getChildren().addAll(refreshButton, addButton, deleteButton, reloadButton, saveButton);
+        buttonsArea.getChildren().addAll(refreshButton, addButton, deleteButton,
+                reloadButton, saveButton);
     }
 
     /**
@@ -194,13 +196,15 @@ public class TaskListPaneHolder {
         populateTaskListButtonsArea(taskListButtons);
 
         taskDetailAndButtonsArea.setSpacing(10);
-        taskDetailAndButtonsArea.getChildren().addAll(detailHolder.getRootPane(), taskListButtons);
+        taskDetailAndButtonsArea.getChildren().addAll(
+                detailHolder.getRootPane(), taskListButtons);
 
         VBox.setVgrow(tasksListView, Priority.ALWAYS);
         HBox.setHgrow(contentPane, Priority.ALWAYS);
         HBox.setHgrow(detailHolder.getRootPane(), Priority.ALWAYS);
         contentPane.setSpacing(10);
-        contentPane.getChildren().addAll(tasksListView, taskDetailAndButtonsArea);
+        contentPane.getChildren().addAll(tasksListView,
+                taskDetailAndButtonsArea);
     }
 
     /**
@@ -235,7 +239,8 @@ public class TaskListPaneHolder {
             loadingScreen.hide();
             if (task.getException() != null) {
                 logger.log(Level.SEVERE, task.getException().getMessage());
-                alertDialogFactory.createErrorDialog(task.getException().getMessage()).show();
+                alertDialogFactory.createErrorDialog(
+                        task.getException().getMessage()).show();
             }
         });
 
@@ -246,7 +251,8 @@ public class TaskListPaneHolder {
      *
      */
     private void addTaskButtonAction() {
-        Dialog<AddTaskDialogFactory.TaskInfo> dialog = addTaskDialogFactory.createAddTaskDialog();
+        Dialog<AddTaskDialogFactory.TaskInfo> dialog
+                = addTaskDialogFactory.createAddTaskDialog();
         Optional<AddTaskDialogFactory.TaskInfo> result = dialog.showAndWait();
 
         // user gives us information needed for task creation so use them
@@ -278,7 +284,8 @@ public class TaskListPaneHolder {
             loadingScreen.hide();
             if (task.getException() != null) {
                 logger.log(Level.SEVERE, task.getException().getMessage());
-                alertDialogFactory.createErrorDialog(task.getException().getMessage()).show();
+                alertDialogFactory.createErrorDialog(
+                        task.getException().getMessage()).show();
             }
         });
 
@@ -318,7 +325,8 @@ public class TaskListPaneHolder {
             loadingScreen.hide();
             if (task.getException() != null) {
                 logger.log(Level.SEVERE, task.getException().getMessage());
-                alertDialogFactory.createErrorDialog(task.getException().getMessage()).show();
+                alertDialogFactory.createErrorDialog(
+                        task.getException().getMessage()).show();
             }
         });
 
@@ -352,7 +360,8 @@ public class TaskListPaneHolder {
             loadingScreen.hide();
             if (task.getException() != null) {
                 logger.log(Level.SEVERE, task.getException().getMessage());
-                alertDialogFactory.createErrorDialog(task.getException().getMessage()).show();
+                alertDialogFactory.createErrorDialog(
+                        task.getException().getMessage()).show();
             }
         });
 
@@ -387,7 +396,8 @@ public class TaskListPaneHolder {
             loadingScreen.hide();
             if (task.getException() != null) {
                 logger.log(Level.SEVERE, task.getException().getMessage());
-                alertDialogFactory.createErrorDialog(task.getException().getMessage()).show();
+                alertDialogFactory.createErrorDialog(
+                        task.getException().getMessage()).show();
             }
         });
 

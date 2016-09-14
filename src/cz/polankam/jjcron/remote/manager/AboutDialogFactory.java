@@ -14,29 +14,40 @@ import javafx.stage.StageStyle;
 
 /**
  *
+ *
  * @author Neloop
  */
 public class AboutDialogFactory {
 
+    /**
+     * JavaFX style used for make text bold.
+     */
     private static final String BOLD_TEXT_CSS = "-fx-font-weight: bold";
-    private static final String CONTRIBUTORS = "Martin Polanka";
 
+    /**
+     * Standard padding used in application.
+     */
     private static final double STANDARD_PADDING = 10;
+    /**
+     * Maximum width of about window dialog.
+     */
     private static final double WIDTH = 400;
 
     /**
-     *
+     * Information about this application instance.
      */
     private final AppInfo appInfo;
     /**
-     *
+     * Host services from JavaFX Application class.
      */
     private final HostServices hostServices;
 
     /**
+     * Construct class with information needed for proper About dialog
+     * visualisation.
      *
-     * @param appInfo
-     * @param hostServices
+     * @param appInfo information about application
+     * @param hostServices Host services from JavaFX
      */
     public AboutDialogFactory(AppInfo appInfo, HostServices hostServices) {
         this.appInfo = appInfo;
@@ -44,6 +55,8 @@ public class AboutDialogFactory {
     }
 
     /**
+     * Creates dialog window with some information about this application.
+     * Dialog is created on every call of this function.
      *
      * @return
      */
@@ -51,15 +64,17 @@ public class AboutDialogFactory {
         Dialog dialog = new Dialog();
         dialog.initStyle(StageStyle.UTILITY);
 
-        ButtonType closeButtonType = new ButtonType("Close", ButtonData.OK_DONE);
+        ButtonType closeButtonType = new ButtonType("Close",
+                ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(closeButtonType);
 
-        ImageView logo = new ImageView("/cz/cuni/mff/ms/polankam/jjcron/common/logo.png");
+        ImageView logo = new ImageView("/cz/polankam/jjcron/common/logo.png");
         logo.setFitWidth(WIDTH);
 
         TextFlow description = new TextFlow();
         description.setMaxWidth(WIDTH);
-        Text basicDesc = new Text("JJCronRM is management UI application for multiple instances of cron-like program JJCron.");
+        Text basicDesc = new Text("JJCronRM is management UI application "
+                + "for multiple instances of cron-like program JJCron.");
         description.getChildren().addAll(basicDesc);
 
         TextFlow moreInfo = new TextFlow();
@@ -75,7 +90,8 @@ public class AboutDialogFactory {
         TextFlow version = new TextFlow();
         Text versionTitle = new Text("Version: ");
         versionTitle.setStyle(BOLD_TEXT_CSS);
-        Text versionText = new Text(getClass().getPackage().getImplementationVersion());
+        Text versionText
+                = new Text(getClass().getPackage().getImplementationVersion());
         version.getChildren().addAll(versionTitle, versionText);
 
         TextFlow source = new TextFlow();
@@ -96,7 +112,8 @@ public class AboutDialogFactory {
         TextFlow contributors = new TextFlow();
         Text contributorsTitle = new Text("Contributors: ");
         contributorsTitle.setStyle(BOLD_TEXT_CSS);
-        contributors.getChildren().addAll(contributorsTitle, new Text(CONTRIBUTORS));
+        contributors.getChildren().addAll(contributorsTitle,
+                new Text(appInfo.contributors));
 
         TextFlow runtime = new TextFlow();
         Text runtimeTitle = new Text("Runtime: ");
@@ -104,7 +121,8 @@ public class AboutDialogFactory {
         Text runtimeVendor = new Text(System.getProperty("java.runtime.name"));
         Text runtimeDelim = new Text("; ");
         Text runtimeVersion = new Text(System.getProperty("java.version"));
-        runtime.getChildren().addAll(runtimeTitle, runtimeVendor, runtimeDelim, runtimeVersion);
+        runtime.getChildren().addAll(runtimeTitle, runtimeVendor, runtimeDelim,
+                runtimeVersion);
 
         VBox details = new VBox();
         details.setPadding(new Insets(5));
@@ -112,7 +130,8 @@ public class AboutDialogFactory {
                 + "-fx-border-width: 1;"
                 + "-fx-background-color: white;");
         details.setMinWidth(WIDTH);
-        details.getChildren().addAll(source, version, license, contributors, runtime);
+        details.getChildren().addAll(source, version, license, contributors,
+                runtime);
 
         VBox detailsArea = new VBox();
         detailsArea.setPadding(new Insets(STANDARD_PADDING, 0, 0, 0));

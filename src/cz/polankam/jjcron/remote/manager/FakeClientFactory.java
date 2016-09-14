@@ -3,6 +3,10 @@ package cz.polankam.jjcron.remote.manager;
 import cz.polankam.jjcron.remote.Client;
 
 /**
+ * {@link ClientFactory} implementation which is supposed to create
+ * {@link FakeClient} instance.
+ * <p>
+ * This class is only for debugging purposes.</p>
  *
  * @author Neloop
  */

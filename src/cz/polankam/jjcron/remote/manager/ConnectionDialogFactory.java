@@ -26,10 +26,13 @@ public class ConnectionDialogFactory {
     public Dialog<Pair<String, String>> createLoginDialog() {
         Dialog<Pair<String, String>> dialog = new Dialog<>();
         dialog.setTitle("Connection Dialog");
-        dialog.setHeaderText("Please fill registry address and client identification");
+        dialog.setHeaderText(
+                "Please fill registry address and client identification");
 
-        ButtonType connectButtonType = new ButtonType("Connect", ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(connectButtonType, ButtonType.CANCEL);
+        ButtonType connectButtonType = new ButtonType("Connect",
+                ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(connectButtonType,
+                ButtonType.CANCEL);
 
         GridPane grid = new GridPane();
         grid.setHgap(10);
@@ -47,7 +50,8 @@ public class ConnectionDialogFactory {
         grid.add(clientIdentification, 1, 1);
 
         // Login button is disabled by default
-        Node connectButton = dialog.getDialogPane().lookupButton(connectButtonType);
+        Node connectButton
+                = dialog.getDialogPane().lookupButton(connectButtonType);
         connectButton.setDisable(true);
 
         // Invalidate login button in case of empty strings in both fields
@@ -63,7 +67,8 @@ public class ConnectionDialogFactory {
         // Convert results to pair of server address and client identification
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == connectButtonType) {
-                return new Pair<>(registryAddress.getText(), clientIdentification.getText());
+                return new Pair<>(registryAddress.getText(),
+                        clientIdentification.getText());
             }
             return null;
         });

@@ -4,19 +4,18 @@ import cz.polankam.jjcron.remote.Client;
 import java.rmi.Naming;
 
 /**
+ * Connects and disconnects clients using RMI technology. Disconnect is in case
+ * of RMI not needed and this call is empty.
  *
  * @author Neloop
  */
 public class RMIClientFactory implements ClientFactory {
 
+    /**
+     * Delimiter used between address parts.
+     */
     private static final String DELIM = "/";
 
-    /**
-     *
-     * @param addr
-     * @return
-     * @throws Exception
-     */
     @Override
     public Client connect(ClientAddress addr) throws Exception {
         Client client = (Client) Naming.lookup(addr.registryAddress + DELIM
@@ -24,11 +23,6 @@ public class RMIClientFactory implements ClientFactory {
         return client;
     }
 
-    /**
-     *
-     * @param client
-     * @throws Exception
-     */
     @Override
     public void disconnect(Client client) throws Exception {
         // nothing to do here
