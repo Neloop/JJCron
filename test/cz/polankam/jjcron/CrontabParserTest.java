@@ -1,7 +1,5 @@
 package cz.polankam.jjcron;
 
-import cz.polankam.jjcron.CrontabParser;
-import cz.polankam.jjcron.ParserException;
 import cz.polankam.jjcron.common.TaskMetadata;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -24,7 +22,7 @@ public class CrontabParserTest {
     /**
      * Test of parseFile method, of class CrontabParser.
      */
-    @Test(expected=ParserException.class)
+    @Test(expected = ParserException.class)
     public void testParseFile_EmptyFilename() throws Exception {
         System.out.println("parseFile");
         String filename = "";
@@ -34,7 +32,7 @@ public class CrontabParserTest {
     /**
      * Test of parse method, of class CrontabParser.
      */
-    @Test(expected=ParserException.class)
+    @Test(expected = ParserException.class)
     public void testParse_NullInputStream() throws Exception {
         System.out.println("parse");
         InputStream input = null;

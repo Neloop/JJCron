@@ -55,7 +55,7 @@ public class Core {
      *
      * @throws TaskException if there are problems concerning task scheduling
      * @throws ParserException if there were problem with parsing crontab
-     * @throws java.rmi.RemoteException
+     * @throws RemoteException in case of any connection error
      */
     public final void run() throws TaskException, ParserException, RemoteException {
         logger.log(Level.INFO, "*** Croning started ***");
@@ -72,7 +72,7 @@ public class Core {
      * If user requested, server management will be engaged on this JJCron
      * instance.
      *
-     * @throws RemoteException
+     * @throws RemoteException in case of any connection error
      */
     private void runClientIfStated() throws RemoteException {
         if (options.rmName.isEmpty()) {
@@ -81,10 +81,13 @@ public class Core {
 
         logger.log(Level.INFO, "Remote management of JJCron requested, RMI will be initialized");
         clientManager = new ClientImpl(options, taskScheduler);
+        clientManager.startServer();
         logger.log(Level.INFO, "RMI registry successfully created, listening...");
     }
 
     /**
+     * Main entry point of application.
+     *
      * @param args the command line arguments
      */
     public static void main(String[] args) {

@@ -13,17 +13,19 @@ import java.util.concurrent.TimeUnit;
 public class PrintDoubleDotTask extends Task {
 
     /**
+     * Constructor which needs {@link TaskMetadata} structure for this class
+     * parent.
      *
-     * @param taskMeta
+     * @param taskMeta information about this task
      */
     public PrintDoubleDotTask(TaskMetadata taskMeta) {
         super(taskMeta);
     }
 
     /**
-     * Prints dot on the standard output and then flush it.
+     * Prints double dot on the standard output and then flush it.
      *
-     * @throws Exception if task failed (should never happen)
+     * @throws Exception if task failed (should never happen here)
      */
     @Override
     public void run() throws Exception {

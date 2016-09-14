@@ -6,17 +6,32 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Every task which will be scheduled within JJCron has to extends this class.
+ * Serves also as holder for {@link TaskMetadata} structure which has to be
+ * provided on construction.
  *
  * @author Neloop
  */
 public abstract class Task {
 
+    /**
+     * Metadata associated with this task.
+     */
     protected final TaskMetadata taskMeta;
 
+    /**
+     * On construction {@link TaskMetadata} structure has to be provided.
+     *
+     * @param meta information about this task
+     */
     public Task(TaskMetadata meta) {
         taskMeta = meta;
     }
 
+    /**
+     * Returns information about this task.
+     *
+     * @return structure with all needed information
+     */
     public final TaskMetadata metadata() {
         return taskMeta;
     }

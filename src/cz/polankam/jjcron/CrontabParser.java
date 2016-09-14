@@ -6,7 +6,6 @@ import cz.polankam.jjcron.common.TaskMetadata;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,8 +18,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Logically static class which is used as container for crontab parsing
- * methods.
+ * Logically static class which is used as container for crontab parsing and
+ * saving methods.
  *
  * @author Neloop
  */

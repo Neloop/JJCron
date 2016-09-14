@@ -10,6 +10,8 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 /**
+ * Command line options special wrapper which can be handed over to different
+ * part of application. Also handles parsing of cmd arguments.
  *
  * @author Neloop
  */
@@ -40,13 +42,18 @@ public class CmdOptions {
     public int rmPort = 1099;
     /**
      * Name of registered JJCron instance.
-     *
      * <p>
      * If this name is stated as cmd option, then rmiregistry will be
      * created.</p>
      */
     public String rmName;
 
+    /**
+     * Initialize options and their values. Also arguments are parsed in this
+     * constructor, in case of error application can be exited within calling.
+     *
+     * @param args command line arguments
+     */
     public CmdOptions(String[] args) {
         this.args = args;
         options = new Options();

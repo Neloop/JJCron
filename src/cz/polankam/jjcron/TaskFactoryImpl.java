@@ -74,15 +74,11 @@ public class TaskFactoryImpl implements TaskFactory {
                         break;
                     }
                 } catch (Exception e) {
-                    // nothing to do here... will be handled later
+                    logger.log(Level.SEVERE, "Specified class: " + className
+                            + " cannot be instantiated", e);
+                    throw new TaskException("Specified class: " + className
+                            + " cannot be instantiated");
                 }
-            }
-
-            if (result == null) {
-                logger.log(Level.SEVERE, "Specified class: {0}"
-                        + " cannot be instantiated", className);
-                throw new TaskException("Specified class: " + className
-                        + " cannot be instantiated");
             }
         } else {
             result = new CmdTask(taskMeta);

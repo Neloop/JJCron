@@ -40,8 +40,8 @@ public final class TaskScheduler {
             = Logger.getLogger(TaskScheduler.class.getName());
 
     /**
-     * If set to true, than {@link #start(List)} function was called and tasks are
-     * running.
+     * If set to true, than {@link #start(List)} function was called and tasks
+     * are running.
      */
     private final AtomicBoolean running;
     /**
@@ -84,26 +84,10 @@ public final class TaskScheduler {
     }
 
     /**
-     * Construct task scheduler without {@link TaskFactory}! This means that
-     * task creation from {@link TaskMetadata} cannot be used.
-     */
-    public TaskScheduler() {
-        logger.log(Level.INFO, "TaskManager was created");
-
-        this.exit = new AtomicBoolean(false);
-        this.running = new AtomicBoolean(false);
-        this.tasks = new HashMap<>();
-        this.scheduler = Executors.newScheduledThreadPool(
-                Runtime.getRuntime().availableProcessors());
-
-        this.taskFactory = new NullTaskFactory();
-    }
-
-    /**
      * Construct task scheduler with specified task factory, tasks are not
      * executed yet. All internal structures are initialized.
      *
-     * @param taskFactory factory which helps constructing tasks
+     * @param taskFactory factory which helps constructing tasks, can be null
      * @throws TaskException if {@link TaskFactory} was null
      */
     public TaskScheduler(TaskFactory taskFactory) throws TaskException {
@@ -116,7 +100,7 @@ public final class TaskScheduler {
                 Runtime.getRuntime().availableProcessors());
 
         if (taskFactory == null) {
-            throw new TaskException("TaskFactory cannot be null");
+            taskFactory = new NullTaskFactory();
         }
         this.taskFactory = taskFactory;
     }
@@ -205,7 +189,8 @@ public final class TaskScheduler {
         long delay = holder.task.delay(LocalDateTime.now());
         logger.log(Level.INFO, "Task {0} was scheduled to {1}",
                 new Object[]{holder.task.name(),
-                    LocalDateTime.now().plusSeconds(holder.task.timeUnit().toSeconds(delay))});
+                    LocalDateTime.now().plusSeconds(
+                            holder.task.timeUnit().toSeconds(delay))});
         scheduler.schedule(new RunTask(holder), delay, holder.task.timeUnit());
     }
 
@@ -275,13 +260,22 @@ public final class TaskScheduler {
         scheduleTask(holder);
     }
 
-    public final synchronized void deleteTask(TaskDetail taskDetail) {
+    /**
+     * Deletes tasks according to given unique identification. There is no way
+     * how to stop scheduled task, so this function will stop whole execution
+     * and after deletion starts it again.
+     * <p>
+     * Thread-safe function.</p>
+     *
+     * @param id unique identification of task
+     */
+    public final synchronized void deleteTask(String id) {
         scheduler.shutdownNow();
         scheduler = Executors.newScheduledThreadPool(
                 Runtime.getRuntime().availableProcessors());
 
         // actual deletion
-        tasks.remove(taskDetail.id);
+        tasks.remove(id);
 
         for (Entry<String, TaskHolder> entry : tasks.entrySet()) {
             scheduleTask(entry.getValue());
@@ -308,8 +302,8 @@ public final class TaskScheduler {
 
     /**
      * Reschedules all currently loaded tasks. Should be used only as
-     * counterpart of {@link #stop()} function. Cannot be used as restart running
-     * state is checked before any actions.
+     * counterpart of {@link #stop()} function. Cannot be used as restart
+     * running state is checked before any actions.
      * <p>
      * Thread-safe function.</p>
      */
@@ -330,6 +324,8 @@ public final class TaskScheduler {
     /**
      * Stop all currenty executing tasks. It is counterpart of {@link #start()}
      * function. Multiple calls have no effect.
+     * <p>
+     * Thread-safe function.</p>
      */
     public final synchronized void stop() {
         if (running.get() == false) {
@@ -364,10 +360,23 @@ public final class TaskScheduler {
         logger.log(Level.INFO, "Task reload done");
     }
 
+    /**
+     * Determines if client is running or not.
+     * <p>
+     * Thread-safe function.</p>
+     *
+     * @return true if client is running, false otherwise
+     */
     public final boolean isRunning() {
         return running.get();
     }
 
+    /**
+     * Gets list of {@link TaskMetadata} structures from currently
+     * active/scheduled cron tasks.
+     *
+     * @return list of {@link TaskMetadata} structures
+     */
     public final synchronized List<TaskMetadata> getTaskMetadatas() {
         List<TaskMetadata> result = new ArrayList<>();
         for (Entry<String, TaskHolder> entry : tasks.entrySet()) {
@@ -376,6 +385,12 @@ public final class TaskScheduler {
         return result;
     }
 
+    /**
+     * Gets list of {@link TaskDetail} structures which represents currently
+     * scheduled cron tasks.
+     *
+     * @return list of {@link TaskDetail} structures
+     */
     public final synchronized List<TaskDetail> getTaskDetails() {
         List<TaskDetail> result = new ArrayList<>();
         for (Entry<String, TaskHolder> entry : tasks.entrySet()) {
@@ -383,7 +398,8 @@ public final class TaskScheduler {
             Task task = holder.task;
             LocalDateTime next = LocalDateTime.now();
             next = next.plusSeconds(task.timeUnit().toSeconds(task.delay(next)));
-            result.add(new TaskDetail(holder.id, task.name(), next, holder.stats, task.metadata()));
+            result.add(new TaskDetail(holder.id, task.name(), next,
+                    holder.stats, task.metadata()));
         }
         return result;
     }
