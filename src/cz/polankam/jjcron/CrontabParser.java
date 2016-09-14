@@ -228,6 +228,7 @@ public class CrontabParser {
      *
      * @param tasks list of tasks which will be written into crontab
      * @param crontab filename of crontab
+     * @throws ParserException in case of any writing error
      */
     static void save(List<TaskMetadata> tasks, String crontab) throws ParserException {
 
