@@ -8,5 +8,8 @@ addons:
     packages:
       - oracle-java8-installer
 
+install:
+  - git submodule update --init
+	  
 script:
   - ant test

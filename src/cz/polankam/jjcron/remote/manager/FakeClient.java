@@ -33,9 +33,8 @@ public class FakeClient implements Client {
         for (int i = 0; i < TASKS_COUNT; ++i) {
             String id = UUID.randomUUID().toString();
             CrontabTime time = new CrontabTime("0", "0", "0", "*", "*", "*");
-            tasks.put(id, new TaskDetail(id, id, TimeUnit.SECONDS,
-                    LocalDateTime.now(), new TaskStats(),
-                    new TaskMetadata(time, id)));
+            tasks.put(id, new TaskDetail(id, id, LocalDateTime.now(),
+                    new TaskStats(), new TaskMetadata(time, id)));
         }
     }
 
@@ -79,8 +78,8 @@ public class FakeClient implements Client {
         CrontabTime time = task.time();
         LocalDateTime next = LocalDateTime.now();
         next.plusSeconds(time.delay(next));
-        tasks.put(id, new TaskDetail(id, task.command(), time.timeUnit(), next,
-                new TaskStats(), new TaskMetadata(time, task.command())));
+        tasks.put(id, new TaskDetail(id, task.command(), next, new TaskStats(),
+                new TaskMetadata(time, task.command())));
     }
 
     @Override
