@@ -1,1 +1,1 @@
-* * * * * * <class>cz.cuni.mff.ms.polankam.jjcron.PrintDotTask</class>
+* * * * * * <class>cz.polankam.jjcron.PrintDotTask</class>

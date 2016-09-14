@@ -36,7 +36,7 @@ Further description of configuration can be found in wiki on [Crontab Descriptio
 - Modular and lightweight design
 - Easy to understand and use
 - Java classes can be used as tasks and can be scheduled to execution
-- Will be further improved to support `RMI` remote management
+- Supports `RMI` remote management through **JJCronRM**
 
 ## Drawbacks
 - Not all features from `crontab` standard format are implemented

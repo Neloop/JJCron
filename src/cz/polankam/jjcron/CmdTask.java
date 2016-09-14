@@ -12,7 +12,7 @@ public class CmdTask extends Task {
     /**
      * Construct task from given {@link TaskMetadata} information.
      *
-     * @param taskMetadata handed over to {@link MetadataHolderTask} parent
+     * @param taskMetadata handed over to {@link Task} parent
      */
     public CmdTask(TaskMetadata taskMetadata) {
         super(taskMetadata);

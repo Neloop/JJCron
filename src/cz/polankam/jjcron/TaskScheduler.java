@@ -40,7 +40,7 @@ public final class TaskScheduler {
             = Logger.getLogger(TaskScheduler.class.getName());
 
     /**
-     * If set to true, than @ref startCronning function was called and tasks are
+     * If set to true, than {@link #start(List)} function was called and tasks are
      * running.
      */
     private final AtomicBoolean running;
@@ -308,7 +308,7 @@ public final class TaskScheduler {
 
     /**
      * Reschedules all currently loaded tasks. Should be used only as
-     * counterpart of @ref stop() function. Cannot be used as restart running
+     * counterpart of {@link #stop()} function. Cannot be used as restart running
      * state is checked before any actions.
      * <p>
      * Thread-safe function.</p>
@@ -328,7 +328,7 @@ public final class TaskScheduler {
     }
 
     /**
-     * Stop all currenty executing tasks. It is counterpart of @ref start()
+     * Stop all currenty executing tasks. It is counterpart of {@link #start()}
      * function. Multiple calls have no effect.
      */
     public final synchronized void stop() {
@@ -383,7 +383,7 @@ public final class TaskScheduler {
             Task task = holder.task;
             LocalDateTime next = LocalDateTime.now();
             next = next.plusSeconds(task.timeUnit().toSeconds(task.delay(next)));
-            result.add(new TaskDetail(holder.id, task.name(), task.timeUnit(), next, holder.stats, task.metadata()));
+            result.add(new TaskDetail(holder.id, task.name(), next, holder.stats, task.metadata()));
         }
         return result;
     }
