@@ -16,6 +16,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
 /**
+ * Factory which will create dialog used for adding task to remote client
+ * instance. Form is designed to contain all information like crontab entry.
  * <p>
  * Using of official JavaFX Dialogs, JDK 8u40 needed.</p>
  *
@@ -23,20 +25,64 @@ import javafx.scene.layout.GridPane;
  */
 public class AddTaskDialogFactory {
 
+    /**
+     * Hints selection none option.
+     */
     private static final String HINTS_NONE = "None";
+    /**
+     * Hints selection every second option.
+     */
     private static final String HINTS_EVERY_SECOND = "Every second";
+    /**
+     * Hints selection on midnight option.
+     */
     private static final String HINTS_MIDNIGHT = "Midnight";
 
+    /**
+     * Special structure which is used as return value from dialog.
+     */
     public class TaskInfo {
 
+        /**
+         * Text from second field from dialog.
+         */
         public final String second;
+        /**
+         * Text from minute field from dialog.
+         */
         public final String minute;
+        /**
+         * Text from hour field from dialog.
+         */
         public final String hour;
+        /**
+         * Text from day of month field from dialog.
+         */
         public final String dayOfMonth;
+        /**
+         * Text from month field from dialog.
+         */
         public final String month;
+        /**
+         * Text from day of week field from dialog.
+         */
         public final String dayOfWeek;
+        /**
+         * Text from command field from dialog.
+         */
         public final String command;
 
+        /**
+         * Constructor which takes all possible information from dialog.
+         *
+         * @param sec second crontab value
+         * @param min minute crontab value
+         * @param hour hour crontab value
+         * @param dayOfMonth day of month crontab value
+         * @param month month crontab value
+         * @param dayOfWeek day of week crontab value
+         * @param cmd runnable crontab command
+         */
         public TaskInfo(String sec, String min, String hour, String dayOfMonth,
                 String month, String dayOfWeek, String cmd) {
             this.second = sec;
@@ -50,14 +96,16 @@ public class AddTaskDialogFactory {
     }
 
     /**
+     * Creates and return ComboBox which contains some hints for crontab time
+     * units. Units TextFields has to be provided for proper function.
      *
-     * @param secondText
-     * @param minuteText
-     * @param hourText
-     * @param dayOfMonthText
-     * @param monthText
-     * @param dayOfWeekText
-     * @return
+     * @param secondText seconds field
+     * @param minuteText minutes field
+     * @param hourText hours field
+     * @param dayOfMonthText day of months field
+     * @param monthText months field
+     * @param dayOfWeekText day of week field
+     * @return created selection combo box
      */
     private ComboBox createHintsComboBox(TextField secondText,
             TextField minuteText, TextField hourText, TextField dayOfMonthText,
@@ -102,8 +150,9 @@ public class AddTaskDialogFactory {
     }
 
     /**
+     * Creates and returns dialog which prompts user for fill in crontab entry.
      *
-     * @return
+     * @return created add task dialog
      */
     public Dialog<TaskInfo> createAddTaskDialog() {
         Dialog<TaskInfo> dialog = new Dialog<>();

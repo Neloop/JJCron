@@ -28,107 +28,162 @@ import javafx.scene.shape.Circle;
 import javafx.util.Pair;
 
 /**
+ * Holder for all necesary parts located in client information area. This area
+ * contains information about client, client action buttons and task list with
+ * task details.
  *
  * @author Neloop
  */
 public class ClientDetailPaneHolder {
 
-    private static final String REGISTRY_URL_LABEL_TEXT = "Registry URL:";
-    private static final String CLIENT_ID_LABEL_TEXT = "Client ID:";
-    private static final String STATUS_LABEL_TEXT = "Status:";
-
+    /**
+     * Text visible on button in case of running client which is not paused.
+     */
     private static final String PAUSE_BTN_TEXT = "Pause";
+    /**
+     * Text visible on button in case of paused client.
+     */
     private static final String UNPAUSE_BTN_TEXT = "Unpause";
+    /**
+     * Text on list tasks button if tasks werent listed yet.
+     */
     private static final String LIST_TASKS_BTN_TEXT = "List Cron Tasks";
+    /**
+     * Visible on list tasks button if tasks are already listed.
+     */
     private static final String UNLIST_TASKS_BTN_TEXT = "Close Cron Tasks";
+    /**
+     * Shutdown button text.
+     */
     private static final String SHUTDOWN_BTN_TEXT = "Shutdown";
+    /**
+     * Disconnect button text.
+     */
     private static final String DISCONNECT_BTN_TEXT = "Disconnect";
 
+    /**
+     * Standard padding used in application.
+     */
     private static final int STANDARD_PADDING = 10;
+    /**
+     * Width of all buttons in client actions area.
+     */
     private static final double CLIENT_ACTION_BUTTON_WIDTH = 150;
 
+    /**
+     * Running status textual description.
+     */
     private static final String RUNNING_STATUS = "Running";
+    /**
+     * Running status color description.
+     */
     private static final Color RUNNING_STATUS_COLOR = Color.LIMEGREEN;
+    /**
+     * Paused status textual description.
+     */
     private static final String PAUSED_STATUS = "Paused";
+    /**
+     * Paused status color description.
+     */
     private static final Color PAUSED_STATUS_COLOR = Color.ORANGE;
+    /**
+     * Disconnected status textual description.
+     */
     private static final String DISCONNECTED_STATUS = "Disconnected";
+    /**
+     * Showed color in case of disconnected status.
+     */
     private static final Color DISCONNECTED_STATUS_COLOR = Color.GREY;
 
+    /**
+     * Standard Java logger.
+     */
     private static final Logger logger
             = Logger.getLogger(ClientDetailPaneHolder.class.getName());
 
     /**
-     *
+     * Root pane which should contain whole client area.
      */
-    private Pane rootAnchorPane;
+    private Pane rootPane;
     /**
-     *
+     * Field which contains not editable registry address of active client.
      */
     private TextField registryAddressTextArea;
     /**
-     *
+     * Field containing not editable registry identification of active client.
      */
     private TextField clientIdentificationTextArea;
     /**
-     *
+     * Circle which shows active client status.
      */
     private Circle clientStatusCircle;
     /**
-     *
+     * Client actions menu part which is located in standard top application
+     * menu.
      */
     private Menu clientActionsMenu;
 
     /**
-     *
+     * Holder for all necesary panes and parts from task list area.
      */
     private final TaskListPaneHolder taskListPaneHolder;
     /**
-     *
+     * Loading screen which can be shown and hidden through whole application.
      */
     private final LoadingScreen loadingScreen;
     /**
-     *
+     * Factory for alert dialogs.
      */
     private final AlertDialogFactory alertDialogFactory;
 
     /**
-     *
+     * Reference for pause client button.
      */
     private Button pauseClientButton;
     /**
-     *
+     * Reference for pause client menu item.
      */
     private MenuItem pauseClientMenuItem;
     /**
-     *
+     * List tasks button pointer.
      */
     private Button listTasksButton;
     /**
-     *
+     * Menu item for list tasks action.
      */
     private MenuItem listTasksMenuItem;
     /**
-     *
+     * List of buttons which are currently in client actions area.
      */
     private final List<Button> clientActionButtonsList;
 
     /**
-     *
+     * Contains all necessary things about clients.
      */
     private final ClientsHolder clientsList;
     /**
-     *
+     * Reference to currently active client.
      */
     private Pair<String, ClientWrapper> activeClient;
 
     /**
+     * Constructor which needs to have some information during construction
+     * otherwise it will fail. Whole pane area is constructed in here.
      *
-     * @param connList
-     * @param loadingScreen
+     * @param clientsHolder container for all actively connected clients
+     * @param loadingScreen loading screen which can be shown and hidden
+     * @throws ManagerException in case of any null argument
      */
-    public ClientDetailPaneHolder(ClientsHolder connList,
-            LoadingScreen loadingScreen) {
-        clientsList = connList;
+    public ClientDetailPaneHolder(ClientsHolder clientsHolder,
+            LoadingScreen loadingScreen) throws ManagerException {
+        if (clientsHolder == null) {
+            throw new ManagerException("ClientsHolder cannot be null");
+        }
+        if (loadingScreen == null) {
+            throw new ManagerException("LoadingScreen cannot be null");
+        }
+
+        clientsList = clientsHolder;
         this.loadingScreen = loadingScreen;
         clientActionButtonsList = new ArrayList<>();
         taskListPaneHolder = new TaskListPaneHolder(loadingScreen);
@@ -138,23 +193,32 @@ public class ClientDetailPaneHolder {
     }
 
     /**
+     * Gets already constructed root pane.
      *
-     * @return
+     * @return reference to whole client detail area
      */
     public Pane getRootPane() {
-        return rootAnchorPane;
+        return rootPane;
     }
 
+    /**
+     * Gets client actions menu items which can be added to the main menu at the
+     * top of the page.
+     *
+     * @return one menu dropdown item
+     */
     public Menu getClientMenu() {
         return clientActionsMenu;
     }
 
     /**
+     * Switch active client to the one with given identification. This includes
+     * change of every possible text field.
      *
-     * @param name
+     * @param id unique identification of client
      */
-    public void switchToConnectionDetail(String name) {
-        ClientWrapper client = clientsList.getClient(name);
+    public void switchToConnectionDetail(String id) {
+        ClientWrapper client = clientsList.getClient(id);
 
         if (client == null) {
             return;
@@ -166,7 +230,7 @@ public class ClientDetailPaneHolder {
             }
         }
 
-        activeClient = new Pair<>(name, client);
+        activeClient = new Pair<>(id, client);
         registryAddressTextArea.setText(
                 client.getClientAddress().registryAddress);
         clientIdentificationTextArea.setText(
@@ -201,7 +265,8 @@ public class ClientDetailPaneHolder {
     }
 
     /**
-     *
+     * There is no actively connected clients or none of them is selected, then
+     * all information about old active one has to be cleared.
      */
     private void clearConnectionDetail() {
         activeClient = null;
@@ -218,7 +283,7 @@ public class ClientDetailPaneHolder {
     }
 
     /**
-     *
+     * Remove currently selected client from clients container.
      */
     private void removeActiveClient() {
         clientsList.deleteClient(activeClient.getKey());
@@ -228,7 +293,7 @@ public class ClientDetailPaneHolder {
     }
 
     /**
-     *
+     * Action which is triggered on click of disconnect button.
      */
     private void disconnectClientButtonAction() {
         if (activeClient == null) {
@@ -272,7 +337,7 @@ public class ClientDetailPaneHolder {
     }
 
     /**
-     *
+     * Triggered after clicking on shutdown button.
      */
     private void shutdownClientButtonAction() {
         if (activeClient == null) {
@@ -316,7 +381,8 @@ public class ClientDetailPaneHolder {
     }
 
     /**
-     *
+     * Action which is launched after clicking on pause button. There has to be
+     * two branches of computation one on pausing the other one on unpausing.
      */
     private void pauseClientButtonAction() {
         if (activeClient == null) {
@@ -369,7 +435,8 @@ public class ClientDetailPaneHolder {
     }
 
     /**
-     *
+     * Triggered after clicking on list tasks button. There has to be two paths
+     * of execution one on opening list and the other one on closing list.
      */
     private void listTasksButtonAction() {
         if (activeClient == null) {
@@ -416,8 +483,9 @@ public class ClientDetailPaneHolder {
     }
 
     /**
+     * Populates client actions area with appropriate buttons.
      *
-     * @param buttonsArea
+     * @param buttonsArea area in which button are visible
      */
     private void populateClientButtonsArea(VBox buttonsArea) {
         Button disconnButton = new Button(DISCONNECT_BTN_TEXT);
@@ -464,48 +532,49 @@ public class ClientDetailPaneHolder {
     }
 
     /**
+     * Populates client information area with appropriate labels and fields.
      *
-     * @param detailArea
+     * @param infoArea area in which information about client are stored
      */
-    private void populateDetailArea(GridPane detailArea) {
-        Label reg = new Label(REGISTRY_URL_LABEL_TEXT);
+    private void populateInfoArea(GridPane infoArea) {
+        Label reg = new Label("Registry URL:");
         registryAddressTextArea = new TextField();
         registryAddressTextArea.setEditable(false);
-        detailArea.add(reg, 0, 0);
-        detailArea.add(registryAddressTextArea, 1, 0);
+        infoArea.add(reg, 0, 0);
+        infoArea.add(registryAddressTextArea, 1, 0);
 
-        Label cli = new Label(CLIENT_ID_LABEL_TEXT);
+        Label cli = new Label("Client ID:");
         clientIdentificationTextArea = new TextField();
         clientIdentificationTextArea.setEditable(false);
-        detailArea.add(cli, 0, 1);
-        detailArea.add(clientIdentificationTextArea, 1, 1);
+        infoArea.add(cli, 0, 1);
+        infoArea.add(clientIdentificationTextArea, 1, 1);
 
-        Label stat = new Label(STATUS_LABEL_TEXT);
+        Label stat = new Label("Status:");
         clientStatusCircle = new Circle(10);
         clientStatusCircle.setFill(Color.GREY);
         clientStatusCircle.setStroke(Color.BLACK);
         Tooltip.install(clientStatusCircle, new Tooltip(DISCONNECTED_STATUS));
-        detailArea.add(stat, 2, 0);
-        detailArea.add(clientStatusCircle, 3, 0);
+        infoArea.add(stat, 2, 0);
+        infoArea.add(clientStatusCircle, 3, 0);
 
-        detailArea.setHgap(10);
-        detailArea.setVgap(10);
-        detailArea.setPadding(new Insets(0, 0, STANDARD_PADDING, 0));
+        infoArea.setHgap(10);
+        infoArea.setVgap(10);
+        infoArea.setPadding(new Insets(0, 0, STANDARD_PADDING, 0));
     }
 
     /**
-     *
+     * Construct and populates root pane of client detail area.
      */
     private void initRootPane() {
-        rootAnchorPane = new AnchorPane();
+        rootPane = new AnchorPane();
         HBox centerHBox = new HBox();
         VBox detailAndListVBox = new VBox();
-        GridPane detailArea = new GridPane();
+        GridPane infoArea = new GridPane();
         VBox buttonsArea = new VBox();
 
         // populate separated parts
         populateClientButtonsArea(buttonsArea);
-        populateDetailArea(detailArea);
+        populateInfoArea(infoArea);
 
         AnchorPane.setTopAnchor(centerHBox, 0.0);
         AnchorPane.setBottomAnchor(centerHBox, 0.0);
@@ -515,7 +584,7 @@ public class ClientDetailPaneHolder {
         HBox.setHgrow(detailAndListVBox, Priority.ALWAYS);
         VBox.setVgrow(taskListPaneHolder.getRootPane(), Priority.ALWAYS);
 
-        detailAndListVBox.getChildren().addAll(detailArea,
+        detailAndListVBox.getChildren().addAll(infoArea,
                 taskListPaneHolder.getRootPane());
         detailAndListVBox.setPadding(new Insets(STANDARD_PADDING,
                 STANDARD_PADDING, 0, STANDARD_PADDING));
@@ -526,9 +595,12 @@ public class ClientDetailPaneHolder {
         centerHBox.setPadding(new Insets(STANDARD_PADDING, STANDARD_PADDING,
                 STANDARD_PADDING, 0));
         centerHBox.getChildren().addAll(detailAndListVBox, buttonsArea);
-        rootAnchorPane.getChildren().add(centerHBox);
+        rootPane.getChildren().add(centerHBox);
     }
 
+    /**
+     * Construct and initialize all menu items visible in client actions menu.
+     */
     private void initClientActionsMenu() {
         clientActionsMenu = new Menu("Client");
 

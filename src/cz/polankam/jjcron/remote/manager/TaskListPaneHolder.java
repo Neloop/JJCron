@@ -20,61 +20,98 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 /**
+ * Holder for all necesary parts located in task list and task detail area. This
+ * area contains list of tasks of active client and detail of selected task. To
+ * be visible task list has to be opened, on closure task list with all info is
+ * hidden.
  *
  * @author Neloop
  */
 public class TaskListPaneHolder {
 
+    /**
+     * Refresh button text located in tasks list buttons area.
+     */
     private static final String REFRESH_BTN_TEXT = "Refresh";
+    /**
+     * Add task button text in buttons area.
+     */
     private static final String ADD_TASK_BTN_TEXT = "Add task";
+    /**
+     * Delete task button text.
+     */
     private static final String DELETE_TASK_BTN_TEXT = "Delete task";
+    /**
+     * Text on reload crontab button.
+     */
     private static final String RELOAD_CRONTAB_BTN_TEXT = "Reload Crontab";
+    /**
+     * Description of save to crontab button.
+     */
     private static final String SAVE_TASKS_BTN_TEXT = "Save to Crontab";
 
+    /**
+     * Recommended width of all tasks list action buttons.
+     */
     private static final double TASK_ACTION_BTN_WIDTH = 130;
+    /**
+     * Standard padding in whole application.
+     */
     private static final int STANDARD_PADDING = 10;
 
+    /**
+     * Standard Java logger.
+     */
     private static final Logger logger = Logger.getLogger(Core.class.getName());
 
     /**
-     *
+     * Root pane which contains whole tasks list and task detail area and its
+     * elements.
      */
     private HBox rootPane;
     /**
-     *
+     * Only children of root pane which can be dynamically added or deleted in
+     * case of tasks list closure.
      */
     private VBox contentPane;
     /**
-     *
+     * List view which contains tasks from active client.
      */
     private ListView<TaskDetail> tasksListView;
 
     /**
-     *
+     * Task detail area has its separate holder.
      */
     private final TaskDetailPaneHolder detailHolder;
     /**
-     *
+     * Loading screen which can be used anywhere in application.
      */
     private final LoadingScreen loadingScreen;
     /**
-     *
+     * Factory for add task dialog windows popup.
      */
     private final AddTaskDialogFactory addTaskDialogFactory;
     /**
-     *
+     * Factory which creates various numbers of alert dialogs.
      */
     private final AlertDialogFactory alertDialogFactory;
     /**
-     *
+     * Wrapper of selected active client.
      */
     private ClientWrapper activeClient;
 
     /**
+     * Constructs tasks list pane holder with all appropriate datas. Given
+     * references cannot be null.
      *
-     * @param loadingScreen
+     * @param loadingScreen loading screen holder
+     * @throws ManagerException in case of null parameter
      */
-    public TaskListPaneHolder(LoadingScreen loadingScreen) {
+    public TaskListPaneHolder(LoadingScreen loadingScreen) throws ManagerException {
+        if (loadingScreen == null) {
+            throw new ManagerException("LoadingScreen cannot be null");
+        }
+
         this.loadingScreen = loadingScreen;
         addTaskDialogFactory = new AddTaskDialogFactory();
         alertDialogFactory = new AlertDialogFactory();
@@ -84,20 +121,26 @@ public class TaskListPaneHolder {
     }
 
     /**
+     * Gets root pane which should contain whole tasks list and task detail area
+     * and its components.
      *
-     * @return
+     * @return reference to root pane
      */
     public Pane getRootPane() {
         return rootPane;
     }
 
     /**
+     * Displays tasks list and task details from given client.
      *
-     * @param client
+     * @param client active client, if null nothing will happen
      */
     public void displayTaskList(ClientWrapper client) {
-        activeClient = client;
+        if (client == null) {
+            return;
+        }
 
+        activeClient = client;
         tasksListView.setItems(client.tasksObservableList);
         tasksListView.getSelectionModel().selectFirst();
         rootPane.getChildren().clear();
@@ -105,7 +148,7 @@ public class TaskListPaneHolder {
     }
 
     /**
-     *
+     * Tells that tasks list was closed and whole area has to be cleared.
      */
     public void clearTaskList() {
         activeClient = null;
@@ -113,7 +156,7 @@ public class TaskListPaneHolder {
     }
 
     /**
-     *
+     * Constructs root pane with some default settings.
      */
     private void initRootPane() {
         rootPane = new HBox();
@@ -124,8 +167,9 @@ public class TaskListPaneHolder {
     }
 
     /**
+     * Populate given tasks list actions area with appropriate buttons.
      *
-     * @param buttonsArea
+     * @param buttonsArea area which will be populated
      */
     private void populateTaskListButtonsArea(VBox buttonsArea) {
         buttonsArea.setSpacing(5);
@@ -167,7 +211,8 @@ public class TaskListPaneHolder {
     }
 
     /**
-     *
+     * Constructs and populate content pane which can be plugged/unplugged from
+     * root pane.
      */
     private void initContentPane() {
         contentPane = new VBox();
@@ -208,7 +253,7 @@ public class TaskListPaneHolder {
     }
 
     /**
-     *
+     * Action triggered after clicking on refresh button.
      */
     private void refreshButtonAction() {
         if (activeClient == null) {
@@ -248,9 +293,13 @@ public class TaskListPaneHolder {
     }
 
     /**
-     *
+     * Performed after user clicks on add task button.
      */
     private void addTaskButtonAction() {
+        if (activeClient == null) {
+            return;
+        }
+
         Dialog<AddTaskDialogFactory.TaskInfo> dialog
                 = addTaskDialogFactory.createAddTaskDialog();
         Optional<AddTaskDialogFactory.TaskInfo> result = dialog.showAndWait();
@@ -293,8 +342,9 @@ public class TaskListPaneHolder {
     }
 
     /**
+     * Executed in case of click on delete task button.
      *
-     * @param detail
+     * @param detail provides information about task which should be deleted
      */
     private void deleteTaskButtonAction(TaskDetail detail) {
         if (activeClient == null) {
@@ -334,7 +384,7 @@ public class TaskListPaneHolder {
     }
 
     /**
-     *
+     * Action launched after clicking on save to crontab button.
      */
     private void saveToCrontabButtonAction() {
         if (activeClient == null) {
@@ -369,7 +419,8 @@ public class TaskListPaneHolder {
     }
 
     /**
-     *
+     * After clicking on reload button, then it tells client that tasks from
+     * crontab has to be reloaded.
      */
     private void reloadCrontabButtonAction() {
         if (activeClient == null) {
@@ -405,8 +456,10 @@ public class TaskListPaneHolder {
     }
 
     /**
+     * Action performed if different task is selected in tasks list. Should
+     * display further details about selected task.
      *
-     * @param detail
+     * @param detail task details which should be displayed
      */
     private void switchToTaskDetailAction(TaskDetail detail) {
         if (activeClient == null) {

@@ -6,22 +6,24 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
+ * Holder class for all kind of collections which contains references to client
+ * wrappers or other types of client representations.
  *
  * @author Neloop
  */
 public class ClientsHolder {
 
     /**
-     *
+     * Observable list which can be used in UI and is automatically updated.
      */
     public final ObservableList<String> clientsObservableList;
     /**
-     *
+     * Uniquely indexed collection with all active clients.
      */
     private final Map<String, ClientWrapper> clientsMap;
 
     /**
-     *
+     * By default empty collections are constructed.
      */
     public ClientsHolder() {
         clientsMap = new HashMap<>();
@@ -29,17 +31,21 @@ public class ClientsHolder {
     }
 
     /**
+     * Determines if there are any active clients or not.
      *
-     * @return
+     * @return true if collections are empty, false otherwise
      */
     public boolean isEmpty() {
         return clientsMap.isEmpty();
     }
 
     /**
+     * Add given client wrapper to all internal collections.
+     * <p>
+     * Has to be used in JavaFX UI thread.</p>
      *
-     * @param client
-     * @return
+     * @param client wrapper for client
+     * @return unique identification of added client
      */
     public String addClient(ClientWrapper client) {
         String id = client.getClientAddress().toString();
@@ -52,20 +58,26 @@ public class ClientsHolder {
     }
 
     /**
+     * Delete client from all internal collections according to given
+     * identification.
+     * <p>
+     * Has to be used in JavaFX UI thread.</p>
      *
-     * @param mapId
+     * @param id unique identification of client
      */
-    public void deleteClient(String mapId) {
-        clientsObservableList.remove(mapId);
-        clientsMap.remove(mapId);
+    public void deleteClient(String id) {
+        clientsObservableList.remove(id);
+        clientsMap.remove(id);
     }
 
     /**
+     * Gets {@link ClientWrapper} class which implements all necessary methods
+     * for working with client.
      *
-     * @param mapId
-     * @return
+     * @param id unique identification of client
+     * @return client wrapper structure which simulates behaviour of client
      */
-    public ClientWrapper getClient(String mapId) {
-        return clientsMap.get(mapId);
+    public ClientWrapper getClient(String id) {
+        return clientsMap.get(id);
     }
 }

@@ -4,15 +4,17 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
 /**
+ * Factory class for all kinds of alert dialogs.
  *
  * @author Neloop
  */
 public class AlertDialogFactory {
 
     /**
+     * Create confirmation dialog with given message and returns it.
      *
-     * @param message
-     * @return
+     * @param message text which will be visible on dialog
+     * @return alert dialog
      */
     public Alert createConfirmationDialog(String message) {
         Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -23,9 +25,10 @@ public class AlertDialogFactory {
     }
 
     /**
+     * Create warning dialog with given message and returns it.
      *
-     * @param message
-     * @return
+     * @param message text which will be visible on dialog
+     * @return alert dialog
      */
     public Alert createWarningDialog(String message) {
         Alert alert = new Alert(AlertType.WARNING);
@@ -36,9 +39,10 @@ public class AlertDialogFactory {
     }
 
     /**
+     * Create error dialog with given message and returns it.
      *
-     * @param message
-     * @return
+     * @param message text which will be visible on dialog
+     * @return alert dialog
      */
     public Alert createErrorDialog(String message) {
         Alert alert = new Alert(AlertType.ERROR);

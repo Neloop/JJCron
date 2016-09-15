@@ -13,15 +13,20 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 
 /**
- * Using of official JavaFX Dialogs... JDK 8u40 needed
+ * Factory used for creation of New connection dialog in which user should write
+ * address of soon to be connected client.
+ * <p>
+ * Using of official JavaFX Dialogs, JDK 8u40 needed</p>
  *
  * @author Neloop
  */
 public class ConnectionDialogFactory {
 
     /**
+     * Creates and return New connection dialog which allows to specify registry
+     * address and client identification.
      *
-     * @return
+     * @return newly constructed dialog window with specified result
      */
     public Dialog<Pair<String, String>> createLoginDialog() {
         Dialog<Pair<String, String>> dialog = new Dialog<>();

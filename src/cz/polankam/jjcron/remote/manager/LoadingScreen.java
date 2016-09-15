@@ -78,11 +78,16 @@ public class LoadingScreen {
 
     /**
      * Sets primary stage which was given to application from JavaFX engine.
-     * Primary stage is used for centering loading dialog.
+     * Primary stage is used for centering loading dialog, if given reference is
+     * null than nothing is done.
      *
-     * @param mainStage
+     * @param mainStage stage which is logical parent of loading screen
      */
     public void setMainStage(Stage mainStage) {
+        if (mainStage == null) {
+            return;
+        }
+
         loadingStage.setOnShown((e) -> {
             loadingStage.setX(mainStage.getX() + (mainStage.getWidth() / 2)
                     - (loadingStage.getWidth() / 2));

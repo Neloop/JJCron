@@ -11,70 +11,79 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
 /**
+ * Holder for all parts located in task detail area, this includes mainly text
+ * fields with datas and their labels. Can be switched to selected/active task
+ * or cleared.
  *
  * @author Neloop
  */
 public class TaskDetailPaneHolder {
 
+    /**
+     * Width of crontab units text fields.
+     */
     private static final double UNIT_TEXT_WIDTH = 70;
+    /**
+     * Extended padding used in application.
+     */
     private static final int EXTENDED_PADDING = 20;
 
     /**
-     *
+     * Root pane which contains all possible area components.
      */
     private final GridPane rootPane;
 
     /**
-     *
+     * Field representing identification of task.
      */
     private final TextField idText;
     /**
-     *
+     * Field which represents name of active task.
      */
     private final TextField nameText;
     /**
-     *
+     * Represents next execution time point of active task.
      */
     private final TextField nextText;
     /**
-     *
+     * Contains textual description of last execution time point.
      */
     private final TextField lastExecutionText;
     /**
-     *
+     * Field containing last execution duration time.
      */
     private final TextField lastDurationText;
 
     /**
-     *
+     * Area which contains metadata of task stated in crontab file.
      */
     private final GridPane metadataPane;
     /**
-     *
+     * Field representing seconds value from crontab.
      */
     private final TextField secondText;
     /**
-     *
+     * Minute field containing minutes value from crontab.
      */
     private final TextField minuteText;
     /**
-     *
+     * Represents hours value from crontab.
      */
     private final TextField hourText;
     /**
-     *
+     * Contains day of month value from crontab.
      */
     private final TextField dayOfMonthText;
     /**
-     *
+     * Field representing month value from crontab.
      */
     private final TextField monthText;
     /**
-     *
+     * Field which contains day of week value from crontab.
      */
     private final TextField dayOfWeekText;
     /**
-     *
+     * Command text which was loaded from crontab file.
      */
     private final TextField commandText;
 
@@ -85,7 +94,7 @@ public class TaskDetailPaneHolder {
             = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
-     *
+     * Construct and initializes all possible text fields and labels.
      */
     public TaskDetailPaneHolder() {
         rootPane = new GridPane();
@@ -143,16 +152,18 @@ public class TaskDetailPaneHolder {
     }
 
     /**
+     * Gets root pane containing active task details.
      *
-     * @return
+     * @return reference to root pane of task detail area
      */
     public Pane getRootPane() {
         return rootPane;
     }
 
     /**
+     * Displays all possible information about given task.
      *
-     * @param task
+     * @param task task which should be displayed in appropriate area
      */
     public void switchToTaskDetail(TaskDetail task) {
         if (task == null) {
@@ -202,7 +213,8 @@ public class TaskDetailPaneHolder {
     }
 
     /**
-     *
+     * Clears task detail area, can be used when there is no active task or no
+     * task whatsoever.
      */
     public void clearTaskDetail() {
         idText.clear();

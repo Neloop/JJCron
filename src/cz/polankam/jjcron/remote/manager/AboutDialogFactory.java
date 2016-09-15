@@ -58,7 +58,7 @@ public class AboutDialogFactory {
      * Creates dialog window with some information about this application.
      * Dialog is created on every call of this function.
      *
-     * @return
+     * @return newly constructed dialog window
      */
     public Dialog createAboutDialog() {
         Dialog dialog = new Dialog();

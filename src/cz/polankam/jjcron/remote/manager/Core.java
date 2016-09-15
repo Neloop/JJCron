@@ -29,77 +29,94 @@ import javafx.stage.Stage;
 import javafx.util.Pair;
 
 /**
+ * Entry point of whole JJCronRM which serves as initial JavaFX application.
  *
  * @author Neloop
  */
-public class Core extends Application {
+public final class Core extends Application {
 
+    /**
+     * Delimiter used in application description bottom panel.
+     */
     private static final String DESC_DELIM = " - ";
+    /**
+     * Text on new connection button.
+     */
     private static final String NEW_CONNECTION_BTN_TEXT = "New Connection";
 
+    /**
+     * Standard padding used in whole application.
+     */
     private static final int STANDARD_PADDING = 10;
 
+    /**
+     * Standard Java logger.
+     */
     private static final Logger logger = Logger.getLogger(Core.class.getName());
 
     /**
-     *
+     * Menu bar which is shown on the top of the application layout.
      */
     private MenuBar menuBar;
     /**
-     *
+     * Left area which contains list of actively connected clients.
      */
     private Pane leftPane;
     /**
-     *
+     * Bottom area of layout which contains some short information about
+     * application.
      */
     private Pane descriptionPane;
     /**
-     *
+     * Contains all actively connected clients.
      */
     private ListView<String> clientsListView;
 
     /**
-     *
+     * Holder of clients collections.
      */
     private final ClientsHolder clientsList;
     /**
-     *
+     * Factory for new connection dialog.
      */
-    private final ConnectionDialogFactory loginDialogFactory;
+    private final ConnectionDialogFactory connectionDialogFactory;
     /**
-     *
+     * Factory for alert dialogs.
      */
     private final AlertDialogFactory alertDialogFactory;
     /**
-     *
+     * Holder for all necesary panes and parts from client information area.
      */
     private final ClientDetailPaneHolder clientDetailPaneHolder;
     /**
-     *
+     * Loading screen instance which can be shown and hidden.
      */
     private final LoadingScreen loadingScreen;
     /**
-     *
+     * Factory for about dialog window which show further information about
+     * application.
      */
     private final AboutDialogFactory aboutDialogFactory;
 
     /**
-     *
+     * Contains some basic application information.
      */
     private final AppInfo appInfo;
     /**
-     *
+     * JavaFX host services.
      */
     private final HostServices hostServices;
 
     /**
+     * Initializes all panes and variables.
      *
+     * @throws ManagerException in case of construction error
      */
-    public Core() {
+    public Core() throws ManagerException {
         appInfo = new AppInfo();
         hostServices = getHostServices();
         clientsList = new ClientsHolder();
-        loginDialogFactory = new ConnectionDialogFactory();
+        connectionDialogFactory = new ConnectionDialogFactory();
         loadingScreen = new LoadingScreen();
         alertDialogFactory = new AlertDialogFactory();
         clientDetailPaneHolder = new ClientDetailPaneHolder(clientsList,
@@ -112,11 +129,12 @@ public class Core extends Application {
     }
 
     /**
-     *
+     * Action binded with new connection buttons. Tries to connect to remote
+     * client and if successful then add him into internal structures.
      */
     private void newConnectionButtonAction() {
         Dialog<Pair<String, String>> dialog
-                = loginDialogFactory.createLoginDialog();
+                = connectionDialogFactory.createLoginDialog();
         Optional<Pair<String, String>> result = dialog.showAndWait();
 
         Task<ClientWrapper> task = new Task<ClientWrapper>() {
@@ -159,7 +177,7 @@ public class Core extends Application {
     }
 
     /**
-     *
+     * Constructs menu bar located at the top of the page.
      */
     private void initMenu() {
         menuBar = new MenuBar();
@@ -191,7 +209,7 @@ public class Core extends Application {
     }
 
     /**
-     *
+     * Constructs left area containing list of active connections.
      */
     private void initLeftPane() {
         leftPane = new AnchorPane();
@@ -225,7 +243,7 @@ public class Core extends Application {
     }
 
     /**
-     *
+     * Constructs description area located at the bottom of overall layout.
      */
     private void initDescriptionPane() {
         Hyperlink link = new Hyperlink(appInfo.sourceLinkText);
@@ -252,11 +270,12 @@ public class Core extends Application {
     }
 
     /**
+     * Starts JavaFX application.
      *
-     * @param stage
+     * @param stage primary stage
      */
     @Override
-    public void start(Stage stage) {
+    public final void start(Stage stage) {
         // set main stage to loading screen for proper positioning
         loadingScreen.setMainStage(stage);
 
@@ -270,11 +289,13 @@ public class Core extends Application {
 
         stage.setTitle(appInfo.title);
         stage.setScene(scene);
-        //primaryStage.setMaximized(true);
+        stage.setMaximized(true);
         stage.show();
     }
 
     /**
+     * Entry point of application.
+     *
      * @param args the command line arguments
      */
     public static void main(String[] args) {
