@@ -1,8 +1,10 @@
 # JJCronCommon - Just a Java Cron Common
 
+[![Build Status](https://travis-ci.org/JJCron/JJCronCommon.svg?branch=master)](https://travis-ci.org/JJCron/JJCronCommon)
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://badges.mit-license.org)
+[![Docs](https://img.shields.io/badge/docs-javadoc-green.svg)](http://JJCron.github.io/JJCronCommon/)
 
-**JJCronCommon** is library for **JJCron** and **JJCronRM** which contains shared functionality of them both, most importantly interfaces for remote communication. 
+**JJCronCommon** is library for **[JJCron](https://github.com/JJCron/JJCron)** and **[JJCronRM](https://github.com/JJCron/JJCronRM)** which contains shared functionality of them both, most importantly interfaces for remote communication. 
 
 ## Contribution
 
