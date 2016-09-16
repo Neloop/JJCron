@@ -108,11 +108,11 @@ public class ClientDetailPaneHolder {
     /**
      * Field which contains not editable registry address of active client.
      */
-    private TextField registryAddressTextArea;
+    private TextField registryAddressText;
     /**
      * Field containing not editable registry identification of active client.
      */
-    private TextField clientIdentificationTextArea;
+    private TextField clientIdentificationText;
     /**
      * Circle which shows active client status.
      */
@@ -155,7 +155,7 @@ public class ClientDetailPaneHolder {
     /**
      * List of buttons which are currently in client actions area.
      */
-    private final List<Button> clientActionButtonsList;
+    private final List<Button> clientActionsButtonsList;
 
     /**
      * Contains all necessary things about clients.
@@ -185,7 +185,7 @@ public class ClientDetailPaneHolder {
 
         clientsList = clientsHolder;
         this.loadingScreen = loadingScreen;
-        clientActionButtonsList = new ArrayList<>();
+        clientActionsButtonsList = new ArrayList<>();
         taskListPaneHolder = new TaskListPaneHolder(loadingScreen);
         alertDialogFactory = new AlertDialogFactory();
         initRootPane();
@@ -225,15 +225,15 @@ public class ClientDetailPaneHolder {
         }
 
         if (activeClient == null) {
-            for (Button btn : clientActionButtonsList) {
+            for (Button btn : clientActionsButtonsList) {
                 btn.setDisable(false);
             }
         }
 
         activeClient = new Pair<>(id, client);
-        registryAddressTextArea.setText(
+        registryAddressText.setText(
                 client.getClientAddress().registryAddress);
-        clientIdentificationTextArea.setText(
+        clientIdentificationText.setText(
                 client.getClientAddress().clientIdentification);
 
         if (client.isListOpened()) {
@@ -270,14 +270,14 @@ public class ClientDetailPaneHolder {
      */
     private void clearConnectionDetail() {
         activeClient = null;
-        registryAddressTextArea.clear();
-        clientIdentificationTextArea.clear();
+        registryAddressText.clear();
+        clientIdentificationText.clear();
         taskListPaneHolder.clearTaskList();
 
         clientStatusCircle.setFill(DISCONNECTED_STATUS_COLOR);
         Tooltip.install(clientStatusCircle, new Tooltip(DISCONNECTED_STATUS));
 
-        for (Button btn : clientActionButtonsList) {
+        for (Button btn : clientActionsButtonsList) {
             btn.setDisable(true);
         }
     }
@@ -525,10 +525,10 @@ public class ClientDetailPaneHolder {
         buttonsArea.getChildren().addAll(listTasksButton, pauseClientButton,
                 shutdownButton, disconnButton);
 
-        clientActionButtonsList.add(listTasksButton);
-        clientActionButtonsList.add(pauseClientButton);
-        clientActionButtonsList.add(shutdownButton);
-        clientActionButtonsList.add(disconnButton);
+        clientActionsButtonsList.add(listTasksButton);
+        clientActionsButtonsList.add(pauseClientButton);
+        clientActionsButtonsList.add(shutdownButton);
+        clientActionsButtonsList.add(disconnButton);
     }
 
     /**
@@ -538,16 +538,16 @@ public class ClientDetailPaneHolder {
      */
     private void populateInfoArea(GridPane infoArea) {
         Label reg = new Label("Registry URL:");
-        registryAddressTextArea = new TextField();
-        registryAddressTextArea.setEditable(false);
+        registryAddressText = new TextField();
+        registryAddressText.setEditable(false);
         infoArea.add(reg, 0, 0);
-        infoArea.add(registryAddressTextArea, 1, 0);
+        infoArea.add(registryAddressText, 1, 0);
 
         Label cli = new Label("Client ID:");
-        clientIdentificationTextArea = new TextField();
-        clientIdentificationTextArea.setEditable(false);
+        clientIdentificationText = new TextField();
+        clientIdentificationText.setEditable(false);
         infoArea.add(cli, 0, 1);
-        infoArea.add(clientIdentificationTextArea, 1, 1);
+        infoArea.add(clientIdentificationText, 1, 1);
 
         Label stat = new Label("Status:");
         clientStatusCircle = new Circle(10);
