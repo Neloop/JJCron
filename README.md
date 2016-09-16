@@ -3,8 +3,11 @@
 [![Build Status](https://travis-ci.org/JJCron/JJCron.svg?branch=master)](https://travis-ci.org/JJCron/JJCron)
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://badges.mit-license.org)
 [![Wiki](https://img.shields.io/badge/docs-wiki-orange.svg)](https://github.com/JJCron/JJCron/wiki)
+[![Docs](https://img.shields.io/badge/docs-javadoc-green.svg)](http://JJCron.github.io/JJCron/)
 
 **JJCron** is cron-like program written in `Java` which can be used to periodically execute given tasks. **JJCron** can serve as standalone program and also as library used in another application. From the beginning the whole architecture was meant to be modular, easy to use and simple to understand. This is managed by delicate design of internal structures and classes.
+
+One of the best features of **JJCron** is remote management through **[JJCronRM](https://github.com/JJCron/JJCronRM)** manager. Management includes reloading crontab, save changes to crontab, add cron task, delete cron task, pause whole execution or shutdown whole application.
 
 ## Crontab
 
@@ -40,9 +43,8 @@ Further description of configuration can be found in wiki on [Crontab Descriptio
 
 ## Drawbacks
 - Not all features from `crontab` standard format are implemented
-- Day of week time unit is a bit non-standard with its ordering
+- Day of week time unit is a bit non-standard with its ordering (1 == Monday)
 - Due to `Java` restrictions only single program can be executed (that means no pipes, redirections or program chaining)
-- Test are not written yet!
 
 ## More information
 If you are interested enough read `JJCron` wiki pages [here](https://github.com/JJCron/JJCron/wiki) and start using it!
