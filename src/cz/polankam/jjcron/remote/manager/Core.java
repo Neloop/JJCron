@@ -155,9 +155,11 @@ public final class Core extends Application {
         });
         task.setOnSucceeded((event) -> {
             try {
-                String id = clientsList.addClient(task.get());
-                clientDetailPaneHolder.switchToConnectionDetail(id);
-                clientsListView.getSelectionModel().select(id);
+                if (task.get() != null) {
+                    String id = clientsList.addClient(task.get());
+                    clientDetailPaneHolder.switchToConnectionDetail(id);
+                    clientsListView.getSelectionModel().select(id);
+                }
             } catch (Exception e) {
                 logger.log(Level.SEVERE, e.getMessage());
             } finally {
