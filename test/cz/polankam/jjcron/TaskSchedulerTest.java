@@ -125,10 +125,10 @@ public class TaskSchedulerTest {
         String doubleDotId = scheduler.addTask(printDoubleDotTask);
         assertEquals(scheduler.getTasks().size(), 2);
 
-       scheduler.deleteTask(dotId);
-       assertEquals(scheduler.getTasks().size(), 1);
-       scheduler.deleteTask(doubleDotId);
-       assertEquals(scheduler.getTasks().size(), 0);
+        scheduler.deleteTask(dotId);
+        assertEquals(scheduler.getTasks().size(), 1);
+        scheduler.deleteTask(doubleDotId);
+        assertEquals(scheduler.getTasks().size(), 0);
     }
 
     @Test(expected = TaskException.class)

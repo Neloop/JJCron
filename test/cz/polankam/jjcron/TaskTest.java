@@ -21,6 +21,7 @@ public class TaskTest {
     private Task task;
 
     private class FakeTask extends Task {
+
         FakeTask(TaskMetadata meta) throws TaskException {
             super(meta);
         }

@@ -154,8 +154,8 @@ public class CrontabParserTest {
 
         // conversion to some more readable input
         InputStream input = new ByteArrayInputStream(output.toByteArray());
-        BufferedReader reader =
-                new BufferedReader(new InputStreamReader(input));
+        BufferedReader reader
+                = new BufferedReader(new InputStreamReader(input));
 
         // asserting
         for (TaskMetadata meta : testTasks) {
