@@ -1,6 +1,7 @@
 package cz.polankam.jjcron.common;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Structure which represents all information about one task given in crontab.
@@ -59,5 +60,23 @@ public class TaskMetadata implements Serializable {
      */
     public final String command() {
         return command;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == null || !(other instanceof TaskMetadata)) {
+            return false;
+        }
+
+        TaskMetadata cast = (TaskMetadata) other;
+        return cast.time.equals(time) && cast.command.equals(command);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 47 * hash + Objects.hashCode(this.time);
+        hash = 47 * hash + Objects.hashCode(this.command);
+        return hash;
     }
 }

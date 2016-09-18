@@ -1,11 +1,14 @@
 package cz.polankam.jjcron.remote;
 
+import cz.polankam.jjcron.common.PrintMethodNameTestWatcher;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Rule;
+import org.junit.rules.TestWatcher;
 
 /**
  *
@@ -13,11 +16,12 @@ import static org.junit.Assert.*;
  */
 public class TaskDetailTest {
 
-    public TaskDetailTest() {
-    }
+    @Rule
+    public TestWatcher watcher = new PrintMethodNameTestWatcher();
 
     @BeforeClass
     public static void setUpClass() {
+        System.out.println(">>> TaskDetailTest <<<");
     }
 
     @AfterClass
@@ -32,9 +36,7 @@ public class TaskDetailTest {
     public void tearDown() {
     }
 
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
-    //
-    // @Test
-    // public void hello() {}
+    public void test_Correct() {
+        // TODO:
+    }
 }

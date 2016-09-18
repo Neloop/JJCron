@@ -3,6 +3,7 @@ package cz.polankam.jjcron.common;
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -145,5 +146,29 @@ public class CrontabTime implements Serializable {
         builder.append(delim);
         builder.append(dayOfWeek.value().toString());
         return builder.toString();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == null || !(other instanceof CrontabTime)) {
+            return false;
+        }
+
+        CrontabTime cast = (CrontabTime) other;
+        return cast.second.equals(second) && cast.minute.equals(minute)
+                && cast.hour.equals(hour) && cast.dayOfMonth.equals(dayOfMonth)
+                && cast.month.equals(month) && cast.dayOfWeek.equals(dayOfWeek);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 73 * hash + Objects.hashCode(this.second);
+        hash = 73 * hash + Objects.hashCode(this.minute);
+        hash = 73 * hash + Objects.hashCode(this.hour);
+        hash = 73 * hash + Objects.hashCode(this.dayOfMonth);
+        hash = 73 * hash + Objects.hashCode(this.month);
+        hash = 73 * hash + Objects.hashCode(this.dayOfWeek);
+        return hash;
     }
 }

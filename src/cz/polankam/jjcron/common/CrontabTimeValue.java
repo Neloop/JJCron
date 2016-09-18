@@ -3,7 +3,9 @@ package cz.polankam.jjcron.common;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents single time unit stored in one of the time columns in crontab.
@@ -69,5 +71,39 @@ public class CrontabTimeValue implements Serializable {
                 }
                 return builder.toString();
         }
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == null || !(other instanceof CrontabTimeValue)) {
+            return false;
+        }
+
+        CrontabTimeValue cast = (CrontabTimeValue) other;
+        if (!cast.valueType.equals(cast.valueType) ||
+                cast.values.size() != values.size()) {
+            return false;
+        }
+
+        List<Integer> thisValues = new ArrayList<>(values);
+        List<Integer> otherValues = new ArrayList<>(cast.values);
+        Collections.sort(thisValues);
+        Collections.sort(otherValues);
+
+        for (int i = 0; i < thisValues.size(); ++i) {
+            if (!thisValues.get(i).equals(otherValues.get(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 71 * hash + Objects.hashCode(this.valueType);
+        hash = 71 * hash + Objects.hashCode(this.values);
+        return hash;
     }
 }

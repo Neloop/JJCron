@@ -2,6 +2,7 @@ package cz.polankam.jjcron.common;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * General implementation of {@link CrontabTimeUnit} interface which should be
@@ -167,5 +168,26 @@ public class CrontabTimeGeneralUnit implements CrontabTimeUnit, Serializable {
     @Override
     public CrontabTimeValue value() {
         return unit;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == null || !(other instanceof CrontabTimeGeneralUnit)) {
+            return false;
+        }
+
+        CrontabTimeGeneralUnit cast = (CrontabTimeGeneralUnit) other;
+        return cast.minValue == minValue && cast.maxValue == maxValue
+                && cast.period == period && cast.unit.equals(unit);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 89 * hash + this.minValue;
+        hash = 89 * hash + this.maxValue;
+        hash = 89 * hash + this.period;
+        hash = 89 * hash + Objects.hashCode(this.unit);
+        return hash;
     }
 }

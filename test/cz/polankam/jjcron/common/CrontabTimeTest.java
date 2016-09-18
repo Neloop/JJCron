@@ -7,12 +7,17 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Rule;
+import org.junit.rules.TestWatcher;
 
 /**
  *
  * @author Neloop
  */
 public class CrontabTimeTest {
+
+    @Rule
+    public TestWatcher watcher = new PrintMethodNameTestWatcher();
 
     @BeforeClass
     public static void setUpClass() {

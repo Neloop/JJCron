@@ -6,6 +6,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Rule;
+import org.junit.rules.TestWatcher;
 
 /**
  *
@@ -13,11 +15,12 @@ import static org.junit.Assert.*;
  */
 public class CrontabTimeDayOfMonthUnitTest {
 
-    public CrontabTimeDayOfMonthUnitTest() {
-    }
+    @Rule
+    public TestWatcher watcher = new PrintMethodNameTestWatcher();
 
     @BeforeClass
     public static void setUpClass() {
+        System.out.println(">>> CrontabTimeDayOfMonthUnitTest <<<");
     }
 
     @AfterClass
