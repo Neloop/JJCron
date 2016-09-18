@@ -150,7 +150,7 @@ public class ClientWrapper {
      */
     public void deleteTask(String id) throws Exception {
         fetchTasks(false);
-        
+
         TaskDetail task = tasksMap.get(id);
         if (task == null) {
             return;
