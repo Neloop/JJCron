@@ -30,10 +30,14 @@ public class TaskFactoryImpl implements TaskFactory {
      *
      * @param taskMeta information about task which should be created
      * @return newly created implementation of {@link Task} abstract.
-     * @throws TaskException if task creation failed
+     * @throws TaskException if task creation failed, or taskMeta was null
      */
     @Override
     public Task createTask(TaskMetadata taskMeta) throws TaskException {
+        if (taskMeta == null) {
+            throw new TaskException("TaskMetadata cannot be null");
+        }
+
         Task result = null;
 
         String command = taskMeta.command();

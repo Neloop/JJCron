@@ -22,8 +22,13 @@ public abstract class Task {
      * On construction {@link TaskMetadata} structure has to be provided.
      *
      * @param meta information about this task
+     * @throws TaskException if metadata was null
      */
-    public Task(TaskMetadata meta) {
+    public Task(TaskMetadata meta) throws TaskException {
+        if (meta == null) {
+            throw new TaskException("TaskMetadata cannot be null");
+        }
+
         taskMeta = meta;
     }
 

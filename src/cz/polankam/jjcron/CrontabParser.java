@@ -6,10 +6,12 @@ import cz.polankam.jjcron.common.TaskMetadata;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -166,6 +168,12 @@ public class CrontabParser {
             String line;
             int lineNumber = 1;
             while ((line = reader.readLine()) != null) {
+                // trim line and check for emptyness
+                line = line.trim();
+                if (line.equals("")) {
+                    continue;
+                }
+
                 // remove comments from crontab line
                 line = removeComment(line);
 
@@ -189,6 +197,9 @@ public class CrontabParser {
      */
     public static List<TaskMetadata> loadFile(String filename)
             throws ParserException {
+        if (filename == null) {
+            throw new ParserException("Filename is null");
+        }
 
         try (InputStream file = new FileInputStream(filename)) {
             return internalLoad(file);
@@ -219,8 +230,47 @@ public class CrontabParser {
      */
     public static List<TaskMetadata> load(String input)
             throws ParserException {
+        if (input == null) {
+            throw new ParserException("Input string is null");
+        }
+
         InputStream inputStream = new ByteArrayInputStream(input.getBytes());
         return internalLoad(inputStream);
+    }
+
+    /**
+     * Saves given tasks into output stream in crontab format.
+     *
+     * @param tasks list of tasks which will be outputted
+     * @param output stream for write operations
+     * @throws ParserException in case of any error
+     */
+    private static void internalSave(List<TaskMetadata> tasks,
+            OutputStream output) throws ParserException {
+        if (tasks == null) {
+            throw new ParserException("List of tasks cannot be null");
+        }
+        if (output == null) {
+            throw new ParserException("OutputStream cannot be null");
+        }
+
+        try (PrintWriter writer = new PrintWriter(output)) {
+            for (TaskMetadata task : tasks) {
+                writer.println(task.time().toString() + " " + task.command());
+            }
+        }
+    }
+
+    /**
+     * Saves given tasks into output stream in crontab format.
+     *
+     * @param tasks list of tasks which will be written
+     * @param output stream for write operations
+     * @throws ParserException in case of any error
+     */
+    public static void save(List<TaskMetadata> tasks, OutputStream output)
+            throws ParserException {
+        internalSave(tasks, output);
     }
 
     /**
@@ -230,12 +280,14 @@ public class CrontabParser {
      * @param crontab filename of crontab
      * @throws ParserException in case of any writing error
      */
-    static void save(List<TaskMetadata> tasks, String crontab) throws ParserException {
+    public static void save(List<TaskMetadata> tasks, String crontab)
+            throws ParserException {
+        if (crontab == null) {
+            throw new ParserException("Crontab file cannot be null");
+        }
 
-        try (PrintWriter file = new PrintWriter(new FileWriter(crontab))) {
-            for (TaskMetadata task : tasks) {
-                file.println(task.time().toString() + " " + task.command());
-            }
+        try (OutputStream file = new FileOutputStream(crontab)) {
+            internalSave(tasks, file);
         } catch (IOException e) {
             logger.log(Level.SEVERE, e.getMessage());
             throw new ParserException(e.getMessage(), e);

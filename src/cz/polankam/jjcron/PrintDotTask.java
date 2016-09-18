@@ -19,8 +19,9 @@ public class PrintDotTask extends Task {
      * {@link TaskMetadata} structure needed for construction of {@link Task}.
      *
      * @throws FormatException in case of format error (should never happen)
+     * @throws TaskException if task metadata was null (should never happen)
      */
-    public PrintDotTask() throws FormatException {
+    public PrintDotTask() throws FormatException, TaskException {
         super(new TaskMetadata(new CrontabTime("*", "*", "*", "*", "*", "*"),
                 "<class>cz.polankam.jjcron.PrintDotTask</class>"));
     }
@@ -30,8 +31,9 @@ public class PrintDotTask extends Task {
      * parent.
      *
      * @param taskMeta information about this task
+     * @throws TaskException if task metadata was null
      */
-    public PrintDotTask(TaskMetadata taskMeta) {
+    public PrintDotTask(TaskMetadata taskMeta) throws TaskException {
         super(taskMeta);
     }
 

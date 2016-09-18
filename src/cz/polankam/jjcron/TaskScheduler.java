@@ -88,9 +88,8 @@ public final class TaskScheduler {
      * executed yet. All internal structures are initialized.
      *
      * @param taskFactory factory which helps constructing tasks, can be null
-     * @throws TaskException if {@link TaskFactory} was null
      */
-    public TaskScheduler(TaskFactory taskFactory) throws TaskException {
+    public TaskScheduler(TaskFactory taskFactory) {
         logger.log(Level.INFO, "TaskManager was created");
 
         this.exit = new AtomicBoolean(false);
@@ -131,6 +130,7 @@ public final class TaskScheduler {
                 + " All scheduled tasks should be terminated");
 
         scheduler.shutdownNow();
+        running.set(false);
         exit.set(true);
     }
 
@@ -201,9 +201,10 @@ public final class TaskScheduler {
      * Thread-safe function.</p>
      *
      * @param taskMeta information about task
+     * @return identification of newly added task
      * @throws TaskException if task creation failed
      */
-    private synchronized void loadTask(TaskMetadata taskMeta)
+    private synchronized String loadTask(TaskMetadata taskMeta)
             throws TaskException {
         String id = UUID.randomUUID().toString();
         Task task = taskFactory.createTask(taskMeta);
@@ -212,6 +213,8 @@ public final class TaskScheduler {
 
         // schedule first execution
         scheduleTask(holder);
+
+        return id;
     }
 
     /**
@@ -226,6 +229,10 @@ public final class TaskScheduler {
      */
     private synchronized void loadTasks(List<TaskMetadata> tasksMeta)
             throws TaskException {
+        if (tasksMeta == null) {
+            throw new TaskException("List of tasks cannot be null");
+        }
+
         for (TaskMetadata taskMeta : tasksMeta) {
             loadTask(taskMeta);
         }
@@ -238,11 +245,12 @@ public final class TaskScheduler {
      * Thread-safe function.</p>
      *
      * @param taskMeta information about task
+     * @return identification of newly added task
      * @throws TaskException if task creation failed
      */
-    public final synchronized void addTask(TaskMetadata taskMeta)
+    public final synchronized String addTask(TaskMetadata taskMeta)
             throws TaskException {
-        loadTask(taskMeta);
+        return loadTask(taskMeta);
     }
 
     /**
@@ -252,12 +260,15 @@ public final class TaskScheduler {
      * Thread-safe function.</p>
      *
      * @param task task which will be added to internal ones
+     * @return identification of newly added task
+     * @throws TaskException if task was null
      */
-    public final synchronized void addTask(Task task) {
+    public final synchronized String addTask(Task task) throws TaskException {
         String id = UUID.randomUUID().toString();
         TaskHolder holder = new TaskHolder(id, task, new TaskStats());
         tasks.put(id, holder);
         scheduleTask(holder);
+        return id;
     }
 
     /**
@@ -319,6 +330,9 @@ public final class TaskScheduler {
         for (Entry<String, TaskHolder> entry : tasks.entrySet()) {
             scheduleTask(entry.getValue());
         }
+
+        logger.log(Level.INFO, "Start was requested,"
+                + "all task will be rescheduled");
     }
 
     /**
@@ -361,6 +375,17 @@ public final class TaskScheduler {
     }
 
     /**
+     * Determines if client already exited.
+     * <p>
+     * Thread-safe function.</p>
+     *
+     * @return true if client exits, false otherwise
+     */
+    public final boolean isExited() {
+        return exit.get();
+    }
+
+    /**
      * Determines if client is running or not.
      * <p>
      * Thread-safe function.</p>
@@ -372,8 +397,26 @@ public final class TaskScheduler {
     }
 
     /**
+     * Gets list of actual {@link Task} structures which are currently running
+     * or scheduled.
+     * <p>
+     * Thread-safe function.</p>
+     *
+     * @return list of scheduled tasks
+     */
+    public final synchronized List<Task> getTasks() {
+        List<Task> result = new ArrayList<>();
+        for (Entry<String, TaskHolder> entry : tasks.entrySet()) {
+            result.add(entry.getValue().task);
+        }
+        return result;
+    }
+
+    /**
      * Gets list of {@link TaskMetadata} structures from currently
      * active/scheduled cron tasks.
+     * <p>
+     * Thread-safe function.</p>
      *
      * @return list of {@link TaskMetadata} structures
      */
@@ -388,6 +431,8 @@ public final class TaskScheduler {
     /**
      * Gets list of {@link TaskDetail} structures which represents currently
      * scheduled cron tasks.
+     * <p>
+     * Thread-safe function.</p>
      *
      * @return list of {@link TaskDetail} structures
      */

@@ -13,8 +13,9 @@ public class CmdTask extends Task {
      * Construct task from given {@link TaskMetadata} information.
      *
      * @param taskMetadata handed over to {@link Task} parent
+     * @throws TaskException if task metadata was null
      */
-    public CmdTask(TaskMetadata taskMetadata) {
+    public CmdTask(TaskMetadata taskMetadata) throws TaskException {
         super(taskMetadata);
     }
 
