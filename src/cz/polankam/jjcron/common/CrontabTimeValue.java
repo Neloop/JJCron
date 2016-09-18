@@ -80,8 +80,8 @@ public class CrontabTimeValue implements Serializable {
         }
 
         CrontabTimeValue cast = (CrontabTimeValue) other;
-        if (!cast.valueType.equals(cast.valueType) ||
-                cast.values.size() != values.size()) {
+        if (!cast.valueType.equals(cast.valueType)
+                || cast.values.size() != values.size()) {
             return false;
         }
 
