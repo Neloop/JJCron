@@ -37,7 +37,7 @@ public class ClientWrapper {
     /**
      * Client representation itself.
      */
-    private final Client client;
+    private Client client;
     /**
      * Factory which should connect and disconnect client instances.
      */
@@ -86,10 +86,10 @@ public class ClientWrapper {
      *
      * @param addr address of client instance
      * @param factory factory which should connect and return connected client
-     * @throws Exception in case of any error
+     * @throws ManagerException in case of any error
      */
     public ClientWrapper(ClientAddress addr, ClientFactory factory)
-            throws Exception {
+            throws ManagerException {
         if (addr == null) {
             throw new ManagerException("ClientAddress cannot be null");
         }
@@ -101,8 +101,17 @@ public class ClientWrapper {
         tasksMap = new HashMap<>();
 
         clientAddress = addr;
-        client = factory.connect(addr);
         clientFactory = factory;
+    }
+
+    /**
+     * Connects manager to actual cron remote instance. Has to be called before
+     * any other actions. Initial state of client can be obtained here.
+     *
+     * @throws Exception in case of any connection error
+     */
+    public void connect() throws Exception {
+        client = clientFactory.connect(clientAddress);
         isPaused = client.isPaused();
     }
 
@@ -117,16 +126,6 @@ public class ClientWrapper {
     }
 
     /**
-     * Gets details about task with given identification.
-     *
-     * @param id unique identification of task
-     * @return structure with all possible task information
-     */
-    public TaskDetail getTaskDetail(String id) {
-        return tasksMap.get(id);
-    }
-
-    /**
      * Adds task to client instance, if task is null then nothing will happen.
      *
      * @param task metadata which should contain all needed information for task
@@ -135,7 +134,7 @@ public class ClientWrapper {
      */
     public void addTask(TaskMetadata task) throws Exception {
         if (task == null) {
-            return;
+            throw new ManagerException("TaskMetadata cannot be null");
         }
 
         client.addTask(task);
@@ -150,6 +149,8 @@ public class ClientWrapper {
      * @throws Exception in case of any error
      */
     public void deleteTask(String id) throws Exception {
+        fetchTasks(false);
+        
         TaskDetail task = tasksMap.get(id);
         if (task == null) {
             return;

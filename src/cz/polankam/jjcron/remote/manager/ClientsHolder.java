@@ -40,14 +40,28 @@ public class ClientsHolder {
     }
 
     /**
+     * Gets count of clients in this holder.
+     *
+     * @return integral value representing count
+     */
+    public int size() {
+        return clientsMap.size();
+    }
+
+    /**
      * Add given client wrapper to all internal collections.
      * <p>
      * Has to be used in JavaFX UI thread.</p>
      *
      * @param client wrapper for client
      * @return unique identification of added client
+     * @throws ManagerException if client was null
      */
-    public String addClient(ClientWrapper client) {
+    public String addClient(ClientWrapper client) throws ManagerException {
+        if (client == null) {
+            throw new ManagerException("ClientWrapper cannot be null");
+        }
+
         String id = client.getClientAddress().toString();
         if (!clientsMap.containsKey(id)) {
             clientsObservableList.add(id);

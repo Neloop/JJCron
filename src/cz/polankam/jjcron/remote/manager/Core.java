@@ -144,7 +144,10 @@ public final class Core extends Application {
                     Pair<String, String> value = result.get();
                     ClientAddress addr = new ClientAddress(value.getKey(),
                             value.getValue());
-                    return new ClientWrapper(addr, new RMIClientFactory());
+                    ClientWrapper client = new ClientWrapper(addr,
+                            new RMIClientFactory());
+                    client.connect();
+                    return client;
                 }
                 return null;
             }
