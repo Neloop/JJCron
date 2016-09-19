@@ -1,7 +1,9 @@
 package cz.polankam.jjcron.common;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -19,12 +21,20 @@ public class CrontabTimeValueNamedParser implements CrontabTimeValueParser {
     private final Map<String, Integer> namedValues;
 
     /**
-     * To this parser named values has to be provided for proper functionality.
+     * Named values should be provided on construction, but it is not requested.
+     * If values were null, empty map will be created.
      *
      * @param namedValues names which can be used as values in list
      */
     public CrontabTimeValueNamedParser(Map<String, Integer> namedValues) {
-        this.namedValues = namedValues;
+        this.namedValues = new HashMap<>();
+
+        if (namedValues != null) {
+            for (Entry<String, Integer> entry : namedValues.entrySet()) {
+                this.namedValues.put(entry.getKey().toUpperCase(),
+                        entry.getValue());
+            }
+        }
     }
 
     /**
@@ -37,6 +47,9 @@ public class CrontabTimeValueNamedParser implements CrontabTimeValueParser {
      */
     @Override
     public CrontabTimeValue parse(String value) throws FormatException {
+        // trim give value at once
+        value = value.trim();
+
         // asterisk
         if (value.equals("*")) {
             return new CrontabTimeValue(CrontabTimeValueType.ASTERISK,
@@ -63,6 +76,9 @@ public class CrontabTimeValueNamedParser implements CrontabTimeValueParser {
         String[] splitted = value.split(",");
         Set<Integer> numbers = new TreeSet<>(); // sorted unique elements
         for (String number : splitted) {
+            // trim number first
+            number = number.trim();
+
             try {
                 Integer numberVal = namedValues.get(number.toUpperCase());
                 if (numberVal == null) {

@@ -30,8 +30,18 @@ public class CrontabTimeValue implements Serializable {
      *
      * @param valueType type of values given as parameter
      * @param values particular time values
+     * @throws FormatException if parameter was null
      */
-    public CrontabTimeValue(CrontabTimeValueType valueType, Integer[] values) {
+    public CrontabTimeValue(CrontabTimeValueType valueType, Integer[] values)
+            throws FormatException {
+        if (valueType == null) {
+            throw new FormatException("Value type cannot be null");
+        }
+
+        if (values == null) {
+            throw new FormatException("List of values cannot be null");
+        }
+
         this.valueType = valueType;
         this.values = new ArrayList<>(Arrays.asList(values));
     }
@@ -41,9 +51,18 @@ public class CrontabTimeValue implements Serializable {
      *
      * @param valueType type of values given as parameter
      * @param values particular time values
+     * @throws FormatException if parameter was null
      */
     public CrontabTimeValue(CrontabTimeValueType valueType,
-            List<Integer> values) {
+            List<Integer> values) throws FormatException {
+        if (valueType == null) {
+            throw new FormatException("Value type cannot be null");
+        }
+
+        if (values == null) {
+            throw new FormatException("List of values cannot be null");
+        }
+
         this.valueType = valueType;
         this.values = values;
     }
@@ -80,7 +99,7 @@ public class CrontabTimeValue implements Serializable {
         }
 
         CrontabTimeValue cast = (CrontabTimeValue) other;
-        if (!cast.valueType.equals(cast.valueType)
+        if (!cast.valueType.equals(valueType)
                 || cast.values.size() != values.size()) {
             return false;
         }

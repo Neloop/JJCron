@@ -107,17 +107,11 @@ public class CrontabTimeGeneralUnit implements CrontabTimeUnit, Serializable {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isChanged() {
         return valueChanged;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int delay(LocalDateTime current, int currentValue,
             boolean previousChanged) {
@@ -162,9 +156,6 @@ public class CrontabTimeGeneralUnit implements CrontabTimeUnit, Serializable {
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CrontabTimeValue value() {
         return unit;
