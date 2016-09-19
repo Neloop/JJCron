@@ -27,9 +27,6 @@ public class CrontabTimeDayOfMonthUnit extends CrontabTimeGeneralUnit implements
         super(unit, 1, 31, 31, parser);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int delay(LocalDateTime current, int currentValue,
             boolean previousChanged) {
@@ -63,7 +60,7 @@ public class CrontabTimeDayOfMonthUnit extends CrontabTimeGeneralUnit implements
                         }
 
                         int toMinuteL = currentMonthMax - currentValue;
-                        int minTemp = (toMinuteL + valTemp) % period;
+                        int minTemp = (toMinuteL + valTemp) % currentMonthMax;
                         if (minTemp > 0 && minTemp < result) {
                             result = minTemp;
                         }

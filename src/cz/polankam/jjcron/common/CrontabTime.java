@@ -75,10 +75,16 @@ public class CrontabTime implements Serializable {
      * @param dayOfMonth representing day of months column
      * @param month representing months column
      * @param dayOfWeek representing day of weeks column
+     * @throws FormatException if parameter was null
      */
     public CrontabTime(CrontabTimeUnit second, CrontabTimeUnit minute,
             CrontabTimeUnit hour, CrontabTimeUnit dayOfMonth,
-            CrontabTimeUnit month, CrontabTimeUnit dayOfWeek) {
+            CrontabTimeUnit month, CrontabTimeUnit dayOfWeek) throws FormatException {
+        if (second == null || minute == null || hour == null
+                || dayOfMonth == null || month == null || dayOfWeek == null) {
+            throw new FormatException("One of the units was null");
+        }
+
         this.second = second;
         this.minute = minute;
         this.hour = hour;

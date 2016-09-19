@@ -47,6 +47,10 @@ public class CrontabTimeValueNamedParser implements CrontabTimeValueParser {
      */
     @Override
     public CrontabTimeValue parse(String value) throws FormatException {
+        if (value == null) {
+            throw new FormatException("Value cannot be null");
+        }
+
         // trim give value at once
         value = value.trim();
 

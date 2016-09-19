@@ -46,6 +46,11 @@ public class CrontabTimeValueNamedParserTest {
     }
 
     @Test(expected = FormatException.class)
+    public void testParse_NullString() throws FormatException {
+        emptyParser.parse(null);
+    }
+
+    @Test(expected = FormatException.class)
     public void testParse_BadFormat_1() throws FormatException {
         emptyParser.parse("bad value");
     }
