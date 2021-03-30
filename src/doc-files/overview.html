@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>JJCron overview</title>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    </head>
+    <body>
+        <p>
+            JJCron - Just a Java Cron is cron-like program written in Java
+            which can be used to periodically execute given tasks.
+            JJCron is standalone application with cron function
+            but can be also used as library for executing tasks
+            in other programs. This can be done through modular and lightweight
+            desing of internal architecture.
+        </p>
+        <p>
+            Whole application was developed using <b>Netbeans IDE</b>
+            with <b>Java 8</b> language standard. Under lesser versions program
+            do not have to compile properly. Due to <b>Java</b> usage whole
+            application is multiplatform and can be used on whatever system
+            <b>Java</b> can run.
+        </p>
+        <p>
+            JJCron provides basic <b>cron</b> functionality without some special
+            features concerning <b>crontab</b> configuration. But in addition
+            some functionality is added. For instance there is seconds time unit
+            column in <b>crontab</b> for even more delicate scheduling.
+            Another improvement is that <b>Java</b> classes can be defined
+            in <b>crontab</b> loaded and scheduled just as normal <b>cron</b>
+            tasks. This is achieved by putting name of class between
+            <b>class</b> XML tags.
+        </p>
+        <p>
+            One of the best features of JJCron is remote management through
+            JJCronRM manager. Management includes reloading crontab,
+            save changes to crontab, add cron task, delete cron task,
+            pause whole execution or shutdown whole application.
+        </p>
+        <h2>Crontab</h2>
+        <p>
+            Scheduled tasks are handed over to JJCron with <b>crontab</b>
+            configuration file. Format of this configurations is standard
+            and very similar to actual <b>crontab</b> used
+            in proper <b>cron</b> implementations.
+        </p>
+        <p>Example of crontab format:</p>
+        <pre style="background-color:gainsboro;padding:10px;">
+<code> #  ┌──────────── sec (0 - 59)
+ #  │ ┌───────────── min (0 - 59)
+ #  │ │ ┌────────────── hour (0 - 23)
+ #  │ │ │ ┌─────────────── day of month (1 - 31)
+ #  │ │ │ │ ┌──────────────── month (1 - 12)
+ #  │ │ │ │ │ ┌───────────────── day of week (1 - 7) (1 = Monday, 7 = Sunday)
+ #  │ │ │ │ │ │
+ #  │ │ │ │ │ │
+ #  * * * * * *  command to execute</code></pre>
+
+        <h2>Main features</h2>
+        <ul>
+            <li>All code written in pure Java using cutting edge
+                Java 8 version</li>
+            <li>Thanks to Java JJCron is multiplatform</li>
+            <li>Modular and lightweight desing</li>
+            <li>Easy to understand and use</li>
+            <li>Java classes can be used as tasks and can be scheduled
+                to execution</li>
+            <li>Supports <b>RMI</b> remote management through JJCronRM</li>
+        </ul>
+
+        <h2>Drawbacks</h2>
+        <ul>
+            <li>Not all features from crontab standard format
+                are implemented</li>
+            <li>Day of week time unit is a bit non-standard
+                with its ordering</li>
+            <li>Due to Java restrictions only single program can be executed
+                (that means no pipes, redirections or program chaining)</li>
+        </ul>
+
+        <h2>More Information</h2>
+        <p>
+            Further information can be found on official
+            JJCron <b>GitHub</b> repository and in its wiki page.
+        </p>
+        <p>
+            <a target="_blank" href="https://github.com/JJCron/JJCron">
+                https://github.com/JJCron/JJCron
+            </a>
+        </p>
+
+        <h2>Internal architecture</h2>
+        <a target="_blank" href="doc-files/architecture.svg">
+            <img style="width:75%;" alt="Architecture"
+                 src="doc-files/architecture.svg">
+        </a>
+
+        <h2>License</h2>
+        <p>JJCron is and always will be licensed under
+            <a target="_blank" href="http://badges.mit-license.org/">
+                MIT license
+            </a>
+        </p>
+    </body>
+</html>
