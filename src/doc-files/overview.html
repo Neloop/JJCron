@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>JJCronRM overview</title>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    </head>
+    <body>
+        <p>
+            JJCronRM is management JavaFX application for JJCron instances.
+            Connection between UI and cron is managed through
+            <b>RMI</b> Java technology thus application can be used for remote
+            management of huge number of concurent connections. Manager can be
+            used for listing tasks on particular instance, adding task,
+            deleting task and permanently save all changes. Other handy features
+            can be shutdown instance or pause all execution.
+        </p>
+        <p>
+            JJCronRM uses official Java dialogs which available since
+            <b>Java 8u40</b>, be sure this version is installed before running
+            application.
+        </p>
+        <p>
+            Before using JJCronRM its advised to read carefully all information
+            about
+            <a target="_blank" href="https://github.com/JJCron/JJCron">
+                JJCron
+            </a> first.
+        </p>
+        <h2>Main features</h2>
+        <ul>
+            <li>All code written in pure Java using cutting edge Java 8
+                version</li>
+            <li>Thanks to Java JJCronRM is multiplatform</li>
+            <li>Management of instances over the network using RMI
+                technology</li>
+            <li>List all tasks from instace, delete task, add task or make your
+                changes permanent</li>
+            <li>Shutdown instance or simply pause all execution</li>
+            <li>And all features of JJCron itself...</li>
+        </ul>
+
+        <h2>Drawbacks</h2>
+        <ul>
+            <li>Managing of multiple instances at once is not implemented
+                (e.g. add one task to multiple instances)</li>
+            <li>Very simple and rigorous graphical layout</li>
+            <li>Modifying of particular task is not possible</li>
+            <li>Whole functionality is very low-level and users have to
+                understand how JJCron and crons in general works</li>
+            <li>All drawback from JJCron are inherited here...</li>
+        </ul>
+
+        <h2>More Information</h2>
+        <p>
+            Further information can be found on official
+            JJCronRM <b>GitHub</b> repository and in its wiki page.
+        </p>
+        <p>
+            <a target="_blank" href="https://github.com/JJCron/JJCronRM">
+                https://github.com/JJCron/JJCronRM
+            </a>
+        </p>
+
+        <h2>Internal architecture</h2>
+        <a target="_blank" href="doc-files/architecture.svg">
+            <img style="width:75%;" alt="Architecture"
+                 src="doc-files/architecture.svg">
+        </a>
+
+        <h2>License</h2>
+        <p>JJCronRM is and always will be licensed under
+            <a target="_blank" href="http://badges.mit-license.org/">
+                MIT license
+            </a>
+        </p>
+    </body>
+</html>
