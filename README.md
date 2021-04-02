@@ -1,6 +1,6 @@
 # JJCron
 
-JJCron - Just a Java Cron basic application used for croning. Can be remotely managed with JJCronRM.
+JJCron - Just a Java Cron basic application used for croning. Can be remotely managed with JJCronRM. Built using Maven and Java 11+.
 
 Written as semestral work for *Programming in Java* (2015/2016) course at MFF.
 

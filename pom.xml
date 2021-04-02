@@ -4,18 +4,14 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>cz.polankam.jjcron</groupId>
-    <artifactId>jjcron-parent</artifactId>
-    <version>1.0-SNAPSHOT</version>
-  </parent>
-
   <groupId>cz.polankam.jjcron</groupId>
-  <artifactId>jjcron-common</artifactId>
+  <artifactId>jjcron-parent</artifactId>
   <version>1.0-SNAPSHOT</version>
 
-  <name>jjcron-common</name>
+  <name>jjcron-parent</name>
   <url>https://github.com/Neloop/JJCron</url>
+  
+  <packaging>pom</packaging>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -23,21 +19,9 @@
     <maven.compiler.target>11</maven.compiler.target>
   </properties>
 
-  <dependencies>
-
-    <!-- Test Dependencies -->
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <version>1.10.19</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+  <modules>
+    <module>jjcron-common</module>
+    <module>jjcron</module>
+    <module>jjcron-rm</module>
+  </modules>
 </project>

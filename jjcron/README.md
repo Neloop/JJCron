@@ -34,7 +34,14 @@ Also in addition to classic cron programs `Java` classes which extends specified
 Further description of configuration can be found in wiki on [Crontab Description](https://github.com/JJCron/JJCron/wiki/Crontab-Description) page.
 
 ## Main features
-- All code written in pure `Java` using cutting edge `Java 8` version
+- All code written in pure `
+- 
+- 
+- 
+- 
+- 
+- 
+- ` using cutting edge `Java 8` version
 - Thanks to `Java` **JJCron** is multiplatform
 - Modular and lightweight design
 - Easy to understand and use
