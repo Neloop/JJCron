@@ -1,13 +1,10 @@
 # JJCron - Just a Java Cron
 
-[![Build Status](https://travis-ci.org/JJCron/JJCron.svg?branch=master)](https://travis-ci.org/JJCron/JJCron)
-[![License](http://img.shields.io/:license-mit-blue.svg)](http://badges.mit-license.org)
-[![Wiki](https://img.shields.io/badge/docs-wiki-orange.svg)](https://github.com/JJCron/JJCron/wiki)
-[![Docs](https://img.shields.io/badge/docs-javadoc-green.svg)](http://JJCron.github.io/JJCron/)
+[![Wiki](https://img.shields.io/badge/docs-wiki-orange.svg)](https://github.com/Neloop/JJCron/wiki/JJCron)
 
 **JJCron** is cron-like program written in `Java` which can be used to periodically execute given tasks. **JJCron** can serve as standalone program and also as library used in another application. From the beginning the whole architecture was meant to be modular, easy to use and simple to understand. This is managed by delicate design of internal structures and classes.
 
-One of the best features of **JJCron** is remote management through **[JJCronRM](https://github.com/JJCron/JJCronRM)** manager. Management includes reloading crontab, save changes to crontab, add cron task, delete cron task, pause whole execution or shutdown whole application.
+One of the best features of **JJCron** is remote management through **[JJCronRM](https://github.com/Neloop/JJCron/tree/main/jjcron-rm)** manager. Management includes reloading crontab, save changes to crontab, add cron task, delete cron task, pause whole execution or shutdown whole application.
 
 ## Crontab
 
@@ -31,17 +28,10 @@ Also in addition to classic cron programs `Java` classes which extends specified
 * * * * * * <class>HelloWorldTask</class>
 ```
 
-Further description of configuration can be found in wiki on [Crontab Description](https://github.com/JJCron/JJCron/wiki/Crontab-Description) page.
+Further description of configuration can be found in wiki on [Crontab Description](https://github.com/Neloop/JJCron/wiki/JJCron#crontab-description) page.
 
 ## Main features
-- All code written in pure `
-- 
-- 
-- 
-- 
-- 
-- 
-- ` using cutting edge `Java 8` version
+- All code written in pure `Java`
 - Thanks to `Java` **JJCron** is multiplatform
 - Modular and lightweight design
 - Easy to understand and use
@@ -54,11 +44,11 @@ Further description of configuration can be found in wiki on [Crontab Descriptio
 - Due to `Java` restrictions only single program can be executed (that means no pipes, redirections or program chaining)
 
 ## More information
-If you are interested enough read `JJCron` wiki pages [here](https://github.com/JJCron/JJCron/wiki) and start using it!
+If you are interested enough read `JJCron` wiki pages [here](https://github.com/Neloop/JJCron/wiki) and start using it!
 
 ## Contribution
 
 This project is open for contribution for anyone who want to make it better. All feasible pull requests will be merged.
 
 ## License
-JJCron is and always will be licensed under [MIT license](LICENSE)
+JJCron is licensed under [MIT license](LICENSE)
